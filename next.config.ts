@@ -1,8 +1,13 @@
-import type { NextConfig } from "next";
+import type {NextConfig} from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
-};
+  images: {
+    // All CMS-managed imagery is served from the Sanity image CDN.
+    remotePatterns: [
+      {protocol: 'https', hostname: 'cdn.sanity.io', pathname: '/images/**'},
+    ],
+  },
+}
 
-export default nextConfig;
+export default nextConfig

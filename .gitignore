@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local copies of the reference images used by scripts/seed.mjs
+/.seed-assets/
+
+# static HTML reference the site is rebuilt from — AI/dev reference only
+/JIDS/

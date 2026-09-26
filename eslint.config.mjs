@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Static HTML reference the site is rebuilt from, not application code.
+    "JIDS/**",
   ]),
 ]);
 
