@@ -42,6 +42,14 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('person').title('People'),
       S.documentTypeListItem('classLevel').title('Classes'),
       S.documentTypeListItem('classRoutine').title('Class routines'),
+      S.listItem()
+        .title('Complaints')
+        .id('complaints')
+        .child(
+          S.documentTypeList('complaint')
+            .title('Complaints')
+            .defaultOrdering([{field: 'submittedAt', direction: 'desc'}]),
+        ),
 
       S.divider(),
 

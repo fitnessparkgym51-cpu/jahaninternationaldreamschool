@@ -15,6 +15,17 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type Complaint = {
+  _id: string;
+  _type: "complaint";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  topic?: string;
+  complaint?: string;
+  submittedAt?: string;
+};
+
 export type NewsPost = {
   _id: string;
   _type: "newsPost";
@@ -1190,6 +1201,7 @@ export type Slug = {
 };
 
 export type AllSanitySchemaTypes =
+  | Complaint
   | NewsPost
   | Link
   | SanityImageAssetReference
