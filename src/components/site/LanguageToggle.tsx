@@ -35,12 +35,16 @@ declare global {
  * click-to-edit relies on.
  */
 export function LanguageToggle() {
-  const [lang, setLang] = useState<Lang | null>(null)
+  const [lang, setLang] = useState<Lang>('en')
+  const [inIframe, setInIframe] = useState(false)
 
   useEffect(() => {
-    if (window.self !== window.top) return
+    if (window.self !== window.top) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- only knowable after mount
+      setInIframe(true)
+      return
+    }
     const current = readLang()
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- cookie is only readable after mount
     setLang(current)
     if (current !== 'bn' || document.getElementById(SCRIPT_ID)) return
 
@@ -57,7 +61,7 @@ export function LanguageToggle() {
     document.body.appendChild(script)
   }, [])
 
-  if (!lang) return null
+  if (inIframe) return null
 
   const toggle = () => {
     writeLang(lang === 'bn' ? 'en' : 'bn')
