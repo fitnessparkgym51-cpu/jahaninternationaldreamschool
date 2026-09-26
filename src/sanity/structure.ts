@@ -6,6 +6,8 @@ const SINGLETONS = {
   admissionsPage: 'Admissions page',
   academicsPage: 'Academics page',
   classRoutinePage: 'Class routine page',
+  contactPage: 'Contact page',
+  newsPage: 'News page',
   siteSettings: 'Site settings',
   navigation: 'Navigation',
 } as const
@@ -34,6 +36,8 @@ export const structure: StructureResolver = (S) =>
       singletonItem(S, 'admissionsPage'),
       singletonItem(S, 'academicsPage'),
       singletonItem(S, 'classRoutinePage'),
+      singletonItem(S, 'contactPage'),
+      singletonItem(S, 'newsPage'),
 
       S.divider(),
 
@@ -48,6 +52,14 @@ export const structure: StructureResolver = (S) =>
         .child(
           S.documentTypeList('complaint')
             .title('Complaints')
+            .defaultOrdering([{field: 'submittedAt', direction: 'desc'}]),
+        ),
+      S.listItem()
+        .title('Contact inquiries')
+        .id('contactSubmissions')
+        .child(
+          S.documentTypeList('contactSubmission')
+            .title('Contact inquiries')
             .defaultOrdering([{field: 'submittedAt', direction: 'desc'}]),
         ),
 

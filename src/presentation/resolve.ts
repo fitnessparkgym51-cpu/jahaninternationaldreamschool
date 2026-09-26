@@ -33,6 +33,12 @@ export const resolve: PresentationPluginOptions['resolve'] = {
       route: '/academics/class-routine',
       type: 'classRoutinePage',
     },
+    {
+      route: '/contact',
+      type: 'contactPage',
+    },
+    {route: '/news', type: 'newsPage'},
+    {route: '/news/:slug', filter: `_type == "newsPost" && slug.current == $slug`},
   ]),
 
   locations: {
@@ -69,6 +75,18 @@ export const resolve: PresentationPluginOptions['resolve'] = {
       resolve: (doc) => ({
         locations: [{title: doc?.title || 'Class routine page', href: '/academics/class-routine'}],
       }),
+    }),
+
+    contactPage: defineLocations({
+      select: {title: 'internalTitle'},
+      resolve: (doc) => ({
+        locations: [{title: doc?.title || 'Contact page', href: '/contact'}],
+      }),
+    }),
+
+    newsPage: defineLocations({
+      select: {title: 'internalTitle'},
+      resolve: () => ({locations: [{title: 'News page', href: '/news'}]}),
     }),
 
     /** A class timetable, shown on the Class routine page. */

@@ -222,6 +222,31 @@ export const newsPostType = defineType({
     }),
     defineField({name: 'image', title: 'Image', type: 'imageWithAlt', group: 'main'}),
     defineField({
+      name: 'slug',
+      title: 'Web address',
+      type: 'slug',
+      group: 'main',
+      options: {source: 'title', maxLength: 96},
+      description: 'Click "Generate". The post opens at /news/<this>.',
+    }),
+    defineField({
+      name: 'publishedAt',
+      title: 'Published date',
+      type: 'datetime',
+      group: 'main',
+      initialValue: () => new Date().toISOString(),
+    }),
+    defineField({
+      name: 'body',
+      title: 'Full article',
+      type: 'array',
+      group: 'main',
+      of: [
+        defineArrayMember({type: 'block'}),
+        defineArrayMember({type: 'imageWithAlt', title: 'Image'}),
+      ],
+    }),
+    defineField({
       name: 'link',
       title: 'Read more link',
       type: 'link',

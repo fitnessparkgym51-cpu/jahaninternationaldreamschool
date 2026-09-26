@@ -253,6 +253,13 @@ body {
   transform: translateX(0);
 }
 
+@media (min-width: 1280px) {
+  /* Unlayered CSS beats Tailwind's `xl:hidden`, so hide the burger here. */
+  .jid-menu-btn {
+    display: none !important;
+  }
+}
+
 .jid-menu-btn {
   position: relative;
   display: inline-flex;

@@ -10,12 +10,14 @@ import type {
   PageSeo,
   SiteSettings,
 } from '../types/home'
+import type {ContactPageData} from '../types/contact'
 
 import {
   aboutPageQuery,
   academicsPageQuery,
   admissionsPageQuery,
   classRoutinePageQuery,
+  contactPageQuery,
   homePageQuery,
   navigationQuery,
   pageSeoQuery,
@@ -113,7 +115,15 @@ export const getAcademicsPageData = cache(async (): Promise<AcademicsPageData> =
  * The whole Class routine page in one round trip. Same stega reasoning as the
  * other page fetches.
  */
-export const getClassRoutinePageData = cache(async (): Promise<ClassRoutinePageData> => {
+export const getContactPageSeo = cache(async (): Promise<PageSeo> => getPageSeo('contactPage'))
+
+/** The whole Contact page in one round trip. Types live in `types/contact.ts`. */
+export const getContactPageData = cache(async (): Promise<ContactPageData> => {
+  const {data} = await sanityFetch({query: contactPageQuery})
+  return data as unknown as ContactPageData
+})
+
+export const getClassRoutinePageData =cache(async (): Promise<ClassRoutinePageData> => {
   const {data} = await sanityFetch({query: classRoutinePageQuery})
   return data as ClassRoutinePageData
 })

@@ -520,3 +520,49 @@ export const classRoutinePageQuery = defineQuery(`{
     seo${seoProjection}
   }
 }`)
+
+const newsPageFields = /* groq */ `
+  "id": _id,
+  hero{ enabled, heading, subheading, appearance, showIconWatermark, eyebrow, eyebrowIcon,
+    crumbs[]${breadcrumbItemProjection}, buttons[]${buttonProjection} },
+  readMoreLabel, backLabel, emptyText`
+
+/** News listing: page copy + every visible post, newest first. */
+export const newsListQuery = defineQuery(`{
+  "siteSettings": ${siteSettingsQuery},
+  "navigation": ${navigationQuery},
+  "page": *[_type == "newsPage"][0]{ ${newsPageFields} },
+  "posts": *[_type == "newsPost" && isVisible != false && defined(slug.current)]
+    | order(coalesce(publishedAt, _createdAt) desc){
+    "id": _id, title, category, excerpt, "slug": slug.current,
+    "date": coalesce(publishedAt, _createdAt), "image": image${imageWithAltProjection}
+  }
+}`)
+
+/** One news post by slug. */
+export const newsPostQuery = defineQuery(`{
+  "siteSettings": ${siteSettingsQuery},
+  "navigation": ${navigationQuery},
+  "page": *[_type == "newsPage"][0]{ ${newsPageFields} },
+  "post": *[_type == "newsPost" && slug.current == $slug && isVisible != false][0]{
+    "id": _id, title, category, excerpt, "slug": slug.current,
+    "date": coalesce(publishedAt, _createdAt), "image": image${imageWithAltProjection},
+    body[]{ ..., _type == "imageWithAlt" => ${imageWithAltProjection} }
+  }
+}`)
+
+/** Everything the Contact page needs in one round trip. */
+export const contactPageQuery = defineQuery(`{
+  "siteSettings": ${siteSettingsQuery},
+  "navigation": ${navigationQuery},
+  "contact": *[_type == "contactPage"][0]{
+    "id": _id,
+    hero{ enabled, heading, subheading, appearance, showIconWatermark, eyebrow, eyebrowIcon,
+      crumbs[]${breadcrumbItemProjection}, buttons[]${buttonProjection} },
+    infoCard{ heading, items[]{ _key, icon, label, value, note }, button${buttonProjection} },
+    mapCard{ title, address, rating, reviewCount, pinLabel, landmarks, attribution, mapUrl,
+      button${buttonProjection} },
+    form,
+    review{ enabled, rating, headline, text, button${buttonProjection} }
+  }
+}`)

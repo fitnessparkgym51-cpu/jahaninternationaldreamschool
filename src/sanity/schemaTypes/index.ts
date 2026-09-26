@@ -9,6 +9,8 @@ import {admissionsPageType} from './documents/admissionsPage'
 import {homePageType, newsPostType, siteSettingsType, studentSpotlightType} from './documents'
 import {personType} from './documents/person'
 import {complaintType} from './documents/complaint'
+import {newsPageType} from './documents/newsPage'
+import {contactPageType, contactSubmissionType} from './documents/contactPage'
 import {
   calloutSectionType,
   faqItemType,
@@ -141,5 +143,8 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     newsPostType,
     personType,
     complaintType,
+    contactPageType,
+    newsPageType,
+    contactSubmissionType,
   ],
 }
