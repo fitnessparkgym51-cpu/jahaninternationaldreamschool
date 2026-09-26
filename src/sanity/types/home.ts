@@ -8,6 +8,9 @@
  */
 import type {
   AboutPageQueryResult,
+  AcademicsPageQueryResult,
+  AdmissionsPageQueryResult,
+  ClassRoutinePageQueryResult,
   HomePageQueryResult,
   NavigationQueryResult,
   PageSeoQueryResult,
@@ -121,3 +124,45 @@ export type Person = NonNullable<PrincipalSection['principal']>
 
 export type BreadcrumbItem = Item<PageHeroSection['crumbs']>
 export type PillarCard = Item<PillarsSection['pillars']>
+
+/* -------------------------------------------------------------------------- */
+/* Admissions page                                                             */
+/* -------------------------------------------------------------------------- */
+
+export type AdmissionsPageData = AdmissionsPageQueryResult
+export type AdmissionsPage = Val<AdmissionsPageData['admissions']>
+export type AdmissionsSection = Item<AdmissionsPage['sections']>
+
+export type ProcessStepsSection = Extract<AdmissionsSection, {_type: 'processStepsSection'}>
+export type ProcessStep = Item<ProcessStepsSection['steps']>
+export type FeatureImageSection = Extract<AdmissionsSection, {_type: 'featureImageSection'}>
+export type CalloutSection = Extract<AdmissionsSection, {_type: 'calloutSection'}>
+export type FaqSection = Extract<AdmissionsSection, {_type: 'faqSection'}>
+export type FaqItem = Item<FaqSection['items']>
+
+/* -------------------------------------------------------------------------- */
+/* Academics page                                                             */
+/* -------------------------------------------------------------------------- */
+
+export type AcademicsPageData = AcademicsPageQueryResult
+export type AcademicsPage = Val<AcademicsPageData['academics']>
+export type AcademicsSection = Item<AcademicsPage['sections']>
+
+export type ClassTableSection = Extract<AcademicsSection, {_type: 'classTableSection'}>
+export type ClassTableColumns = Val<ClassTableSection['columnLabels']>
+
+/** A referenced `classLevel` document, dereferenced by the query. */
+export type ClassLevel = Item<ClassTableSection['classes']>
+/* -------------------------------------------------------------------------- */
+/* Class routine page                                                          */
+/* -------------------------------------------------------------------------- */
+
+export type ClassRoutinePageData = ClassRoutinePageQueryResult
+export type ClassRoutinePage = Val<ClassRoutinePageData['routine']>
+export type ClassRoutineSection = Item<ClassRoutinePage['sections']>
+
+export type RoutineSection = Extract<ClassRoutineSection, {_type: 'routineSection'}>
+
+/** A referenced `classRoutine` document, dereferenced by the query. */
+export type ClassRoutine = NonNullable<NonNullable<RoutineSection['routines']>[number]>
+export type ClassRoutineRow = Item<NonNullable<ClassRoutine['rows']>>

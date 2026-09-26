@@ -3,6 +3,9 @@ import type {StructureBuilder, StructureResolver} from 'sanity/structure'
 const SINGLETONS = {
   homePage: 'Home page',
   aboutPage: 'About page',
+  admissionsPage: 'Admissions page',
+  academicsPage: 'Academics page',
+  classRoutinePage: 'Class routine page',
   siteSettings: 'Site settings',
   navigation: 'Navigation',
 } as const
@@ -28,12 +31,17 @@ export const structure: StructureResolver = (S) =>
     .items([
       singletonItem(S, 'homePage'),
       singletonItem(S, 'aboutPage'),
+      singletonItem(S, 'admissionsPage'),
+      singletonItem(S, 'academicsPage'),
+      singletonItem(S, 'classRoutinePage'),
 
       S.divider(),
 
       S.documentTypeListItem('newsPost').title('News & events'),
       S.documentTypeListItem('studentSpotlight').title('Student spotlights'),
       S.documentTypeListItem('person').title('People'),
+      S.documentTypeListItem('classLevel').title('Classes'),
+      S.documentTypeListItem('classRoutine').title('Class routines'),
 
       S.divider(),
 

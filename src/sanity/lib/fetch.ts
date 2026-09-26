@@ -1,14 +1,32 @@
 import {cache} from 'react'
 
-import type {AboutPageData, HomePageData, Navigation, PageSeo, SiteSettings} from '../types/home'
+import type {
+  AboutPageData,
+  AcademicsPageData,
+  AdmissionsPageData,
+  ClassRoutinePageData,
+  HomePageData,
+  Navigation,
+  PageSeo,
+  SiteSettings,
+} from '../types/home'
 
-import {pageSeoQuery, homePageQuery, aboutPageQuery, navigationQuery, siteSettingsQuery} from './queries'
+import {
+  aboutPageQuery,
+  academicsPageQuery,
+  admissionsPageQuery,
+  classRoutinePageQuery,
+  homePageQuery,
+  navigationQuery,
+  pageSeoQuery,
+  siteSettingsQuery,
+} from './queries'
 import {sanityFetch} from './live'
 
 /**
  * Data access layer.
  *
- * Components never touch the Sanity client directly — the page fetches typed data
+ * Components never touch the Sanity client directly â€” the page fetches typed data
  * and passes it down as props, which keeps CMS fetching out of presentation.
  * `cache()` de-duplicates calls within a single render.
  *
@@ -51,6 +69,18 @@ export const getHomePageSeo = cache(async (): Promise<PageSeo> => getPageSeo('ho
 
 export const getAboutPageSeo = cache(async (): Promise<PageSeo> => getPageSeo('aboutPage'))
 
+export const getAdmissionsPageSeo = cache(async (): Promise<PageSeo> =>
+  getPageSeo('admissionsPage'),
+)
+
+export const getAcademicsPageSeo = cache(async (): Promise<PageSeo> =>
+  getPageSeo('academicsPage'),
+)
+
+export const getClassRoutinePageSeo = cache(async (): Promise<PageSeo> =>
+  getPageSeo('classRoutinePage'),
+)
+
 /**
  * The whole About page in one round trip: site chrome, navigation and content.
  *
@@ -60,6 +90,34 @@ export const getAboutPageData = cache(async (): Promise<AboutPageData> => {
   const {data} = await sanityFetch({query: aboutPageQuery})
   return data as AboutPageData
 })
+
+/**
+ * The whole Admissions page in one round trip. Same stega reasoning as the other
+ * page fetches.
+ */
+export const getAdmissionsPageData = cache(async (): Promise<AdmissionsPageData> => {
+  const {data} = await sanityFetch({query: admissionsPageQuery})
+  return data as AdmissionsPageData
+})
+
+/**
+ * The whole Academics page in one round trip. Same stega reasoning as the other
+ * page fetches.
+ */
+export const getAcademicsPageData = cache(async (): Promise<AcademicsPageData> => {
+  const {data} = await sanityFetch({query: academicsPageQuery})
+  return data as AcademicsPageData
+})
+
+/**
+ * The whole Class routine page in one round trip. Same stega reasoning as the
+ * other page fetches.
+ */
+export const getClassRoutinePageData = cache(async (): Promise<ClassRoutinePageData> => {
+  const {data} = await sanityFetch({query: classRoutinePageQuery})
+  return data as ClassRoutinePageData
+})
+
 
 export const getSiteSettings = cache(async (): Promise<SiteSettings | null> => {
   const {data} = await sanityFetch({query: siteSettingsQuery})

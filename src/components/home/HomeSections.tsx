@@ -6,14 +6,15 @@ import {NewsSection} from './NewsSection'
 import {ReviewBarSection} from './ReviewBarSection'
 import {StudentSpotlightSection} from './StudentSpotlightSection'
 import {StatsBarSection} from './StatsBarSection'
-import {HOME_PAGE_TYPE, editAttribute, sectionPath, type PathStep} from '@/lib/editing'
+import {HOME_PAGE_TYPE, editAttribute, sectionPath, type EditField} from '@/lib/editing'
 import type {HomeSection} from '@/sanity/types/home'
 
 /**
- * Builds the `data-sanity` value for a field inside one Home page section.
- * Returns `undefined` for an empty path, which omits the attribute.
+ * Re-exported so the Home section components keep their existing import path.
+ * The single definition now lives in `@/lib/editing`, shared with every other
+ * page's section mapper.
  */
-export type EditField = (...rest: PathStep[]) => string | undefined
+export type {EditField}
 
 type HomeSectionsProps = {
   /** `_id` of the Home page document, needed for click-to-edit targets. */

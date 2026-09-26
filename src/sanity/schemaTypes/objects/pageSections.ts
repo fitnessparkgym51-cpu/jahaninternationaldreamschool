@@ -78,6 +78,43 @@ export const pageHeroSectionType = defineType({
       description: 'Optional sentence under the heading.',
     }),
     defineField({
+      name: 'eyebrowIcon',
+      title: 'Badge icon',
+      type: 'string',
+      group: 'content',
+      options: {list: [...ICON_OPTIONS], layout: 'dropdown'},
+      description: 'Shown before the badge text on a dark header.',
+    }),
+    defineField({
+      name: 'eyebrow',
+      title: 'Badge above the heading',
+      type: 'string',
+      group: 'content',
+      description: 'Small pill above the heading, e.g. "Effective From January 2026".',
+    }),
+    defineField({
+      name: 'appearance',
+      title: 'Background',
+      type: 'string',
+      group: 'content',
+      options: {
+        list: [
+          {value: 'solid', title: 'Solid green'},
+          {value: 'pattern', title: 'Green with soft glow'},
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'solid',
+    }),
+    defineField({
+      name: 'showIconWatermark',
+      title: 'Show a large faint icon behind the heading',
+      type: 'boolean',
+      initialValue: false,
+      group: 'content',
+      description: 'Decoration only. Uses the graduation cap from the design system.',
+    }),
+    defineField({
       name: 'crumbs',
       title: 'Breadcrumb trail',
       type: 'array',
@@ -85,12 +122,25 @@ export const pageHeroSectionType = defineType({
       description: 'Home, then each parent page. The last one is not a link.',
       of: [defineArrayMember({type: 'breadcrumbItem'})],
     }),
+    defineField({
+      name: 'buttons',
+      title: 'Buttons under the heading',
+      type: 'array',
+      group: 'content',
+      description: 'Optional. Leave empty for a plain page header.',
+      of: [defineArrayMember({type: 'button'})],
+    }),
   ],
   preview: {
-    select: {title: 'heading', crumbs: 'crumbs'},
-    prepare: ({title, crumbs}) => ({
+    select: {title: 'heading', crumbs: 'crumbs', buttons: 'buttons'},
+    prepare: ({title, crumbs, buttons}) => ({
       title: title || 'Page header',
-      subtitle: crumbs?.length ? `Breadcrumb · ${crumbs.length} steps` : 'Page header',
+      subtitle: [
+        crumbs?.length ? `${crumbs.length} breadcrumb steps` : null,
+        buttons?.length ? `${buttons.length} buttons` : null,
+      ]
+        .filter(Boolean)
+        .join(' · ') || 'Page header',
     }),
   },
 })
@@ -206,10 +256,10 @@ export const peopleGridSectionType = defineType({
 /* Guiding philosophy                                                          */
 /* -------------------------------------------------------------------------- */
 
-/** One of the school's defining statements — vision, mission, values. */
+/** One of a section's icon cards — a pillar, a highlight, a feature. */
 export const pillarCardType = defineType({
   name: 'pillarCard',
-  title: 'Pillar',
+  title: 'Icon card',
   type: 'object',
   fields: [
     defineField({
@@ -227,11 +277,13 @@ export const pillarCardType = defineType({
           {value: 'green', title: 'Green'},
           {value: 'orange', title: 'Orange'},
           {value: 'amber', title: 'Amber'},
+          {value: 'pink', title: 'Pink'},
+          {value: 'blue', title: 'Blue'},
         ],
         layout: 'radio',
       },
       initialValue: 'green',
-      description: 'Tints the icon tile so neighbouring pillars stay distinguishable.',
+      description: 'Tints the icon tile so neighbouring cards stay distinguishable.',
     }),
     defineField({name: 'title', title: 'Title', type: 'string', validation: (rule) => rule.required()}),
     defineField({name: 'description', title: 'Description', type: 'text', rows: 4}),
@@ -239,15 +291,24 @@ export const pillarCardType = defineType({
   preview: {
     select: {title: 'title', subtitle: 'description', icon: 'icon', tone: 'tone'},
     prepare: ({title, subtitle, icon, tone}) => ({
-      title: title || 'Pillar',
+      title: title || 'Icon card',
       subtitle: [icon, tone].filter(Boolean).join(' · ') || subtitle,
     }),
   },
 })
 
+/**
+ * A responsive grid of icon cards.
+ *
+ * The type is named `pillarsSection` because that is what it was first built for
+ * (the About page's vision / mission / philosophy). It is deliberately generic and
+ * reused by other pages for curriculum highlights and similar lists. Only the
+ * Studio *label* has been widened; the type name is unchanged, so existing data is
+ * untouched.
+ */
 export const pillarsSectionType = defineType({
   name: 'pillarsSection',
-  title: 'Pillars (vision, mission, values)',
+  title: 'Icon card grid (pillars, highlights)',
   type: 'object',
   groups: [settingsGroup, {name: 'content', title: 'Content'}],
   fields: [
@@ -260,18 +321,18 @@ export const pillarsSectionType = defineType({
     }),
     defineField({
       name: 'pillars',
-      title: 'Pillars',
+      title: 'Cards',
       type: 'array',
       group: 'content',
-      validation: (rule) => rule.max(4).warning('Three pillars read best on desktop.'),
+      description: 'Three columns on desktop, one on mobile.',
       of: [defineArrayMember({type: 'pillarCard'})],
     }),
   ],
   preview: {
     select: {title: 'header.heading', pillars: 'pillars'},
     prepare: ({title, pillars}) => ({
-      title: title || 'Pillars',
-      subtitle: pillars?.length ? `${pillars.length} pillars` : 'No pillars yet',
+      title: title || 'Icon card grid',
+      subtitle: pillars?.length ? `${pillars.length} cards` : 'No cards yet',
     }),
   },
 })
@@ -288,6 +349,19 @@ export const pageCtaSectionType = defineType({
   groups: [settingsGroup, {name: 'content', title: 'Content'}],
   fields: [
     enabledField,
+    defineField({
+      name: 'anchorId',
+      title: 'Anchor id',
+      type: 'string',
+      group: 'content',
+      description: 'Lets buttons and menus link straight to this band, e.g. enrol.',
+      validation: (rule) =>
+        rule.custom((value) =>
+          value && /[^a-z0-9-]/.test(value)
+            ? 'Use lower-case letters, numbers and hyphens only.'
+            : true,
+        ),
+    }),
     defineField({name: 'badge', title: 'Badge text', type: 'string', group: 'content'}),
     defineField({
       name: 'heading',

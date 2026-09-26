@@ -22,6 +22,22 @@
   --color-jids-orange-dark: #db2e08;
 }
 
+/*
+  The page background is fixed to white on every device.
+
+  These two variables used to be overridden inside a
+  `@media (prefers-color-scheme: dark)` block. The site has no dark theme, so on
+  any device with OS dark mode that override turned the body near-black while
+  `bg-white` sections stayed white, and every translucent surface composited
+  against black instead of white:
+
+    bg-gray-50/70  over #ffffff -> rgb(251,252,252)  the intended faint tint
+    bg-gray-50/70  over #0a0a0a -> rgb(177,178,179)  a silver frame
+
+  Sections that set no background at all showed the body colour directly, so they
+  rendered black. Removing the override is the whole fix — do not reintroduce a
+  dark scheme here without designing one properly. See DESIGN_SYSTEM.md.
+*/
 :root {
   --background: #ffffff;
   --foreground: #1e293b;
@@ -34,16 +50,18 @@ body {
   overflow-x: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 /* Orange milestone band under the hero */
 .stat-bar-shadow {
   box-shadow: 0 10px 25px -5px rgba(242, 58, 17, 0.3);
+}
+
+/* Soft radial glow behind a page header (the "green with soft glow" treatment) */
+.jids-hero-pattern {
+  background-image: radial-gradient(
+    circle at 50% 120%,
+    rgba(34, 197, 94, 0.22) 0%,
+    rgba(13, 92, 46, 0.95) 75%
+  );
 }
 
 /* -------------------------------------------------------------------------- */
@@ -354,6 +372,53 @@ body {
 .jids-footer-link:hover {
   transform: translateX(5px);
   opacity: 0.9;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Printing the weekly timetable                                               */
+/* -------------------------------------------------------------------------- */
+
+/*
+  The Class routine page has a "Print This Routine" button. Printing should give a
+  clean sheet of just the timetable, so the site chrome is hidden and the routine
+  card is allowed to use the full page width.
+
+  The card is marked with `jid-routine-print` in the markup; the selectors below
+  target the shared chrome by role rather than by page, so a page without a
+  timetable is unaffected.
+*/
+@media print {
+  header,
+  footer,
+  aside,
+  nav,
+  .jid-routine-controls {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  .jid-routine-card {
+    border: 1px solid #d1d5db !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  /* The table scrolls horizontally on screen; in print it should just fit. */
+  .jid-routine-scroll {
+    overflow: visible !important;
+  }
+
+  .jid-routine-table {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

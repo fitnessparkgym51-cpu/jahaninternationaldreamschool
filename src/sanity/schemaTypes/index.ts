@@ -1,8 +1,23 @@
 import type {SchemaTypeDefinition} from 'sanity'
 
 import {aboutPageType} from './documents/aboutPage'
+import {academicsPageType} from './documents/academicsPage'
+import {classLevelType} from './documents/classLevel'
+import {classRoutineType} from './documents/classRoutine'
+import {classRoutinePageType} from './documents/classRoutinePage'
+import {admissionsPageType} from './documents/admissionsPage'
 import {homePageType, newsPostType, siteSettingsType, studentSpotlightType} from './documents'
 import {personType} from './documents/person'
+import {
+  calloutSectionType,
+  faqItemType,
+  faqSectionType,
+  featureImageSectionType,
+  processStepType,
+  processStepsSectionType,
+} from './objects/admissionSections'
+import {classTableColumnsType, classTableSectionType} from './objects/classTable'
+import {classRoutineRowType, routineSectionType} from './objects/routine'
 import {navigationType} from './objects/navigation'
 import {
   breadcrumbItemType,
@@ -95,9 +110,30 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     pillarsSectionType,
     pageCtaSectionType,
 
+    // Admissions page section building blocks
+    processStepType,
+    processStepsSectionType,
+    featureImageSectionType,
+    calloutSectionType,
+    faqItemType,
+    faqSectionType,
+
+    // Academics page section building blocks
+    classTableColumnsType,
+    classTableSectionType,
+
+    // Class routine page section building blocks
+    classRoutineRowType,
+    routineSectionType,
+
     // Documents
     homePageType,
     aboutPageType,
+    admissionsPageType,
+    academicsPageType,
+    classRoutinePageType,
+    classLevelType,
+    classRoutineType,
     siteSettingsType,
     navigationType,
     studentSpotlightType,

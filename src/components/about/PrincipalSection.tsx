@@ -1,7 +1,12 @@
 import {SanityImage} from '@/components/ui/SanityImage'
 import {Reveal} from '@/components/ui/Reveal'
-import {documentFieldAttribute, editTargetAttr, PERSON_TYPE, type PathStep} from '@/lib/editing'
-import type {EditField} from '@/components/about/AboutSections'
+import {
+  documentFieldAttribute,
+  editTargetAttr,
+  PERSON_TYPE,
+  type EditField,
+  type PathStep,
+} from '@/lib/editing'
 import type {PrincipalSection as PrincipalSectionData} from '@/sanity/types/home'
 
 type PrincipalSectionProps = {

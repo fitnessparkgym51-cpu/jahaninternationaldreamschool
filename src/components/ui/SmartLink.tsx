@@ -2,7 +2,7 @@ import Link from 'next/link'
 import {stegaClean} from 'next-sanity'
 import type {ReactNode} from 'react'
 
-import type {Button} from '@/sanity/types/home'
+import type {UiButton} from '@/components/ui/types'
 
 const EXTERNAL_PREFIXES = ['http://', 'https://', 'tel:', 'mailto:', '//']
 
@@ -34,7 +34,7 @@ type SmartLinkProps = {
 /**
  * Renders a CMS link: `next/link` for internal routes, `<a>` for everything else.
  *
- * The URL is stega-cleaned before it reaches the DOM �?" invisible characters in
+ * The URL is stega-cleaned before it reaches the DOM ï¿½?" invisible characters in
  * an `href` would break navigation and can leak into analytics and referrers.
  * The visible label is left encoded, because that is what makes the label
  * click-to-edit inside the Presentation Tool.
@@ -86,13 +86,14 @@ const VARIANT_CLASSES: Record<string, string> = {
   light: 'border-2 border-white/80 hover:bg-white/10 text-white',
   // Solid white border that fills on hover, used on the coloured closing band.
   invert: 'border-2 border-white text-white hover:bg-white hover:text-jids-orange',
+  white: 'bg-white text-gray-900 hover:bg-gray-100 shadow',
   link: 'px-1 py-1 text-jids-green underline-offset-4 hover:underline',
 }
 
 type VariantName = keyof typeof VARIANT_CLASSES
 
 export type ButtonLinkProps = {
-  button?: Button | null
+  button?: UiButton | null
   /**
    * `data-sanity` value for the button's URL field. The label stays stega-encoded
    * so clicking the text edits the label, while clicking the button itself edits

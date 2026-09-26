@@ -1,17 +1,12 @@
-import {PageCtaSection} from './PageCtaSection'
-import {PageHeroSection} from './PageHeroSection'
-import {PeopleGridSection} from './PeopleGridSection'
-import {PillarsSection} from './PillarsSection'
-import {PrincipalSection} from './PrincipalSection'
 import {AboutContentMissing} from '@/components/about/AboutContentMissing'
-import {ABOUT_PAGE_TYPE, arrayItemPath, editAttribute, type PathStep} from '@/lib/editing'
+import {PageCtaSection} from '@/components/sections/PageCtaSection'
+import {PageHeroSection} from '@/components/sections/PageHeroSection'
+import {PeopleGridSection} from '@/components/about/PeopleGridSection'
+import {CardGridSection} from '@/components/sections/CardGridSection'
+import {PrincipalSection} from '@/components/about/PrincipalSection'
+import {ABOUT_PAGE_TYPE, arrayItemPath, editAttribute, type EditField} from '@/lib/editing'
 import type {AboutSection} from '@/sanity/types/home'
 
-/**
- * Builds the `data-sanity` value for a field inside one About page section.
- * Returns `undefined` for an empty path, which omits the attribute.
- */
-export type EditField = (...rest: PathStep[]) => string | undefined
 
 type AboutSectionsProps = {
   /** `_id` of the About page document, needed for click-to-edit targets. */
@@ -55,7 +50,7 @@ export function AboutSections({documentId, sections}: AboutSectionsProps) {
           case 'peopleGridSection':
             return <PeopleGridSection key={sectionKey} section={section} editField={editField} />
           case 'pillarsSection':
-            return <PillarsSection key={sectionKey} section={section} editField={editField} />
+            return <CardGridSection key={sectionKey} section={section} editField={editField} />
           case 'pageCtaSection':
             return <PageCtaSection key={sectionKey} section={section} editField={editField} />
           default:

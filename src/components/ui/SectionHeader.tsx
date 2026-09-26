@@ -1,9 +1,14 @@
 import {Reveal} from '@/components/ui/Reveal'
 import {editTargetAttr} from '@/lib/editing'
-import type {SectionHeader as SectionHeaderData} from '@/sanity/types/home'
+import type {SharedSectionHeaderData} from '@/components/sections/types'
 
 type SectionHeaderProps = {
-  header?: SectionHeaderData | null
+  /**
+   * Structural rather than page-derived: this component is used by every
+   * card-grid section on every page, and each page's flat projection produces a
+   * slightly different generated type for the same `sectionHeader` object.
+   */
+  header?: SharedSectionHeaderData | null
   /**
    * `data-sanity` value for the heading, so clicking the heading opens the field
    * that owns it. The subheading is stega-encoded and needs no attribute.

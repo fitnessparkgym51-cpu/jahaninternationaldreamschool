@@ -293,7 +293,11 @@ const aboutSectionProjection = /* groq */ `sections[]{
   // pageHeroSection
   heading,
   subheading,
+  appearance,
+  eyebrowIcon,
+  eyebrow,
   crumbs[]${breadcrumbItemProjection},
+  buttons[]${buttonProjection},
 
   // principalSection
   header{ heading, subheading },
@@ -327,6 +331,192 @@ export const aboutPageQuery = defineQuery(`{
     "id": _id,
     internalTitle,
     ${aboutSectionProjection},
+    seo${seoProjection}
+  }
+}`)
+
+/**
+ * One flat projection covering every Admissions page section type, mirroring the
+ * other two section projections. Shared fields (heading, subheading, buttons,
+ * anchorId) appear once; each component reads only what it needs.
+ */
+const admissionsSectionProjection = /* groq */ `sections[]{
+  _key,
+  _type,
+  enabled,
+
+  // shared across several section types
+  anchorId,
+
+  // pageHeroSection
+  heading,
+  subheading,
+  appearance,
+  eyebrowIcon,
+  eyebrow,
+  crumbs[]${breadcrumbItemProjection},
+  buttons[]${buttonProjection},
+
+  // processStepsSection
+  header{ heading, subheading },
+  steps[]{ _key, title, description, isHighlighted },
+  
+  // featureImageSection
+  "image": image${imageWithAltProjection},
+  caption,
+  width,
+
+  // calloutSection
+  tone,
+  body,
+  buttonIcon,
+
+  // faqSection
+  items[]{ _key, question, answer, isOpenByDefault },
+
+  // pageCtaSection
+  badge,
+
+  "button": button${buttonProjection},
+  buttons[]${buttonProjection},
+  primaryButton${buttonProjection},
+  secondaryButton${buttonProjection}
+}`
+
+/**
+ * Everything the Admissions page needs in one round trip: site chrome, navigation
+ * and the page's own content.
+ */
+export const admissionsPageQuery = defineQuery(`{
+  "siteSettings": ${siteSettingsQuery},
+  "navigation": ${navigationQuery},
+  "admissions": *[_type == "admissionsPage"][0]{
+    "id": _id,
+    internalTitle,
+    ${admissionsSectionProjection},
+    seo${seoProjection}
+  }
+}`)
+
+/**
+ * A referenced `classLevel` document. `_id` is projected as `id` so a table row
+ * can be its own click-to-edit target.
+ */
+const classLevelProjection = /* groq */ `{
+  "id": _id,
+  name,
+  ageRange,
+  medium,
+  focus,
+  sortOrder,
+  isVisible
+}`
+
+const classTableColumnsProjection = /* groq */ `{ class, age, medium, focus }`
+
+/**
+ * A referenced `classRoutine` document.
+ *
+ * The class name is dereferenced through `classLevel` so it is never duplicated,
+ * and the day columns and rows come from the routine itself.
+ */
+const classRoutineProjection = /* groq */ `{
+  "id": _id,
+  "className": classLevel->name,
+  session,
+  days,
+  rows[]{ _key, time, label, kind, cells },
+  sortOrder,
+  isVisible
+}`
+
+/** One flat projection covering every Academics page section type. */
+const academicsSectionProjection = /* groq */ `sections[]{
+  _key,
+  _type,
+  enabled,
+  anchorId,
+
+  // pageHeroSection
+  heading,
+  subheading,
+  appearance,
+  showIconWatermark,
+  eyebrowIcon,
+  eyebrow,
+  crumbs[]${breadcrumbItemProjection},
+  buttons[]${buttonProjection},
+
+  // classTableSection
+  header{ heading, subheading },
+  columnLabels${classTableColumnsProjection},
+  "classes": classes[]->${classLevelProjection},
+  emptyStateText,
+
+  // pillarsSection (icon card grid)
+  pillars[]{ _key, icon, tone, title, description },
+
+  // pageCtaSection
+  badge,
+
+  primaryButton${buttonProjection},
+  secondaryButton${buttonProjection}
+}`
+
+/** Everything the Academics page needs in one round trip. */
+export const academicsPageQuery = defineQuery(`{
+  "siteSettings": ${siteSettingsQuery},
+  "navigation": ${navigationQuery},
+  "academics": *[_type == "academicsPage"][0]{
+    "id": _id,
+    internalTitle,
+    ${academicsSectionProjection},
+    seo${seoProjection}
+  }
+}`)
+
+/** One flat projection covering every Class routine page section type. */
+const classRoutinePageSectionProjection = /* groq */ `sections[]{
+  _key,
+  _type,
+  enabled,
+  anchorId,
+
+  // pageHeroSection
+  heading,
+  subheading,
+  appearance,
+  showIconWatermark,
+  eyebrowIcon,
+  eyebrow,
+  crumbs[]${breadcrumbItemProjection},
+  buttons[]${buttonProjection},
+
+  // routineSection
+  header{ heading, subheading },
+  "routines": routines[]->${classRoutineProjection},
+  printButtonLabel,
+  footnote,
+  emptyStateText,
+
+  // pillarsSection (icon card grid)
+  pillars[]{ _key, icon, tone, title, description },
+
+  // pageCtaSection
+  badge,
+
+  primaryButton${buttonProjection},
+  secondaryButton${buttonProjection}
+}`
+
+/** Everything the Class routine page needs in one round trip. */
+export const classRoutinePageQuery = defineQuery(`{
+  "siteSettings": ${siteSettingsQuery},
+  "navigation": ${navigationQuery},
+  "routine": *[_type == "classRoutinePage"][0]{
+    "id": _id,
+    internalTitle,
+    ${classRoutinePageSectionProjection},
     seo${seoProjection}
   }
 }`)

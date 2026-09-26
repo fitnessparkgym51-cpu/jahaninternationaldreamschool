@@ -1,9 +1,8 @@
 import {ButtonLink} from '@/components/ui/SmartLink'
 import {SectionHeader} from '@/components/ui/SectionHeader'
 import {Reveal} from '@/components/ui/Reveal'
-import {editTargetAttr} from '@/lib/editing'
+import {editTargetAttr, type EditField} from '@/lib/editing'
 import {PersonCard} from '@/components/about/PersonCard'
-import type {EditField} from '@/components/about/AboutSections'
 import type {PeopleGridSection as PeopleGridSectionData} from '@/sanity/types/home'
 
 type PeopleGridSectionProps = {

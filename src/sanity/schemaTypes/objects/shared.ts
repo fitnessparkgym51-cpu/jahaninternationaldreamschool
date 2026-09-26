@@ -78,6 +78,7 @@ export const buttonVariants = [
   {value: 'outline', title: 'Outline'},
   {value: 'light', title: 'Light / glass'},
   {value: 'invert', title: 'Outline on colour (fills white on hover)'},
+  {value: 'white', title: 'Solid white (dark text)'},
   {value: 'link', title: 'Text link (no border)'},
 ] as const
 

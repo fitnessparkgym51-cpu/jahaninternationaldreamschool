@@ -27,11 +27,37 @@ export const HOME_PAGE_TYPE = 'homePage'
 /** Document type of the About page singleton. */
 export const ABOUT_PAGE_TYPE = 'aboutPage'
 
+/** Document type of the Admissions page singleton. */
+export const ADMISSIONS_PAGE_TYPE = 'admissionsPage'
+
+/** Document type of the Academics page singleton. */
+export const ACADEMICS_PAGE_TYPE = 'academicsPage'
+
+/** Document type of the Class routine page singleton. */
+export const CLASS_ROUTINE_PAGE_TYPE = 'classRoutinePage'
+
 /** Document type of the reusable Person document (principal, teachers, staff). */
 export const PERSON_TYPE = 'person'
 
+/** Document type of the reusable Class document. */
+export const CLASS_LEVEL_TYPE = 'classLevel'
+
+/** Document type of the reusable Class routine document. */
+export const CLASS_ROUTINE_TYPE = 'classRoutine'
+
 /** A step in a GROQ field path: a field name, an array index or a `_key`. */
 export type PathStep = string | number | {_key: string}
+
+/**
+ * Builds the `data-sanity` value for a field inside one page section.
+ *
+ * Each page's section mapper closes over its own document id and type and returns
+ * this, so section components never need to know which page they are on and every
+ * page builds its edit paths the same way.
+ *
+ * Returns `undefined` for an empty path, which omits the attribute.
+ */
+export type EditField = (...rest: PathStep[]) => string | undefined
 
 export type EditTarget = {
   /** Document id. */
