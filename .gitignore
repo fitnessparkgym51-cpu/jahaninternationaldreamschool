@@ -45,3 +45,6 @@ next-env.d.ts
 
 # static HTML reference the site is rebuilt from — AI/dev reference only
 /JIDS/
+
+# local dev server output
+dev-server.log
