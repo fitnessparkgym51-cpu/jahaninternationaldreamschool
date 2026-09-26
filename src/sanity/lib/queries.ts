@@ -139,6 +139,7 @@ const statItemProjection = /* groq */ `{
 const featureCardProjection = /* groq */ `{
   _key,
   icon,
+  "iconImage": iconImage${imageWithAltProjection},
   badge,
   useAmberIcon,
   title,
@@ -521,33 +522,19 @@ export const classRoutinePageQuery = defineQuery(`{
   }
 }`)
 
-const newsPageFields = /* groq */ `
-  "id": _id,
-  hero{ enabled, heading, subheading, appearance, showIconWatermark, eyebrow, eyebrowIcon,
-    crumbs[]${breadcrumbItemProjection}, buttons[]${buttonProjection} },
-  readMoreLabel, backLabel, emptyText`
-
-/** News listing: page copy + every visible post, newest first. */
-export const newsListQuery = defineQuery(`{
+/** Everything the Branch page needs in one round trip. */
+export const branchPageQuery = defineQuery(`{
   "siteSettings": ${siteSettingsQuery},
   "navigation": ${navigationQuery},
-  "page": *[_type == "newsPage"][0]{ ${newsPageFields} },
-  "posts": *[_type == "newsPost" && isVisible != false && defined(slug.current)]
-    | order(coalesce(publishedAt, _createdAt) desc){
-    "id": _id, title, category, excerpt, "slug": slug.current,
-    "date": coalesce(publishedAt, _createdAt), "image": image${imageWithAltProjection}
-  }
-}`)
-
-/** One news post by slug. */
-export const newsPostQuery = defineQuery(`{
-  "siteSettings": ${siteSettingsQuery},
-  "navigation": ${navigationQuery},
-  "page": *[_type == "newsPage"][0]{ ${newsPageFields} },
-  "post": *[_type == "newsPost" && slug.current == $slug && isVisible != false][0]{
-    "id": _id, title, category, excerpt, "slug": slug.current,
-    "date": coalesce(publishedAt, _createdAt), "image": image${imageWithAltProjection},
-    body[]{ ..., _type == "imageWithAlt" => ${imageWithAltProjection} }
+  "branch": *[_type == "branchPage"][0]{
+    "id": _id,
+    hero{ eyebrow, heading, text, button${buttonProjection}, "image": image${imageWithAltProjection} },
+    features{ enabled, items[]{ _key, icon, title, text } },
+    about{ enabled, "image": image${imageWithAltProjection}, eyebrow, heading, paragraphs,
+      button${buttonProjection} },
+    programs{ enabled, eyebrow, heading, items[]{ _key, icon, title, text } },
+    teachers{ enabled, eyebrow, heading,
+      items[]{ _key, name, role, "photo": photo${imageWithAltProjection} } }
   }
 }`)
 

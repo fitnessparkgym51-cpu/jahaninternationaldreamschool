@@ -447,3 +447,13 @@ body {
     display: none;
   }
 }
+
+/* Google Translate (LanguageToggle): hide its injected banner and keep layout still. */
+.goog-te-banner-frame,
+body > .skiptranslate,
+#goog-gt-tt {
+  display: none !important;
+}
+body {
+  top: 0 !important;
+}

@@ -1,4 +1,5 @@
 import {Icon} from '@/components/ui/Icon'
+import {LanguageToggle} from './LanguageToggle'
 import {SmartLink} from '@/components/ui/SmartLink'
 import {editAttribute, editTargetAttr, type PathStep} from '@/lib/editing'
 import type {TopBar} from '@/sanity/types/home'
@@ -39,6 +40,7 @@ export function TopBar({documentId, topBar}: TopBarProps) {
         </div>
 
         <div className="flex items-center gap-3">
+          <LanguageToggle />
           {topBar.badge ? (
             <span
               className="hidden rounded-full border border-yellow-400/30 bg-yellow-400/20 px-2.5 py-0.5 text-xs font-semibold text-yellow-300 md:inline-block"

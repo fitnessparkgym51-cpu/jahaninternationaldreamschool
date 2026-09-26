@@ -172,6 +172,12 @@ export const featureCardType = defineType({
       options: {list: FEATURE_ICON_OPTIONS, layout: 'dropdown'},
     }),
     defineField({
+      name: 'iconImage',
+      title: 'Picture icon',
+      type: 'imageWithAlt',
+      description: 'Optional colourful picture. When set, it replaces the icon above.',
+    }),
+    defineField({
       name: 'badge',
       title: 'Corner badge',
       type: 'string',

@@ -15,6 +15,350 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type ContactSubmission = {
+  _id: string;
+  _type: "contactSubmission";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  whatsapp?: string;
+  childAge?: string;
+  classInterested?: string;
+  message?: string;
+  submittedAt?: string;
+};
+
+export type BranchPage = {
+  _id: string;
+  _type: "branchPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  internalTitle?: string;
+  hero?: {
+    eyebrow?: string;
+    heading?: string;
+    text?: string;
+    button?: Button;
+    image?: ImageWithAlt;
+  };
+  features?: {
+    enabled?: boolean;
+    items?: Array<{
+      icon?:
+        | "book"
+        | "book-open"
+        | "monitor-play"
+        | "shield-check"
+        | "sparkle"
+        | "smile"
+        | "users"
+        | "user"
+        | "graduation-cap"
+        | "award"
+        | "trophy"
+        | "heart"
+        | "palette"
+        | "camera"
+        | "lightbulb"
+        | "headset"
+        | "file-text"
+        | "mosque"
+        | "ball"
+        | "clock"
+        | "globe"
+        | "message-circle"
+        | "calendar"
+        | "alert-triangle"
+        | "whatsapp"
+        | "facebook"
+        | "phone"
+        | "mobile"
+        | "mail"
+        | "map-pin"
+        | "pin"
+        | "play"
+        | "external-link"
+        | "chevron-down"
+        | "chevron-left"
+        | "chevron-right"
+        | "star"
+        | "pencil";
+      title?: string;
+      text?: string;
+      _type: "branchIconItem";
+      _key: string;
+    }>;
+  };
+  about?: {
+    enabled?: boolean;
+    image?: ImageWithAlt;
+    eyebrow?: string;
+    heading?: string;
+    paragraphs?: Array<string>;
+    button?: Button;
+  };
+  programs?: {
+    enabled?: boolean;
+    eyebrow?: string;
+    heading?: string;
+    items?: Array<{
+      icon?:
+        | "book"
+        | "book-open"
+        | "monitor-play"
+        | "shield-check"
+        | "sparkle"
+        | "smile"
+        | "users"
+        | "user"
+        | "graduation-cap"
+        | "award"
+        | "trophy"
+        | "heart"
+        | "palette"
+        | "camera"
+        | "lightbulb"
+        | "headset"
+        | "file-text"
+        | "mosque"
+        | "ball"
+        | "clock"
+        | "globe"
+        | "message-circle"
+        | "calendar"
+        | "alert-triangle"
+        | "whatsapp"
+        | "facebook"
+        | "phone"
+        | "mobile"
+        | "mail"
+        | "map-pin"
+        | "pin"
+        | "play"
+        | "external-link"
+        | "chevron-down"
+        | "chevron-left"
+        | "chevron-right"
+        | "star"
+        | "pencil";
+      title?: string;
+      text?: string;
+      _type: "branchIconItem";
+      _key: string;
+    }>;
+  };
+  teachers?: {
+    enabled?: boolean;
+    eyebrow?: string;
+    heading?: string;
+    items?: Array<{
+      name?: string;
+      role?: string;
+      photo?: ImageWithAlt;
+      _type: "branchTeacher";
+      _key: string;
+    }>;
+  };
+  seo?: Seo;
+};
+
+export type Seo = {
+  _type: "seo";
+  metaTitle?: string;
+  metaDescription?: string;
+  shareImage?: ImageWithAlt;
+  canonicalUrl?: string;
+  noIndex?: boolean;
+};
+
+export type SanityImageAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
+export type ImageWithAlt = {
+  _type: "imageWithAlt";
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  alt?: string;
+};
+
+export type Button = {
+  _type: "button";
+  label?: string;
+  url?: string;
+  newTab?: boolean;
+  variant?:
+    "primary" | "green" | "outline" | "light" | "invert" | "white" | "link";
+};
+
+export type ContactPage = {
+  _id: string;
+  _type: "contactPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  internalTitle?: string;
+  hero?: PageHeroSection;
+  infoCard?: {
+    heading?: string;
+    items?: Array<{
+      icon?:
+        | "book"
+        | "book-open"
+        | "monitor-play"
+        | "shield-check"
+        | "sparkle"
+        | "smile"
+        | "users"
+        | "user"
+        | "graduation-cap"
+        | "award"
+        | "trophy"
+        | "heart"
+        | "palette"
+        | "camera"
+        | "lightbulb"
+        | "headset"
+        | "file-text"
+        | "mosque"
+        | "ball"
+        | "clock"
+        | "globe"
+        | "message-circle"
+        | "calendar"
+        | "alert-triangle"
+        | "whatsapp"
+        | "facebook"
+        | "phone"
+        | "mobile"
+        | "mail"
+        | "map-pin"
+        | "pin"
+        | "play"
+        | "external-link"
+        | "chevron-down"
+        | "chevron-left"
+        | "chevron-right"
+        | "star"
+        | "pencil";
+      label?: string;
+      value?: string;
+      note?: string;
+      _type: "contactDetail";
+      _key: string;
+    }>;
+    button?: Button;
+  };
+  mapCard?: {
+    title?: string;
+    address?: string;
+    rating?: string;
+    reviewCount?: string;
+    pinLabel?: string;
+    landmarks?: Array<string>;
+    attribution?: string;
+    mapUrl?: string;
+    button?: Button;
+  };
+  form?: {
+    heading?: string;
+    intro?: string;
+    nameLabel?: string;
+    namePlaceholder?: string;
+    whatsappLabel?: string;
+    whatsappPrefix?: string;
+    whatsappPlaceholder?: string;
+    ageLabel?: string;
+    agePlaceholder?: string;
+    ageOptions?: Array<string>;
+    classLabel?: string;
+    classPlaceholder?: string;
+    classOptions?: Array<string>;
+    messageLabel?: string;
+    messagePlaceholder?: string;
+    robotLabel?: string;
+    submitLabel?: string;
+    successMessage?: string;
+  };
+  review?: {
+    enabled?: boolean;
+    rating?: string;
+    headline?: string;
+    text?: string;
+    button?: Button;
+  };
+  seo?: Seo;
+};
+
+export type PageHeroSection = {
+  _type: "pageHeroSection";
+  enabled?: boolean;
+  heading?: string;
+  subheading?: string;
+  eyebrowIcon?:
+    | "book"
+    | "book-open"
+    | "monitor-play"
+    | "shield-check"
+    | "sparkle"
+    | "smile"
+    | "users"
+    | "user"
+    | "graduation-cap"
+    | "award"
+    | "trophy"
+    | "heart"
+    | "palette"
+    | "camera"
+    | "lightbulb"
+    | "headset"
+    | "file-text"
+    | "mosque"
+    | "ball"
+    | "clock"
+    | "globe"
+    | "message-circle"
+    | "calendar"
+    | "alert-triangle"
+    | "whatsapp"
+    | "facebook"
+    | "phone"
+    | "mobile"
+    | "mail"
+    | "map-pin"
+    | "pin"
+    | "play"
+    | "external-link"
+    | "chevron-down"
+    | "chevron-left"
+    | "chevron-right"
+    | "star"
+    | "pencil";
+  eyebrow?: string;
+  appearance?: "solid" | "pattern";
+  showIconWatermark?: boolean;
+  crumbs?: Array<
+    {
+      _key: string;
+    } & BreadcrumbItem
+  >;
+  buttons?: Array<
+    {
+      _key: string;
+    } & Button
+  >;
+};
+
 export type Complaint = {
   _id: string;
   _type: "complaint";
@@ -36,6 +380,32 @@ export type NewsPost = {
   category?: string;
   excerpt?: string;
   image?: ImageWithAlt;
+  slug?: Slug;
+  publishedAt?: string;
+  body?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?:
+          "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | ({
+        _key: string;
+      } & ImageWithAlt)
+  >;
   link?: Link;
   isVisible?: boolean;
 };
@@ -47,23 +417,10 @@ export type Link = {
   newTab?: boolean;
 };
 
-export type SanityImageAssetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-};
-
-export type ImageWithAlt = {
-  _type: "imageWithAlt";
-  image?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-  alt?: string;
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
 };
 
 export type StudentSpotlight = {
@@ -136,15 +493,6 @@ export type SiteSettings = {
   footer?: Footer;
   floatingContact?: FloatingContact;
   seo?: Seo;
-};
-
-export type Seo = {
-  _type: "seo";
-  metaTitle?: string;
-  metaDescription?: string;
-  shareImage?: ImageWithAlt;
-  canonicalUrl?: string;
-  noIndex?: boolean;
 };
 
 export type FloatingContact = {
@@ -508,15 +856,6 @@ export type CalloutSection = {
     | "pencil";
 };
 
-export type Button = {
-  _type: "button";
-  label?: string;
-  url?: string;
-  newTab?: boolean;
-  variant?:
-    "primary" | "green" | "outline" | "light" | "invert" | "white" | "link";
-};
-
 export type FeatureImageSection = {
   _type: "featureImageSection";
   enabled?: boolean;
@@ -660,65 +999,6 @@ export type Person = {
   isVisible?: boolean;
 };
 
-export type PageHeroSection = {
-  _type: "pageHeroSection";
-  enabled?: boolean;
-  heading?: string;
-  subheading?: string;
-  eyebrowIcon?:
-    | "book"
-    | "book-open"
-    | "monitor-play"
-    | "shield-check"
-    | "sparkle"
-    | "smile"
-    | "users"
-    | "user"
-    | "graduation-cap"
-    | "award"
-    | "trophy"
-    | "heart"
-    | "palette"
-    | "camera"
-    | "lightbulb"
-    | "headset"
-    | "file-text"
-    | "mosque"
-    | "ball"
-    | "clock"
-    | "globe"
-    | "message-circle"
-    | "calendar"
-    | "alert-triangle"
-    | "whatsapp"
-    | "facebook"
-    | "phone"
-    | "mobile"
-    | "mail"
-    | "map-pin"
-    | "pin"
-    | "play"
-    | "external-link"
-    | "chevron-down"
-    | "chevron-left"
-    | "chevron-right"
-    | "star"
-    | "pencil";
-  eyebrow?: string;
-  appearance?: "solid" | "pattern";
-  showIconWatermark?: boolean;
-  crumbs?: Array<
-    {
-      _key: string;
-    } & BreadcrumbItem
-  >;
-  buttons?: Array<
-    {
-      _key: string;
-    } & Button
-  >;
-};
-
 export type BreadcrumbItem = {
   _type: "breadcrumbItem";
   label?: string;
@@ -821,6 +1101,7 @@ export type FeatureCard = {
     | "graduation-cap"
     | "lightbulb"
     | "globe";
+  iconImage?: ImageWithAlt;
   badge?: string;
   useAmberIcon?: boolean;
   title?: string;
@@ -1194,24 +1475,24 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
 export type AllSanitySchemaTypes =
+  | ContactSubmission
+  | BranchPage
+  | Seo
+  | SanityImageAssetReference
+  | ImageWithAlt
+  | Button
+  | ContactPage
+  | PageHeroSection
   | Complaint
   | NewsPost
   | Link
-  | SanityImageAssetReference
-  | ImageWithAlt
+  | Slug
   | StudentSpotlight
   | Navigation
   | Header
   | TopBar
   | SiteSettings
-  | Seo
   | FloatingContact
   | Footer
   | ContactBlock
@@ -1233,7 +1514,6 @@ export type AllSanitySchemaTypes =
   | FaqSection
   | FaqItem
   | CalloutSection
-  | Button
   | FeatureImageSection
   | ProcessStepsSection
   | ProcessStep
@@ -1244,7 +1524,6 @@ export type AllSanitySchemaTypes =
   | PeopleGridSection
   | PrincipalSection
   | Person
-  | PageHeroSection
   | BreadcrumbItem
   | ReviewBarSection
   | NewsPostReference
@@ -1275,8 +1554,7 @@ export type AllSanitySchemaTypes =
   | SanityFileAsset
   | SanityAssetSourceData
   | SanityImageAsset
-  | Geopoint
-  | Slug;
+  | Geopoint;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: siteSettingsQuery
@@ -1673,7 +1951,7 @@ export type PageSeoQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: homePageQuery
-// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "home": *[_type == "homePage"][0]{    "id": _id,    internalTitle,    sections[]{  _key,  _type,  enabled,  // heroSection  eyebrow,  heading,  description,  highlightBadge,  autoplaySeconds,  primaryButton{  _key,  label,  url,  newTab,  variant},  secondaryButton{  _key,  label,  url,  newTab,  variant},  "slides": slides[isVisible != false]{  _key,  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  isVisible},  // statsBarSection  items[]{  _key,  value,  label,  isSmaller},  // featuresSection  header{ heading, subheading },  cards[isVisible != false]{  _key,  icon,  badge,  useAmberIcon,  title,  description,  isVisible},  // aboutStorySection  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  body,  // link / badge fields shared by several sections  "link": link{  _key,  label,  url,  newTab},  metaText,  badge,  anchorId,  // studentSpotlightSection  "students": students[]->{  "id": _id,  name,  classLabel,  "photo": photo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  cohortLabel,  schoolName,  note,  isVisible},  // newsSection  "posts": posts[]->{  "id": _id,  title,  category,  excerpt,  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  link{  _key,  label,  url,  newTab},  isVisible},  // reviewBarSection  brandLabel,  score,  summary,  stars,  "cta": cta{  _key,  label,  url,  newTab,  variant}},    seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}  }}
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "home": *[_type == "homePage"][0]{    "id": _id,    internalTitle,    sections[]{  _key,  _type,  enabled,  // heroSection  eyebrow,  heading,  description,  highlightBadge,  autoplaySeconds,  primaryButton{  _key,  label,  url,  newTab,  variant},  secondaryButton{  _key,  label,  url,  newTab,  variant},  "slides": slides[isVisible != false]{  _key,  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  isVisible},  // statsBarSection  items[]{  _key,  value,  label,  isSmaller},  // featuresSection  header{ heading, subheading },  cards[isVisible != false]{  _key,  icon,  "iconImage": iconImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  badge,  useAmberIcon,  title,  description,  isVisible},  // aboutStorySection  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  body,  // link / badge fields shared by several sections  "link": link{  _key,  label,  url,  newTab},  metaText,  badge,  anchorId,  // studentSpotlightSection  "students": students[]->{  "id": _id,  name,  classLabel,  "photo": photo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  cohortLabel,  schoolName,  note,  isVisible},  // newsSection  "posts": posts[]->{  "id": _id,  title,  category,  excerpt,  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  link{  _key,  label,  url,  newTab},  isVisible},  // reviewBarSection  brandLabel,  score,  summary,  stars,  "cta": cta{  _key,  label,  url,  newTab,  variant}},    seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}  }}
 export type HomePageQueryResult = {
   siteSettings: {
     id: string;
@@ -2137,6 +2415,12 @@ export type HomePageQueryResult = {
               | "sparkle"
               | "users"
               | null;
+            iconImage: {
+              asset: SanityImageAssetReference | null;
+              crop: SanityImageCrop | null;
+              hotspot: SanityImageHotspot | null;
+              alt: string | null;
+            } | null;
             badge: string | null;
             useAmberIcon: boolean | null;
             title: string | null;
@@ -4938,6 +5222,1045 @@ export type ClassRoutinePageQueryResult = {
   } | null;
 };
 
+// Source: src/sanity/lib/queries.ts
+// Variable: branchPageQuery
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "branch": *[_type == "branchPage"][0]{    "id": _id,    hero{ eyebrow, heading, text, button{  _key,  label,  url,  newTab,  variant}, "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt} },    features{ enabled, items[]{ _key, icon, title, text } },    about{ enabled, "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt}, eyebrow, heading, paragraphs,      button{  _key,  label,  url,  newTab,  variant} },    programs{ enabled, eyebrow, heading, items[]{ _key, icon, title, text } },    teachers{ enabled, eyebrow, heading,      items[]{ _key, name, role, "photo": photo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt} } }  }}
+export type BranchPageQueryResult = {
+  siteSettings: {
+    id: string;
+    brand: {
+      logo: {
+        asset: SanityImageAssetReference | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        alt: string | null;
+      } | null;
+      name: string | null;
+      acronym: string | null;
+      establishedLabel: string | null;
+    } | null;
+    contact: {
+      address: string | null;
+      phoneLabel: string | null;
+      phoneHref: string | null;
+      mobileLabel: string | null;
+      mobileHref: string | null;
+      emailLabel: string | null;
+      emailHref: string | null;
+    } | null;
+    socialLinks: Array<{
+      _key: string;
+      icon:
+        | "alert-triangle"
+        | "award"
+        | "ball"
+        | "book-open"
+        | "book"
+        | "calendar"
+        | "camera"
+        | "chevron-down"
+        | "chevron-left"
+        | "chevron-right"
+        | "clock"
+        | "external-link"
+        | "facebook"
+        | "file-text"
+        | "globe"
+        | "graduation-cap"
+        | "headset"
+        | "heart"
+        | "lightbulb"
+        | "mail"
+        | "map-pin"
+        | "message-circle"
+        | "mobile"
+        | "monitor-play"
+        | "mosque"
+        | "palette"
+        | "pencil"
+        | "phone"
+        | "pin"
+        | "play"
+        | "shield-check"
+        | "smile"
+        | "sparkle"
+        | "star"
+        | "trophy"
+        | "user"
+        | "users"
+        | "whatsapp"
+        | null;
+      label: string | null;
+      url: string | null;
+    }> | null;
+    footer: {
+      enabled: boolean | null;
+      tagline: string | null;
+      contactItems: Array<{
+        _key: string;
+        icon:
+          | "alert-triangle"
+          | "award"
+          | "ball"
+          | "book-open"
+          | "book"
+          | "calendar"
+          | "camera"
+          | "chevron-down"
+          | "chevron-left"
+          | "chevron-right"
+          | "clock"
+          | "external-link"
+          | "facebook"
+          | "file-text"
+          | "globe"
+          | "graduation-cap"
+          | "headset"
+          | "heart"
+          | "lightbulb"
+          | "mail"
+          | "map-pin"
+          | "message-circle"
+          | "mobile"
+          | "monitor-play"
+          | "mosque"
+          | "palette"
+          | "pencil"
+          | "phone"
+          | "pin"
+          | "play"
+          | "shield-check"
+          | "smile"
+          | "sparkle"
+          | "star"
+          | "trophy"
+          | "user"
+          | "users"
+          | "whatsapp"
+          | null;
+        label: string | null;
+        href: string | null;
+      }> | null;
+      quickLinksTitle: string | null;
+      quickLinks: Array<{
+        _key: string;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+      }> | null;
+      socialTitle: string | null;
+      socialCard: {
+        bannerLabel: string | null;
+        image: {
+          asset: SanityImageAssetReference | null;
+          crop: SanityImageCrop | null;
+          hotspot: SanityImageHotspot | null;
+          alt: string | null;
+        } | null;
+        title: string | null;
+        subtitle: string | null;
+        description: string | null;
+        url: string | null;
+      } | null;
+      mapTitle: string | null;
+      map: {
+        buttonLabel: string | null;
+        url: string | null;
+        pinLabel: string | null;
+        areaLabel: string | null;
+      } | null;
+      copyrightText: string | null;
+      legalLinks: Array<{
+        _key: string;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+      }> | null;
+    } | null;
+    floatingContact: {
+      enabled: boolean | null;
+      bubbleLabel: string | null;
+      icon: "whatsapp" | null;
+      url: string | null;
+      ariaLabel: string | null;
+    } | null;
+    seo: {
+      metaTitle: string | null;
+      metaDescription: string | null;
+      shareImage: {
+        asset: SanityImageAssetReference | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        alt: string | null;
+      } | null;
+      canonicalUrl: string | null;
+      noIndex: boolean | null;
+    } | null;
+  } | null;
+  navigation: {
+    id: string;
+    topBar: {
+      enabled: boolean | null;
+      contactLinks: Array<{
+        _key: string;
+        icon:
+          | "alert-triangle"
+          | "award"
+          | "ball"
+          | "book-open"
+          | "book"
+          | "calendar"
+          | "camera"
+          | "chevron-down"
+          | "chevron-left"
+          | "chevron-right"
+          | "clock"
+          | "external-link"
+          | "facebook"
+          | "file-text"
+          | "globe"
+          | "graduation-cap"
+          | "headset"
+          | "heart"
+          | "lightbulb"
+          | "mail"
+          | "map-pin"
+          | "message-circle"
+          | "mobile"
+          | "monitor-play"
+          | "mosque"
+          | "palette"
+          | "pencil"
+          | "phone"
+          | "pin"
+          | "play"
+          | "shield-check"
+          | "smile"
+          | "sparkle"
+          | "star"
+          | "trophy"
+          | "user"
+          | "users"
+          | "whatsapp"
+          | null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+      }> | null;
+      badge: string | null;
+      notice: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+    } | null;
+    header: {
+      enabled: boolean | null;
+      homeUrl: string | null;
+      brandSubline: string | null;
+      items: Array<{
+        _key: string;
+        label: string | null;
+        url: string | null;
+        isCurrentPage: boolean | null;
+        showChevron: boolean | null;
+        highlight: boolean | null;
+        children: Array<{
+          _key: string;
+          icon:
+            | "alert-triangle"
+            | "award"
+            | "ball"
+            | "book-open"
+            | "book"
+            | "calendar"
+            | "camera"
+            | "chevron-down"
+            | "chevron-left"
+            | "chevron-right"
+            | "clock"
+            | "external-link"
+            | "facebook"
+            | "file-text"
+            | "globe"
+            | "graduation-cap"
+            | "headset"
+            | "heart"
+            | "lightbulb"
+            | "mail"
+            | "map-pin"
+            | "message-circle"
+            | "mobile"
+            | "monitor-play"
+            | "mosque"
+            | "palette"
+            | "pencil"
+            | "phone"
+            | "pin"
+            | "play"
+            | "shield-check"
+            | "smile"
+            | "sparkle"
+            | "star"
+            | "trophy"
+            | "user"
+            | "users"
+            | "whatsapp"
+            | null;
+          label: string | null;
+          url: string | null;
+        }> | null;
+      }> | null;
+      cta: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+      mobileMenuTitle: string | null;
+      mobileMenuCta: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+    } | null;
+  } | null;
+  branch: {
+    id: string;
+    hero: {
+      eyebrow: string | null;
+      heading: string | null;
+      text: string | null;
+      button: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+      image: {
+        asset: SanityImageAssetReference | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        alt: string | null;
+      } | null;
+    } | null;
+    features: {
+      enabled: boolean | null;
+      items: Array<{
+        _key: string;
+        icon:
+          | "alert-triangle"
+          | "award"
+          | "ball"
+          | "book-open"
+          | "book"
+          | "calendar"
+          | "camera"
+          | "chevron-down"
+          | "chevron-left"
+          | "chevron-right"
+          | "clock"
+          | "external-link"
+          | "facebook"
+          | "file-text"
+          | "globe"
+          | "graduation-cap"
+          | "headset"
+          | "heart"
+          | "lightbulb"
+          | "mail"
+          | "map-pin"
+          | "message-circle"
+          | "mobile"
+          | "monitor-play"
+          | "mosque"
+          | "palette"
+          | "pencil"
+          | "phone"
+          | "pin"
+          | "play"
+          | "shield-check"
+          | "smile"
+          | "sparkle"
+          | "star"
+          | "trophy"
+          | "user"
+          | "users"
+          | "whatsapp"
+          | null;
+        title: string | null;
+        text: string | null;
+      }> | null;
+    } | null;
+    about: {
+      enabled: boolean | null;
+      image: {
+        asset: SanityImageAssetReference | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        alt: string | null;
+      } | null;
+      eyebrow: string | null;
+      heading: string | null;
+      paragraphs: Array<string> | null;
+      button: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+    } | null;
+    programs: {
+      enabled: boolean | null;
+      eyebrow: string | null;
+      heading: string | null;
+      items: Array<{
+        _key: string;
+        icon:
+          | "alert-triangle"
+          | "award"
+          | "ball"
+          | "book-open"
+          | "book"
+          | "calendar"
+          | "camera"
+          | "chevron-down"
+          | "chevron-left"
+          | "chevron-right"
+          | "clock"
+          | "external-link"
+          | "facebook"
+          | "file-text"
+          | "globe"
+          | "graduation-cap"
+          | "headset"
+          | "heart"
+          | "lightbulb"
+          | "mail"
+          | "map-pin"
+          | "message-circle"
+          | "mobile"
+          | "monitor-play"
+          | "mosque"
+          | "palette"
+          | "pencil"
+          | "phone"
+          | "pin"
+          | "play"
+          | "shield-check"
+          | "smile"
+          | "sparkle"
+          | "star"
+          | "trophy"
+          | "user"
+          | "users"
+          | "whatsapp"
+          | null;
+        title: string | null;
+        text: string | null;
+      }> | null;
+    } | null;
+    teachers: {
+      enabled: boolean | null;
+      eyebrow: string | null;
+      heading: string | null;
+      items: Array<{
+        _key: string;
+        name: string | null;
+        role: string | null;
+        photo: {
+          asset: SanityImageAssetReference | null;
+          crop: SanityImageCrop | null;
+          hotspot: SanityImageHotspot | null;
+          alt: string | null;
+        } | null;
+      }> | null;
+    } | null;
+  } | null;
+};
+
+// Source: src/sanity/lib/queries.ts
+// Variable: contactPageQuery
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "contact": *[_type == "contactPage"][0]{    "id": _id,    hero{ enabled, heading, subheading, appearance, showIconWatermark, eyebrow, eyebrowIcon,      crumbs[]{  _key,  label,  url}, buttons[]{  _key,  label,  url,  newTab,  variant} },    infoCard{ heading, items[]{ _key, icon, label, value, note }, button{  _key,  label,  url,  newTab,  variant} },    mapCard{ title, address, rating, reviewCount, pinLabel, landmarks, attribution, mapUrl,      button{  _key,  label,  url,  newTab,  variant} },    form,    review{ enabled, rating, headline, text, button{  _key,  label,  url,  newTab,  variant} }  }}
+export type ContactPageQueryResult = {
+  siteSettings: {
+    id: string;
+    brand: {
+      logo: {
+        asset: SanityImageAssetReference | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        alt: string | null;
+      } | null;
+      name: string | null;
+      acronym: string | null;
+      establishedLabel: string | null;
+    } | null;
+    contact: {
+      address: string | null;
+      phoneLabel: string | null;
+      phoneHref: string | null;
+      mobileLabel: string | null;
+      mobileHref: string | null;
+      emailLabel: string | null;
+      emailHref: string | null;
+    } | null;
+    socialLinks: Array<{
+      _key: string;
+      icon:
+        | "alert-triangle"
+        | "award"
+        | "ball"
+        | "book-open"
+        | "book"
+        | "calendar"
+        | "camera"
+        | "chevron-down"
+        | "chevron-left"
+        | "chevron-right"
+        | "clock"
+        | "external-link"
+        | "facebook"
+        | "file-text"
+        | "globe"
+        | "graduation-cap"
+        | "headset"
+        | "heart"
+        | "lightbulb"
+        | "mail"
+        | "map-pin"
+        | "message-circle"
+        | "mobile"
+        | "monitor-play"
+        | "mosque"
+        | "palette"
+        | "pencil"
+        | "phone"
+        | "pin"
+        | "play"
+        | "shield-check"
+        | "smile"
+        | "sparkle"
+        | "star"
+        | "trophy"
+        | "user"
+        | "users"
+        | "whatsapp"
+        | null;
+      label: string | null;
+      url: string | null;
+    }> | null;
+    footer: {
+      enabled: boolean | null;
+      tagline: string | null;
+      contactItems: Array<{
+        _key: string;
+        icon:
+          | "alert-triangle"
+          | "award"
+          | "ball"
+          | "book-open"
+          | "book"
+          | "calendar"
+          | "camera"
+          | "chevron-down"
+          | "chevron-left"
+          | "chevron-right"
+          | "clock"
+          | "external-link"
+          | "facebook"
+          | "file-text"
+          | "globe"
+          | "graduation-cap"
+          | "headset"
+          | "heart"
+          | "lightbulb"
+          | "mail"
+          | "map-pin"
+          | "message-circle"
+          | "mobile"
+          | "monitor-play"
+          | "mosque"
+          | "palette"
+          | "pencil"
+          | "phone"
+          | "pin"
+          | "play"
+          | "shield-check"
+          | "smile"
+          | "sparkle"
+          | "star"
+          | "trophy"
+          | "user"
+          | "users"
+          | "whatsapp"
+          | null;
+        label: string | null;
+        href: string | null;
+      }> | null;
+      quickLinksTitle: string | null;
+      quickLinks: Array<{
+        _key: string;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+      }> | null;
+      socialTitle: string | null;
+      socialCard: {
+        bannerLabel: string | null;
+        image: {
+          asset: SanityImageAssetReference | null;
+          crop: SanityImageCrop | null;
+          hotspot: SanityImageHotspot | null;
+          alt: string | null;
+        } | null;
+        title: string | null;
+        subtitle: string | null;
+        description: string | null;
+        url: string | null;
+      } | null;
+      mapTitle: string | null;
+      map: {
+        buttonLabel: string | null;
+        url: string | null;
+        pinLabel: string | null;
+        areaLabel: string | null;
+      } | null;
+      copyrightText: string | null;
+      legalLinks: Array<{
+        _key: string;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+      }> | null;
+    } | null;
+    floatingContact: {
+      enabled: boolean | null;
+      bubbleLabel: string | null;
+      icon: "whatsapp" | null;
+      url: string | null;
+      ariaLabel: string | null;
+    } | null;
+    seo: {
+      metaTitle: string | null;
+      metaDescription: string | null;
+      shareImage: {
+        asset: SanityImageAssetReference | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        alt: string | null;
+      } | null;
+      canonicalUrl: string | null;
+      noIndex: boolean | null;
+    } | null;
+  } | null;
+  navigation: {
+    id: string;
+    topBar: {
+      enabled: boolean | null;
+      contactLinks: Array<{
+        _key: string;
+        icon:
+          | "alert-triangle"
+          | "award"
+          | "ball"
+          | "book-open"
+          | "book"
+          | "calendar"
+          | "camera"
+          | "chevron-down"
+          | "chevron-left"
+          | "chevron-right"
+          | "clock"
+          | "external-link"
+          | "facebook"
+          | "file-text"
+          | "globe"
+          | "graduation-cap"
+          | "headset"
+          | "heart"
+          | "lightbulb"
+          | "mail"
+          | "map-pin"
+          | "message-circle"
+          | "mobile"
+          | "monitor-play"
+          | "mosque"
+          | "palette"
+          | "pencil"
+          | "phone"
+          | "pin"
+          | "play"
+          | "shield-check"
+          | "smile"
+          | "sparkle"
+          | "star"
+          | "trophy"
+          | "user"
+          | "users"
+          | "whatsapp"
+          | null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+      }> | null;
+      badge: string | null;
+      notice: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+    } | null;
+    header: {
+      enabled: boolean | null;
+      homeUrl: string | null;
+      brandSubline: string | null;
+      items: Array<{
+        _key: string;
+        label: string | null;
+        url: string | null;
+        isCurrentPage: boolean | null;
+        showChevron: boolean | null;
+        highlight: boolean | null;
+        children: Array<{
+          _key: string;
+          icon:
+            | "alert-triangle"
+            | "award"
+            | "ball"
+            | "book-open"
+            | "book"
+            | "calendar"
+            | "camera"
+            | "chevron-down"
+            | "chevron-left"
+            | "chevron-right"
+            | "clock"
+            | "external-link"
+            | "facebook"
+            | "file-text"
+            | "globe"
+            | "graduation-cap"
+            | "headset"
+            | "heart"
+            | "lightbulb"
+            | "mail"
+            | "map-pin"
+            | "message-circle"
+            | "mobile"
+            | "monitor-play"
+            | "mosque"
+            | "palette"
+            | "pencil"
+            | "phone"
+            | "pin"
+            | "play"
+            | "shield-check"
+            | "smile"
+            | "sparkle"
+            | "star"
+            | "trophy"
+            | "user"
+            | "users"
+            | "whatsapp"
+            | null;
+          label: string | null;
+          url: string | null;
+        }> | null;
+      }> | null;
+      cta: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+      mobileMenuTitle: string | null;
+      mobileMenuCta: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+    } | null;
+  } | null;
+  contact: {
+    id: string;
+    hero: {
+      enabled: boolean | null;
+      heading: string | null;
+      subheading: string | null;
+      appearance: "pattern" | "solid" | null;
+      showIconWatermark: boolean | null;
+      eyebrow: string | null;
+      eyebrowIcon:
+        | "alert-triangle"
+        | "award"
+        | "ball"
+        | "book-open"
+        | "book"
+        | "calendar"
+        | "camera"
+        | "chevron-down"
+        | "chevron-left"
+        | "chevron-right"
+        | "clock"
+        | "external-link"
+        | "facebook"
+        | "file-text"
+        | "globe"
+        | "graduation-cap"
+        | "headset"
+        | "heart"
+        | "lightbulb"
+        | "mail"
+        | "map-pin"
+        | "message-circle"
+        | "mobile"
+        | "monitor-play"
+        | "mosque"
+        | "palette"
+        | "pencil"
+        | "phone"
+        | "pin"
+        | "play"
+        | "shield-check"
+        | "smile"
+        | "sparkle"
+        | "star"
+        | "trophy"
+        | "user"
+        | "users"
+        | "whatsapp"
+        | null;
+      crumbs: Array<{
+        _key: string;
+        label: string | null;
+        url: string | null;
+      }> | null;
+      buttons: Array<{
+        _key: string;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      }> | null;
+    } | null;
+    infoCard: {
+      heading: string | null;
+      items: Array<{
+        _key: string;
+        icon:
+          | "alert-triangle"
+          | "award"
+          | "ball"
+          | "book-open"
+          | "book"
+          | "calendar"
+          | "camera"
+          | "chevron-down"
+          | "chevron-left"
+          | "chevron-right"
+          | "clock"
+          | "external-link"
+          | "facebook"
+          | "file-text"
+          | "globe"
+          | "graduation-cap"
+          | "headset"
+          | "heart"
+          | "lightbulb"
+          | "mail"
+          | "map-pin"
+          | "message-circle"
+          | "mobile"
+          | "monitor-play"
+          | "mosque"
+          | "palette"
+          | "pencil"
+          | "phone"
+          | "pin"
+          | "play"
+          | "shield-check"
+          | "smile"
+          | "sparkle"
+          | "star"
+          | "trophy"
+          | "user"
+          | "users"
+          | "whatsapp"
+          | null;
+        label: string | null;
+        value: string | null;
+        note: string | null;
+      }> | null;
+      button: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+    } | null;
+    mapCard: {
+      title: string | null;
+      address: string | null;
+      rating: string | null;
+      reviewCount: string | null;
+      pinLabel: string | null;
+      landmarks: Array<string> | null;
+      attribution: string | null;
+      mapUrl: string | null;
+      button: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+    } | null;
+    form: {
+      heading?: string;
+      intro?: string;
+      nameLabel?: string;
+      namePlaceholder?: string;
+      whatsappLabel?: string;
+      whatsappPrefix?: string;
+      whatsappPlaceholder?: string;
+      ageLabel?: string;
+      agePlaceholder?: string;
+      ageOptions?: Array<string>;
+      classLabel?: string;
+      classPlaceholder?: string;
+      classOptions?: Array<string>;
+      messageLabel?: string;
+      messagePlaceholder?: string;
+      robotLabel?: string;
+      submitLabel?: string;
+      successMessage?: string;
+    } | null;
+    review: {
+      enabled: boolean | null;
+      rating: string | null;
+      headline: string | null;
+      text: string | null;
+      button: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+    } | null;
+  } | null;
+};
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -4946,10 +6269,12 @@ declare module "@sanity/client" {
     '*[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n}': NavigationQueryResult;
     '*[_type == "siteSettings"][0]{seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}}': DefaultSeoQueryResult;
     '{\n  "page": *[_type == $type][0]{seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}},\n  "site": *[_type == "siteSettings"][0]{seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}}\n}': PageSeoQueryResult;
-    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "home": *[_type == "homePage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n\n  // heroSection\n  eyebrow,\n  heading,\n  description,\n  highlightBadge,\n  autoplaySeconds,\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  "slides": slides[isVisible != false]{\n  _key,\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  isVisible\n},\n\n  // statsBarSection\n  items[]{\n  _key,\n  value,\n  label,\n  isSmaller\n},\n\n  // featuresSection\n  header{ heading, subheading },\n  cards[isVisible != false]{\n  _key,\n  icon,\n  badge,\n  useAmberIcon,\n  title,\n  description,\n  isVisible\n},\n\n  // aboutStorySection\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  body,\n\n  // link / badge fields shared by several sections\n  "link": link{\n  _key,\n  label,\n  url,\n  newTab\n},\n  metaText,\n  badge,\n  anchorId,\n\n  // studentSpotlightSection\n  "students": students[]->{\n  "id": _id,\n  name,\n  classLabel,\n  "photo": photo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  cohortLabel,\n  schoolName,\n  note,\n  isVisible\n},\n\n  // newsSection\n  "posts": posts[]->{\n  "id": _id,\n  title,\n  category,\n  excerpt,\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  link{\n  _key,\n  label,\n  url,\n  newTab\n},\n  isVisible\n},\n\n  // reviewBarSection\n  brandLabel,\n  score,\n  summary,\n  stars,\n\n  "cta": cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n}': HomePageQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "home": *[_type == "homePage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n\n  // heroSection\n  eyebrow,\n  heading,\n  description,\n  highlightBadge,\n  autoplaySeconds,\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  "slides": slides[isVisible != false]{\n  _key,\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  isVisible\n},\n\n  // statsBarSection\n  items[]{\n  _key,\n  value,\n  label,\n  isSmaller\n},\n\n  // featuresSection\n  header{ heading, subheading },\n  cards[isVisible != false]{\n  _key,\n  icon,\n  "iconImage": iconImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  badge,\n  useAmberIcon,\n  title,\n  description,\n  isVisible\n},\n\n  // aboutStorySection\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  body,\n\n  // link / badge fields shared by several sections\n  "link": link{\n  _key,\n  label,\n  url,\n  newTab\n},\n  metaText,\n  badge,\n  anchorId,\n\n  // studentSpotlightSection\n  "students": students[]->{\n  "id": _id,\n  name,\n  classLabel,\n  "photo": photo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  cohortLabel,\n  schoolName,\n  note,\n  isVisible\n},\n\n  // newsSection\n  "posts": posts[]->{\n  "id": _id,\n  title,\n  category,\n  excerpt,\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  link{\n  _key,\n  label,\n  url,\n  newTab\n},\n  isVisible\n},\n\n  // reviewBarSection\n  brandLabel,\n  score,\n  summary,\n  stars,\n\n  "cta": cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n}': HomePageQueryResult;
     '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "about": *[_type == "aboutPage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n\n  // pageHeroSection\n  heading,\n  subheading,\n  appearance,\n  eyebrowIcon,\n  eyebrow,\n  crumbs[]{\n  _key,\n  label,\n  url\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n\n  // principalSection\n  header{ heading, subheading },\n  "principal": principal->{\n  "id": _id,\n  name,\n  designation,\n  role,\n  badge,\n  photoPlaceholderLabel,\n  "photo": photo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  shortBio,\n  message,\n  quote,\n  quoteAttribution,\n  isVisible\n},\n\n  // peopleGridSection\n  anchorId,\n  "people": people[]->{\n  "id": _id,\n  name,\n  designation,\n  role,\n  badge,\n  photoPlaceholderLabel,\n  "photo": photo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  shortBio,\n  message,\n  quote,\n  quoteAttribution,\n  isVisible\n},\n  emptyStateText,\n\n  // pillarsSection\n  pillars[]{ _key, icon, tone, title, description },\n\n  // pageCtaSection\n  badge,\n\n  "cta": cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n}': AboutPageQueryResult;
     '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "admissions": *[_type == "admissionsPage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n\n  // shared across several section types\n  anchorId,\n\n  // pageHeroSection\n  heading,\n  subheading,\n  appearance,\n  eyebrowIcon,\n  eyebrow,\n  crumbs[]{\n  _key,\n  label,\n  url\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n\n  // processStepsSection\n  header{ heading, subheading },\n  steps[]{ _key, title, description, isHighlighted },\n  \n  // featureImageSection\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  caption,\n  width,\n\n  // calloutSection\n  tone,\n  body,\n  buttonIcon,\n\n  // faqSection\n  items[]{ _key, question, answer, isOpenByDefault },\n\n  // pageCtaSection\n  badge,\n\n  "button": button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n}': AdmissionsPageQueryResult;
     '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "academics": *[_type == "academicsPage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n  anchorId,\n\n  // pageHeroSection\n  heading,\n  subheading,\n  appearance,\n  showIconWatermark,\n  eyebrowIcon,\n  eyebrow,\n  crumbs[]{\n  _key,\n  label,\n  url\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n\n  // classTableSection\n  header{ heading, subheading },\n  columnLabels{ class, age, medium, focus },\n  "classes": classes[]->{\n  "id": _id,\n  name,\n  ageRange,\n  medium,\n  focus,\n  sortOrder,\n  isVisible\n},\n  emptyStateText,\n\n  // pillarsSection (icon card grid)\n  pillars[]{ _key, icon, tone, title, description },\n\n  // pageCtaSection\n  badge,\n\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n}': AcademicsPageQueryResult;
     '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "routine": *[_type == "classRoutinePage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n  anchorId,\n\n  // pageHeroSection\n  heading,\n  subheading,\n  appearance,\n  showIconWatermark,\n  eyebrowIcon,\n  eyebrow,\n  crumbs[]{\n  _key,\n  label,\n  url\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n\n  // routineSection\n  header{ heading, subheading },\n  "routines": routines[]->{\n  "id": _id,\n  "className": classLevel->name,\n  session,\n  days,\n  rows[]{ _key, time, label, kind, cells },\n  sortOrder,\n  isVisible\n},\n  printButtonLabel,\n  footnote,\n  emptyStateText,\n\n  // pillarsSection (icon card grid)\n  pillars[]{ _key, icon, tone, title, description },\n\n  // pageCtaSection\n  badge,\n\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n}': ClassRoutinePageQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "branch": *[_type == "branchPage"][0]{\n    "id": _id,\n    hero{ eyebrow, heading, text, button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}, "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n} },\n    features{ enabled, items[]{ _key, icon, title, text } },\n    about{ enabled, "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n}, eyebrow, heading, paragraphs,\n      button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} },\n    programs{ enabled, eyebrow, heading, items[]{ _key, icon, title, text } },\n    teachers{ enabled, eyebrow, heading,\n      items[]{ _key, name, role, "photo": photo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n} } }\n  }\n}': BranchPageQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "contact": *[_type == "contactPage"][0]{\n    "id": _id,\n    hero{ enabled, heading, subheading, appearance, showIconWatermark, eyebrow, eyebrowIcon,\n      crumbs[]{\n  _key,\n  label,\n  url\n}, buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} },\n    infoCard{ heading, items[]{ _key, icon, label, value, note }, button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} },\n    mapCard{ title, address, rating, reviewCount, pinLabel, landmarks, attribution, mapUrl,\n      button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} },\n    form,\n    review{ enabled, rating, headline, text, button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} }\n  }\n}': ContactPageQueryResult;
   }
 }

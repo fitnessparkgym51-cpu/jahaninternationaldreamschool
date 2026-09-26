@@ -37,8 +37,7 @@ export const resolve: PresentationPluginOptions['resolve'] = {
       route: '/contact',
       type: 'contactPage',
     },
-    {route: '/news', type: 'newsPage'},
-    {route: '/news/:slug', filter: `_type == "newsPost" && slug.current == $slug`},
+    {route: '/branch', type: 'branchPage'},
   ]),
 
   locations: {
@@ -84,9 +83,9 @@ export const resolve: PresentationPluginOptions['resolve'] = {
       }),
     }),
 
-    newsPage: defineLocations({
+    branchPage: defineLocations({
       select: {title: 'internalTitle'},
-      resolve: () => ({locations: [{title: 'News page', href: '/news'}]}),
+      resolve: () => ({locations: [{title: 'Branch page', href: '/branch'}]}),
     }),
 
     /** A class timetable, shown on the Class routine page. */

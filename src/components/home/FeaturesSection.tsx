@@ -1,5 +1,6 @@
 import {Icon} from '@/components/ui/Icon'
 import {Reveal} from '@/components/ui/Reveal'
+import {SanityImage} from '@/components/ui/SanityImage'
 import type {EditField} from '@/components/home/HomeSections'
 import type {FeaturesSection as FeaturesSectionData} from '@/sanity/types/home'
 
@@ -7,8 +8,7 @@ import {SectionTitle} from './StatsBarSection'
 
 type FeaturesSectionProps = {
   section: FeaturesSectionData
-  editField: EditField
-}
+  editField: EditField}
 
 /** "Why parents choose us" — three-column feature card grid. */
 export function FeaturesSection({section, editField}: FeaturesSectionProps) {
@@ -38,16 +38,26 @@ export function FeaturesSection({section, editField}: FeaturesSectionProps) {
                 </span>
               ) : null}
 
-              <div
-                className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-jids-icon-bg"
-                data-sanity={editField('cards', {_key: card._key}, 'icon')}
-              >
-                <Icon
-                  name={card.icon}
-                  size={32}
-                  className={card.useAmberIcon ? 'text-amber-500' : 'text-jids-green'}
+              {card.iconImage?.asset ? (
+                <SanityImage
+                  image={card.iconImage}
+                  sourceWidth={160}
+                  sizes="72px"
+                  className="mb-5 h-[72px] w-[72px] object-contain"
+                  editAttribute={editField('cards', {_key: card._key}, 'iconImage')}
                 />
-              </div>
+              ) : (
+                <div
+                  className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-jids-icon-bg"
+                  data-sanity={editField('cards', {_key: card._key}, 'icon')}
+                >
+                  <Icon
+                    name={card.icon}
+                    size={32}
+                    className={card.useAmberIcon ? 'text-amber-500' : 'text-jids-green'}
+                  />
+                </div>
+              )}
 
               <h3 className="mb-2.5 text-lg font-bold text-gray-900">{card.title}</h3>
               {card.description ? (
