@@ -137,7 +137,8 @@ export const seoType = defineType({
       name: 'metaTitle',
       title: 'Page title',
       type: 'string',
-      description: 'Shown as the blue link in Google. Falls back to Site Settings › SEO › default title.',
+      description:
+        'Shown as the blue link in Google. "Jahan International Dream School" is added after it automatically unless this title already names the school. Falls back to Site settings › SEO › default title.',
       validation: (rule) => rule.max(60).warning('Keep the title under 60 characters.'),
     }),
     defineField({
@@ -145,7 +146,7 @@ export const seoType = defineType({
       title: 'Meta description',
       type: 'text',
       rows: 3,
-      description: 'Shown under the title in Google. Falls back to Site Settings › SEO › default description.',
+      description: 'Shown under the title in Google. Falls back to Site settings › SEO › default description.',
       validation: (rule) => rule.max(160).warning('Keep the description under 160 characters.'),
     }),
     defineField({
@@ -158,14 +159,24 @@ export const seoType = defineType({
       name: 'canonicalUrl',
       title: 'Canonical URL',
       type: 'url',
-      description: 'Optional. Only set this if the same content is published on several URLs.',
+      description:
+        'Optional, and advanced. Only set this if the same content is genuinely published on several URLs. Leave empty to let the site use this page\'s own address.',
+    }),
+    defineField({
+      name: 'appendSiteName',
+      title: 'Add the school name to the page title',
+      type: 'boolean',
+      initialValue: true,
+      description:
+        'On: the school name is added after " | " unless the title already contains it. Turn this off only for a page about a different organisation.',
     }),
     defineField({
       name: 'noIndex',
       title: 'Hide from search engines',
       type: 'boolean',
       initialValue: false,
-      description: 'Adds a "noindex" tag so the page cannot appear in search results.',
+      description:
+        'Adds a "noindex" tag and removes the page from the sitemap. The page stays reachable by anyone with the link.',
     }),
   ],
 })

@@ -54,6 +54,8 @@ export type Seo = Val<Val<Val<PageSeoQueryResult>['page']>['seo']>
 export type PageSeo = {
   page: Seo | null
   site: Seo | null
+  /** `siteSettings.brand.name`, used to brand titles and structured data. */
+  brandName: string | null
 }
 
 /* -------------------------------------------------------------------------- */

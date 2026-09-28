@@ -1,11 +1,12 @@
+import {PageJsonLd} from '@/components/seo/JsonLd'
 import type {Metadata} from 'next'
 
 import {ClassRoutineSections} from '@/components/routine/ClassRoutineSections'
 import {FloatingContact} from '@/components/site/FloatingContact'
 import {Footer} from '@/components/site/Footer'
 import {Header} from '@/components/site/Header'
-import {buildMetadata} from '@/lib/metadata'
-import {getClassRoutinePageData, getClassRoutinePageSeo} from '@/sanity/lib/fetch'
+import {buildPageMetadata} from '@/lib/metadata'
+import {getClassRoutinePageData} from '@/sanity/lib/fetch'
 
 /**
  * The Class Routine page (`/academics/class-routine`).
@@ -19,15 +20,8 @@ import {getClassRoutinePageData, getClassRoutinePageSeo} from '@/sanity/lib/fetc
  */
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const {page, site} = await getClassRoutinePageSeo()
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '')
-
-  return buildMetadata({
-    pageSeo: page,
-    siteSeo: site,
-    url: siteUrl ? `${siteUrl}/academics/class-routine` : undefined,
-  })
+export function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({type: 'classRoutinePage', pathname: '/academics/class-routine'})
 }
 
 export default async function ClassRoutinePage() {
@@ -40,6 +34,8 @@ export default async function ClassRoutinePage() {
 
   return (
     <>
+      <PageJsonLd type="classRoutinePage" pathname="/academics/class-routine" />
+
       <Header
         documentId={navigationId}
         siteSettingsId={settingsId}

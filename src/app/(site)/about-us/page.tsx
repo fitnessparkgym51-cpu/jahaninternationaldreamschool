@@ -1,11 +1,12 @@
+import {PageJsonLd} from '@/components/seo/JsonLd'
 import type {Metadata} from 'next'
 
 import {AboutSections} from '@/components/about/AboutSections'
 import {FloatingContact} from '@/components/site/FloatingContact'
 import {Footer} from '@/components/site/Footer'
 import {Header} from '@/components/site/Header'
-import {buildMetadata} from '@/lib/metadata'
-import {getAboutPageData, getAboutPageSeo} from '@/sanity/lib/fetch'
+import {buildPageMetadata} from '@/lib/metadata'
+import {getAboutPageData} from '@/sanity/lib/fetch'
 
 /**
  * The About page (`/about-us`).
@@ -19,11 +20,8 @@ import {getAboutPageData, getAboutPageSeo} from '@/sanity/lib/fetch'
  */
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const {page, site} = await getAboutPageSeo()
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '')
-
-  return buildMetadata({pageSeo: page, siteSeo: site, url: siteUrl ? `${siteUrl}/about-us` : undefined})
+export function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({type: 'aboutPage', pathname: '/about-us'})
 }
 
 export default async function AboutPage() {
@@ -36,6 +34,8 @@ export default async function AboutPage() {
 
   return (
     <>
+      <PageJsonLd type="aboutPage" pathname="/about-us" />
+
       <Header
         documentId={navigationId}
         siteSettingsId={settingsId}

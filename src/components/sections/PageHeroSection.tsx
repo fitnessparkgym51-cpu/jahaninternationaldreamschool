@@ -1,5 +1,6 @@
 import {stegaClean} from 'next-sanity'
 
+import {BreadcrumbJsonLd} from '@/components/seo/JsonLd'
 import {Icon} from '@/components/ui/Icon'
 import {ButtonLink} from '@/components/ui/SmartLink'
 import {Reveal} from '@/components/ui/Reveal'
@@ -38,6 +39,12 @@ export function PageHeroSection({section, editField}: PageHeroSectionProps) {
       }`}
       {...editTargetAttr}
     >
+      {/*
+        Structured data for the same crumbs rendered below. Emitted from here so
+        the markup and the visible trail are generated from one array and cannot
+        drift apart. Renders nothing when the page has fewer than two crumbs.
+      */}
+      <BreadcrumbJsonLd crumbs={crumbs} />
       {/*
         Decoration only, driven by one CMS switch. The glyph itself belongs to the
         design system, not to an editor, so it is code.

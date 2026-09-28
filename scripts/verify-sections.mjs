@@ -78,7 +78,109 @@ async function fireWebhook(document) {
 
 const page = () => fetch(SITE).then((r) => r.text())
 
+/**
+ * Polls the page until `predicate(html)` holds.
+ *
+ * A publish is read through the Sanity CDN, which is eventually consistent: the
+ * webhook invalidates the cache, but the next read can still be served from a
+ * cold edge for a few seconds. A fixed `sleep` therefore turns a real pass into a
+ * coin flip. Polling makes the result deterministic, and still fails loudly if the
+ * change never arrives.
+ */
+const waitForPage = async (predicate, {timeout = 45000, interval = 1500} = {}) => {
+  const deadline = Date.now() + timeout
+  let html = ''
+  for (;;) {
+    html = await page().catch(() => '')
+    if (predicate(html)) return {ok: true, html}
+    if (Date.now() >= deadline) return {ok: false, html}
+    await new Promise((r) => setTimeout(r, interval))
+  }
+}
+
 const original = await client.getDocument('homePage')
+
+/**
+ * Every string this script looks for is read out of the document it is testing,
+ * never hardcoded.
+ *
+ * A test that hardcodes copy is a test that breaks the day an editor writes new
+ * copy — and then it looks like the website is broken when nothing is wrong. The
+ * school owns these words; the test follows them.
+ */
+/**
+ * Every string this script looks for is read out of the document it is testing,
+ * never hardcoded.
+ *
+ * A test that hardcodes copy breaks the day an editor writes new copy, and then it
+ * looks like the website is broken when nothing is wrong. The school owns these
+ * words; the test follows them.
+ *
+ * The markers must also be *unique* to their section, because the site header
+ * repeats the school name and the "Estd" line. A marker that also appears in the
+ * chrome will always be found at the top of the document, and an ordering
+ * assertion built on it silently passes or fails for the wrong reason — that is
+ * exactly what happened when the hero heading became the school name. So each
+ * marker is verified unique below, and the test says so out loud if it is not.
+ */
+const textOf = (section) => section?.heading ?? section?.header?.heading ?? ''
+const sectionByKey = (key) => original.sections.find((s) => s._key === key)
+
+/** All the editable text of one section, flattened, for the uniqueness check. */
+const sectionText = (section) => JSON.stringify(section ?? {})
+
+/**
+ * Every string leaf in a section, skipping Sanity's bookkeeping keys.
+ *
+ * `_key` and `_type` are not copy. They are skipped, because a marker like
+ * "hero" appears in the markup only inside `data-sanity` attributes — the test
+ * would still pass, but it would be asserting on a technical string rather than
+ * on the section's actual text, which is meaningless.
+ */
+const stringLeaves = (value, key, out = []) => {
+  if (typeof value === 'string') {
+    if (value.trim() && !key.startsWith('_')) out.push(value.trim())
+  } else if (Array.isArray(value)) {
+    for (const item of value) stringLeaves(item, key, out)
+  } else if (value && typeof value === 'object') {
+    for (const [childKey, item] of Object.entries(value)) stringLeaves(item, childKey, out)
+  }
+  return out
+}
+
+/**
+ * Picks a marker that appears in this section and in no other.
+ *
+ * Searched across every string the section owns — heading, description, eyebrow,
+ * a stat label, a card title — so it works whatever shape the section has. The
+ * section's heading is preferred when it is unique, because that is the most
+ * meaningful thing to assert on.
+ */
+const uniqueMarker = (key) => {
+  const section = sectionByKey(key)
+  if (!section) return ''
+  const others = original.sections.filter((s) => s._key !== key).map(sectionText).join(' ')
+
+  const firstLines = [
+    ...new Set(stringLeaves(section, '').map((value) => value.split('\n')[0].trim())),
+  ].filter(Boolean)
+  const heading = textOf(section).split('\n')[0].trim()
+  const ordered = heading && firstLines.includes(heading) ? [heading, ...firstLines] : firstLines
+
+  return ordered.find((value) => !others.includes(value)) ?? ''
+}
+
+const heroText = uniqueMarker('hero')
+const statsText = uniqueMarker('stats')
+const featuresText = uniqueMarker('features')
+
+// A missing or shared marker would make the assertions below meaningless, so it
+// is checked once, loudly, before anything relies on it.
+check(
+  'each section has a marker unique to that section',
+  Boolean(heroText && statsText && featuresText),
+  `hero "${heroText}", stats "${statsText}", features "${featuresText}"`,
+)
 
 try {
   /* 1. the webhook route rejects an unsigned request ---------------------- */
@@ -97,16 +199,18 @@ try {
   await client.patch('homePage').set({'sections[_key == "stats"].enabled': false}).commit()
   const changed = await client.getDocument('homePage')
   await fireWebhook(changed)
-  await new Promise((r) => setTimeout(r, 1200))
 
-  const hidden = await page()
+  const hiddenResult = await waitForPage((html) => !html.includes(statsText))
+  const hidden = hiddenResult.html
   check(
     'hiding a section removes it from the page',
-    !hidden.includes('Dedicated to Excellence') && !hidden.includes('Parent Satisfaction'),
+    hiddenResult.ok,
+    `"${statsText}" is gone`,
   )
   check(
     'the rest of the page is unaffected',
-    hidden.includes('Why Parents Choose Jahan International Dream School'),
+    hidden.includes(featuresText),
+    `"${featuresText}" still present`,
   )
 
   /* 4. reordering sections ----------------------------------------------- */
@@ -121,30 +225,34 @@ try {
     .commit()
   const reordered = await client.getDocument('homePage')
   await fireWebhook(reordered)
-  await new Promise((r) => setTimeout(r, 1200))
 
-  const html = await page()
-  const statsAt = html.indexOf('Dedicated to Excellence')
-  const heroAt = html.indexOf('Empowering Young Minds For Global Excellence')
+  // The stats bar was swapped ahead of the hero, so its text must now come first.
+  const swap = await waitForPage((html) => {
+    const s = html.indexOf(statsText)
+    const h = html.indexOf(heroText)
+    return s > -1 && h > -1 && s < h
+  })
+  const statsAt = swap.html.indexOf(statsText)
+  const heroAt = swap.html.indexOf(heroText)
   check(
     'reordering sections changes the rendered order',
-    statsAt > -1 && heroAt > -1 && statsAt < heroAt,
+    swap.ok,
     `stats at ${statsAt}, hero at ${heroAt}`,
   )
 
   /* 5. restore ------------------------------------------------------------ */
   await client.createOrReplace(original)
   await fireWebhook(original)
-  await new Promise((r) => setTimeout(r, 1200))
 
-  const restored = await page()
-  // "Estd: 2021" also appears in the header, so compare against a stat label that
-  // only exists inside the stats bar.
-  check(
-    'restoring the document restores the original order',
-    restored.indexOf('Empowering Young Minds For Global Excellence') <
-      restored.indexOf('Dedicated to Excellence'),
-  )
+  const back = await waitForPage((html) => {
+    const h = html.indexOf(heroText)
+    const s = html.indexOf(statsText)
+    return h > -1 && s > -1 && h < s
+  })
+  const restored = back.html
+  // Compare against the stats bar's own text, not a string that also appears in
+  // the site header, so the assertion cannot pass on the wrong element.
+  check('restoring the document restores the original order', back.ok)
   check(
     'all original section headings are intact',
     original.sections.every((section) => {

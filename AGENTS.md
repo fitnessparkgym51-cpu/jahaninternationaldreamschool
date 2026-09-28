@@ -34,12 +34,14 @@ It has two parts:
 | Typecheck | `npx tsc --noEmit` |
 | Lint | `npm run lint` |
 | Build | `npm run build` |
+| Regenerate Sanity types | `npx sanity schema extract --path schema.json` then `npx sanity typegen generate` |
 | Verify visual editing | `node scripts/verify-visual-editing.mjs` (dev server must be running) |
 | Verify sections | `node scripts/verify-sections.mjs` (dev server must be running) |
 | Verify About Us | `node scripts/verify-about-us.mjs` (dev server must be running) |
+| **Verify SEO** | **`node scripts/verify-seo.mjs` (dev server must be running)** — 218 checks |
 | Re-seed reference content | `node scripts/seed.mjs` (destructive; `--clean` wipes the dataset first) |
 | Re-seed About Us only | `node scripts/seed-about-us.mjs` (additive; never touches Home) |
-
+| Re-apply the SEO corrections | `node --env-file=.env.local scripts/seed-seo.mjs` (dry run) / `--apply` |
 ### Documented companions
 
 These are required by the contract below and are expected to exist as the work proceeds.
@@ -48,6 +50,7 @@ These are required by the contract below and are expected to exist as the work p
 - `WEBSITE_SPEC.md` — page inventory, page-by-page editorial model, change-impact map
 - `SANITY_ARCHITECTURE.md` — schemas, GROQ, types, schema-change procedure, seeding
 - `DESIGN_SYSTEM.md` — tokens, patterns, and what must not be redesigned
+- `SEO_CHECKLIST.md` — metadata, robots, sitemap, structured data, local SEO, Search Console, and the open items only a human can close
 
 ### Current implementation state
 
@@ -57,21 +60,65 @@ These are required by the contract below and are expected to exist as the work p
 - **Globals** — `Header` (incl. top bar + mobile menu), `Footer`, `FloatingContact`,
   `Navigation` and `Site settings` documents are centralised in Sanity and shared by
   every page via the `(site)` route group layout.
-- **Sanity documents** — `homePage`, `aboutPage`, `siteSettings`, `navigation`
-  (singletons), `studentSpotlight` ×4, `newsPost` ×3, `person` ×13 (1 principal
-  + 12 teacher placeholders on About).
-- **Images** — 10 image assets in Sanity. The reference `JIDS/` folder holds the source
+- **Sanity documents** — `homePage`, `aboutPage`, `admissionsPage`, `academicsPage`,
+  `classRoutinePage`, `contactPage`, `branchPage`, `complaintPage`,
+  `siteSettings`, `navigation` (singletons), `classLevel` ×13, `classRoutine`,
+  `studentSpotlight` ×4, `newsPost` ×3, `person` ×13 (1 principal + 12 teacher
+  placeholders on About).
+- **Images** — image assets in Sanity, served from the Sanity image CDN through a
+  custom `next/image` loader. The reference `JIDS/` folder holds the source
   downloads; it is **initial content only** and must never be imported into runtime code.
-- **Pages built** — `/` (Home, reference) and `/about-us`. The rest are not built;
-  see the inventory and the three open questions in `WEBSITE_SPEC.md` §1.
+- **Pages built** — `/` (Home, reference), `/about-us`, `/academics`,
+  `/academics/class-routine`, `/admissions`, `/contact`, `/branch`, `/complaint-box`.
+  See the inventory and the open questions in `WEBSITE_SPEC.md` §1.
+- **SEO is centralised and CMS-driven.** `src/lib/routes.ts` is the route
+  inventory; `src/lib/metadata.ts` builds every page's metadata from Sanity via
+  one function. A page component must never hand-build a title, description or
+  canonical. `/robots.txt` and `/sitemap.xml` are generated from the same registry.
+  Structured data is generated from `siteSettings` and the page SEO blocks.
+  Full details in `SEO_CHECKLIST.md`.
+- **`NEXT_PUBLIC_SITE_URL` must be the production origin before launch.** Nothing
+  in the code invents a domain: canonicals, the sitemap and the structured data
+  degrade to relative URLs when it is unset, which stops all indexing.
 - **Teacher cards are placeholders, on purpose.** The reference ships twelve
   "Teacher Name Here" cards, each labelled *Photo Coming Soon* / *Placeholder*.
   They are seeded as twelve separate `person` documents so each is individually
   click-to-edit and can be replaced with a real teacher one at a time. Do not
   "improve" them by inventing names, photos or bios — the school supplies the
   real people. `emptyStateText` is the fallback if every teacher is later hidden.
-- The two Home-specific verification scripts above must keep passing (19/19 and 8/8
-  at the time of writing). If a change makes one fail, the change is wrong.
+- **`/branch` holds another institution's content** (an Islamic madrasa) and needs
+  an owner decision — replace it with real J.I.D.S. branch content, or unpublish
+  it. Its `seo.appendSiteName` is off so the title is not branded to this school.
+- The verification scripts above must keep passing. If a change makes one fail,
+  the change is wrong. `verify-seo.mjs` (218 checks) is the one that catches a
+  metadata, robots, sitemap, structured-data or dead-link regression.
+
+---
+
+## SEO RULES FOR AI AGENTS
+
+Required by `SEO_CHECKLIST.md` §15. These are hard rules, not guidance.
+
+1. **Never hand-build metadata in a page component.** Call
+   `buildPageMetadata({type, pathname})` from `src/lib/metadata.ts` and let it
+   read the CMS.
+2. **Never add a route without registering it** in `src/lib/routes.ts` *and* in
+   `scripts/verify-seo.mjs`, or it will be missing from the sitemap.
+3. **Never let a CMS link point at a route that does not exist.** It 404s for a
+   parent and wastes crawl budget.
+4. **Never put stega-encoded text in a title, description, canonical or JSON-LD
+   value.** It is invisible in a browser and permanent in a search result.
+5. **Never add structured data the school has not confirmed** — no ratings, no
+   reviews, no opening hours, no street address, no fake `sameAs`.
+6. **Never add an SEO schema field in isolation.** Schema → GROQ projection →
+   `sanity schema extract` → `sanity typegen generate` → component → Studio
+   description, together.
+7. **Never remove a page's `seo` block to "reset" it** — the site-wide defaults in
+   `siteSettings.seo` take over silently.
+8. **Run `node scripts/verify-seo.mjs`** after any change to a page, the route
+   registry, the metadata utility or the site chrome.
+9. **Never claim a page is indexed.** Correct markup is verifiable here; indexing
+   is not. Only Search Console can say that.
 
 ---
 
@@ -135,8 +182,10 @@ Required by Part 21. Full version, including the Home and About sections, in
 | `SanityImage` | any image field | `imageWithAlt` | per page | every page | yes |
 | `ButtonLink` / `SmartLink` | any button / link | `button`, `link` | per page | every page | yes |
 | `SectionHeader` | card-grid sections | `sectionHeader` | per page | Home, About | yes |
-| `PageHeroSection` | page document | `pageHeroSection` | `aboutPageQuery` | every inner page | yes |
+| `PageHeroSection` | page document | `pageHeroSection` | `aboutPageQuery` | every inner page | yes — also emits `BreadcrumbList` |
 | `PageCtaSection` | page document | `pageCtaSection` | `aboutPageQuery` | every inner page | yes |
+| `SiteJsonLd` | Site settings | `brand`, `contact`, `postalAddress`, `socialLinks` | `siteSettingsQuery` | every page in the `(site)` group | n/a — metadata, not content |
+| `PageJsonLd` | page document | `seo` | `pageSeoQuery` | every indexable page | n/a — metadata, not content |
 
 Reusable documents — one edit changes every page that references them:
 

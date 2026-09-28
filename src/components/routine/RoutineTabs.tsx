@@ -119,13 +119,18 @@ export function RoutineTabs({
                     : 'border border-gray-200 bg-white text-gray-600 hover:border-jids-green hover:text-jids-green'
                 }`}
                 /*
-                 * The tab is also a click-to-edit target for this class's routine.
-                 * The Presentation overlay consumes the `click`, so the tab switches
-                 * on `mousedown` instead: one click shows the class *and* opens its
-                 * routine document (with its timetable editor) in the Studio.
+                 * Deliberately NOT a click-to-edit target.
+                 *
+                 * A tab is a control, and the Presentation overlay swallows the
+                 * click on any element carrying `data-sanity`. Making the tab
+                 * editable therefore means the editor cannot switch classes: the
+                 * overlay opens the Studio and the tab never changes. The way into
+                 * a class's routine is its name in the timetable header below,
+                 * which is a label, not a control, so it can safely be an edit
+                 * target. `onMouseDown` is not used as a workaround either — it
+                 * would make every one of the thirteen tabs a hot spot that opens a
+                 * panel whether or not the editor meant to switch class.
                  */
-                onMouseDown={() => setActiveId(routine.id)}
-                data-sanity={routine.rowsEditAttribute}
               >
                 {routine.className}
               </button>

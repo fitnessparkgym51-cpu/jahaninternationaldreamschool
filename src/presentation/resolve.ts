@@ -38,6 +38,7 @@ export const resolve: PresentationPluginOptions['resolve'] = {
       type: 'contactPage',
     },
     {route: '/branch', type: 'branchPage'},
+    {route: '/complaint-box', type: 'complaintPage'},
   ]),
 
   locations: {
@@ -86,6 +87,16 @@ export const resolve: PresentationPluginOptions['resolve'] = {
     branchPage: defineLocations({
       select: {title: 'internalTitle'},
       resolve: () => ({locations: [{title: 'Branch page', href: '/branch'}]}),
+    }),
+
+    /**
+     * The Complaint Box page. The form's own strings are still hardcoded in
+     * `components/complaint/ComplaintBox.tsx`; this document owns the heading and
+     * the intro line above the form.
+     */
+    complaintPage: defineLocations({
+      select: {title: 'internalTitle'},
+      resolve: () => ({locations: [{title: 'Complaint Box page', href: '/complaint-box'}]}),
     }),
 
     /** A class timetable, shown on the Class routine page. */

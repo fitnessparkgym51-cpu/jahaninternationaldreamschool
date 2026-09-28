@@ -114,7 +114,8 @@ There is no automatic path inference. A field that renders but has no
 | Type | Title | Model | Notes |
 |---|---|---|---|
 | `homePage` | Home page | singleton, fixed id `homePage` | `sections[]` array |
-| `siteSettings` | Site settings | singleton, fixed id `siteSettings` | brand, contact, footer, floating button, SEO defaults |
+| `siteSettings` | Site settings | singleton, fixed id `siteSettings` | brand, contact, postal address, footer, floating button, SEO defaults |
+| `complaintPage` | Complaint Box page | singleton, fixed id `complaintPage` | heading + intro only. **No `seo` block** — the page is kept out of the index by policy, declared in `src/lib/routes.ts`, so the CMS cannot publish it by accident |
 | `navigation` | Navigation | singleton, fixed id `navigation` | top bar + header menu |
 | `studentSpotlight` | Student spotlight | reusable | referenced by Home |
 | `newsPost` | News & event | reusable | referenced by Home |
@@ -128,8 +129,8 @@ There is no automatic path inference. A field that renders but has no
 | `link` | Label + URL + new-tab. |
 | `button` | Label + URL + new-tab + one of five `variant`s. |
 | `sectionHeader` | Heading + subheading for card grids. |
-| `seo` | metaTitle, metaDescription, shareImage, canonicalUrl, noIndex. |
-| `brand`, `contactBlock`, `socialLink`, `footer`, `socialPreviewCard`, `mapCard`, `floatingContact` | Site settings building blocks. |
+| `seo` | metaTitle, metaDescription, shareImage, canonicalUrl, appendSiteName, noIndex. Resolution, title composition and the draft-mode `noindex` live in `src/lib/metadata.ts`; see `SEO_CHECKLIST.md` §2. |
+| `brand`, `contactBlock`, `postalAddress`, `socialLink`, `footer`, `socialPreviewCard`, `mapCard`, `floatingContact` | Site settings building blocks. `postalAddress` is the structured form of `contactBlock.address`, used only for search-engine data. |
 | `topBarLink`, `navChildLink`, `navItem`, `topBar`, `header` | Navigation building blocks. |
 
 ### Section objects (`schemaTypes/objects/sections.ts`)
@@ -290,6 +291,7 @@ after that the website reads only Sanity.
 |---|---|---|
 | `node scripts/seed.mjs` | Wipes/replaces **everything** (site settings, navigation, Home, all reusable docs, all assets) | Full bootstrap only. Destructive. `--clean` deletes every document first. |
 | `node scripts/seed-about-us.mjs` | **Additive.** Creates/replaces only the About page + the 13 `person` documents and uploads only the one image they need | Working on the About page. Safe to re-run; never touches Home. |
+| `node --env-file=.env.local scripts/seed-seo.mjs` | **Data only, no schema change.** Applies the SEO and local-SEO corrections: page titles, the Contact and Branch SEO blocks, the hero/About headings, and the Tongi/Gazirpur NAP across every document. `--apply` writes; without it, it prints a diff | After changing site identity or contact details. Idempotent: re-run it to detect drift. |
 
 Prefer the additive script. `seed.mjs` replaces documents wholesale, so re-running
 it after hand-editing content in the Studio discards those edits.

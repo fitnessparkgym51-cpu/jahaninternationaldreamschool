@@ -71,7 +71,6 @@ export function HeroCarousel({slides, autoplaySeconds}: HeroCarouselProps) {
           >
             <SanityImage
               image={slide.image}
-              sourceWidth={1920}
               sizes="100vw"
               priority={slideIndex === 0}
               className="object-cover object-center"

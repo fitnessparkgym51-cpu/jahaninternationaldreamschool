@@ -46,7 +46,6 @@ export function PrincipalSection({section, editField}: PrincipalSectionProps) {
                 {person?.photo ? (
                   <SanityImage
                     image={person.photo}
-                    sourceWidth={960}
                     sizes="(min-width: 1024px) 40vw, 100vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     editAttribute={personField('photo')}

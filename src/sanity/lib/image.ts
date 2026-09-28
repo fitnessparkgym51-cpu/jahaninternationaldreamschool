@@ -27,10 +27,24 @@ function cleanSource(image: SanityImage): SanityImageSource {
 }
 
 /**
- * Builds a Sanity CDN URL for a CMS image.
+ * The asset's plain CDN URL, with no width, quality or format transform.
  *
- * `next/image` generates the responsive `srcset` itself, so this only needs to
- * return the largest source the layout can display.
+ * This is what `next/image` receives as its `src`. The custom loader
+ * (`src/lib/imageLoader.ts`) then adds `?w=&q=&auto=format` for every candidate
+ * width, which is what produces a real `srcset`. Handing `next/image` an
+ * already-resized URL instead — as `images.unoptimized` used to require — made it
+ * emit a single fixed-size image, so a phone downloaded the 1920px hero.
+ */
+export function cdnUrl(image: SanityImage): string {
+  return urlFor(cleanSource(image)).url()
+}
+
+/**
+ * Builds a Sanity CDN URL for a CMS image at one exact size.
+ *
+ * Used where there is no responsive `srcset` to build: Open Graph images, and the
+ * logo inside structured data. Everywhere else, let `next/image` and the loader
+ * do the resizing.
  */
 export function imageUrl(image: SanityImage, width = 1600, quality = 75): string {
   return urlFor(cleanSource(image))

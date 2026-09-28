@@ -1,19 +1,18 @@
+import {PageJsonLd} from '@/components/seo/JsonLd'
 import type {Metadata} from 'next'
 
 import {ContactSections} from '@/components/contact/ContactSections'
 import {FloatingContact} from '@/components/site/FloatingContact'
 import {Footer} from '@/components/site/Footer'
 import {Header} from '@/components/site/Header'
-import {buildMetadata} from '@/lib/metadata'
-import {getContactPageData, getContactPageSeo} from '@/sanity/lib/fetch'
+import {buildPageMetadata} from '@/lib/metadata'
+import {getContactPageData} from '@/sanity/lib/fetch'
 
 /** The Contact page (`/contact`), matching `JIDS/contactus.html`. */
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const {page, site} = await getContactPageSeo()
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '')
-  return buildMetadata({pageSeo: page, siteSeo: site, url: siteUrl ? `${siteUrl}/contact` : undefined})
+export function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({type: 'contactPage', pathname: '/contact'})
 }
 
 export default async function ContactPage() {
@@ -22,6 +21,8 @@ export default async function ContactPage() {
 
   return (
     <>
+      <PageJsonLd type="contactPage" pathname="/contact" />
+
       <Header
         documentId={navigation?.id ?? 'navigation'}
         siteSettingsId={settingsId}

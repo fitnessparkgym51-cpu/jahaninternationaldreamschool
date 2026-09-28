@@ -1,3 +1,4 @@
+import {PageJsonLd} from '@/components/seo/JsonLd'
 import type {Metadata} from 'next'
 
 import {HomeContentMissing} from '@/components/home/HomeContentMissing'
@@ -5,8 +6,8 @@ import {HomeSections} from '@/components/home/HomeSections'
 import {FloatingContact} from '@/components/site/FloatingContact'
 import {Footer} from '@/components/site/Footer'
 import {Header} from '@/components/site/Header'
-import {buildMetadata} from '@/lib/metadata'
-import {getHomePageData, getHomePageSeo} from '@/sanity/lib/fetch'
+import {buildPageMetadata} from '@/lib/metadata'
+import {getHomePageData} from '@/sanity/lib/fetch'
 
 /**
  * Rendered on every request so Studio edits appear immediately. The data fetch
@@ -15,11 +16,8 @@ import {getHomePageData, getHomePageSeo} from '@/sanity/lib/fetch'
  */
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const {page, site} = await getHomePageSeo()
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '')
-
-  return buildMetadata({pageSeo: page, siteSeo: site, url: siteUrl ? `${siteUrl}/` : undefined})
+export function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({type: 'homePage', pathname: '/', isHome: true})
 }
 
 export default async function HomePage() {
@@ -32,6 +30,8 @@ export default async function HomePage() {
 
   return (
     <>
+      <PageJsonLd type="homePage" pathname="/" />
+
       <Header
         documentId={navigationId}
         siteSettingsId={settingsId}

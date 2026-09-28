@@ -85,6 +85,16 @@ export const siteSettingsType = defineType({
       title: 'Contact details',
       type: 'contactBlock',
       group: 'contact',
+      description:
+        'Shown in the footer and the top bar. This is the school\'s single source of truth for its address, phone numbers and email — keep it identical to the Contact page.',
+    }),
+    defineField({
+      name: 'postalAddress',
+      title: 'Postal address (for search engines)',
+      type: 'postalAddress',
+      group: 'contact',
+      description:
+        'The same address, split into parts, for the structured data search engines read. Keep it in step with "Contact details".',
     }),
     defineField({
       name: 'socialLinks',

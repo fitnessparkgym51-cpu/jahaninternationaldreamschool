@@ -10,7 +10,7 @@ type FeaturesSectionProps = {
   section: FeaturesSectionData
   editField: EditField}
 
-/** "Why parents choose us" — three-column feature card grid. */
+/** "Why parents choose us" â€” three-column feature card grid. */
 export function FeaturesSection({section, editField}: FeaturesSectionProps) {
   const cards = section.cards ?? []
   if (!cards.length) return null
@@ -41,7 +41,6 @@ export function FeaturesSection({section, editField}: FeaturesSectionProps) {
               {card.iconImage?.asset ? (
                 <SanityImage
                   image={card.iconImage}
-                  sourceWidth={160}
                   sizes="72px"
                   className="mb-5 h-[72px] w-[72px] object-contain"
                   editAttribute={editField('cards', {_key: card._key}, 'iconImage')}

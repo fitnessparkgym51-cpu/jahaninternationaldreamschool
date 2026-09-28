@@ -30,7 +30,11 @@ export function HeroSection({section, editField}: HeroSectionProps) {
     }))
 
   return (
-    <section className="relative flex min-h-[600px] items-center justify-center overflow-hidden text-white lg:h-[660px]">
+    // `min-h` rather than a fixed height: the heading, sub-heading and buttons all
+    // come from the CMS, so a longer edit must grow the hero rather than be
+    // clipped by `overflow-hidden`. At the current copy length this renders
+    // exactly as before.
+    <section className="relative flex min-h-[600px] items-center justify-center overflow-hidden text-white lg:min-h-[660px]">
       <HeroCarousel slides={slides} autoplaySeconds={section.autoplaySeconds ?? 4.5} />
 
       <div className="relative z-10 mx-auto max-w-4xl px-4 py-16 text-center">
@@ -44,8 +48,13 @@ export function HeroSection({section, editField}: HeroSectionProps) {
           </div>
         ) : null}
 
+        {/*
+          `whitespace-pre-line` honours a line break in the CMS heading, so the
+          school name and the tagline can be set as two lines. Same treatment as
+          the Branch page hero.
+        */}
         <h1
-          className="fade-up mb-4 text-3xl font-extrabold leading-tight tracking-tight text-white drop-shadow-md sm:text-5xl lg:text-6xl"
+          className="fade-up mb-4 whitespace-pre-line text-3xl font-extrabold leading-tight tracking-tight text-white drop-shadow-md sm:text-5xl lg:text-6xl"
           style={{'--fade-delay': '120ms'} as CSSProperties}
         >
           {section.heading}

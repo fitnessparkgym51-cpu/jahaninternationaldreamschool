@@ -163,8 +163,6 @@ try {
     .set({
       'sections[_key == "hero"].heading': M.heading,
       'sections[_key == "routine"].header.subheading': M.tableSubheading,
-      'sections[_key == "routine"].slots[_key == "slot-2"].time': M.slotTime,
-      'sections[_key == "routine"].slots[_key == "slot-2"].label': M.slotLabel,
       'sections[_key == "routine"].printButtonLabel': M.printLabel,
       'sections[_key == "good-to-know"].pillars[_key == "note-periods"].title': M.noteTitle,
       'sections[_key == "cta"].heading': M.ctaHeading,
@@ -174,12 +172,20 @@ try {
     })
     .commit()
 
-  // The first routine's Period 1 row: Sunday is the first day column.
+  /*
+   * The timetable itself lives on the referenced `classRoutine` document, not on
+   * the page: `rows[]` with `{time, label, kind, cells}`, and `days[]` beside it.
+   * An earlier shape kept a `slots[]` array and `days[]` on the section; these
+   * edits are written to where the fields are now, and `MARKERS` asserts the same
+   * set is invisible on the published page.
+   */
   await client
     .patch(routineDraftId)
     .set({
       session: M.session,
       'rows[_key == "period-1"].cells[0]': M.cell,
+      'rows[_key == "period-2"].time': M.slotTime,
+      'rows[_key == "period-2"].label': M.slotLabel,
     })
     .commit()
 
@@ -322,13 +328,18 @@ try {
   for (const key of [
     'sections[_key=="hero"].heading',
     'sections[_key=="routine"].header.subheading',
-    'sections[_key=="routine"].slots[_key=="slot-2"].label',
     'sections[_key=="routine"].printButtonLabel',
     'sections[_key=="good-to-know"].pillars[_key=="note-periods"].title',
     'sections[_key=="cta"].heading',
   ]) {
     check(`   ${key.replace(/sections\[_key=="|"\]/g, '')} resolves`, pageFields.includes(`${PAGE_ID}|${key}`))
   }
+  // The row itself belongs to the referenced `classRoutine` document, so its
+  // click-to-edit path is resolved against that document, not the page.
+  check(
+    '   rows[_key=="period-2"].label resolves',
+    routineFields.includes(`${FIRST_ROUTINE_ID}|rows[_key=="period-2"].label`),
+  )
   check(
     'the session resolves to the routine document',
     routineFields.some((k) => k.endsWith('|session')),
@@ -424,8 +435,16 @@ try {
     cellAttrs.length >= 25,
     `${cellAttrs.length} cell targets on the published page`,
   )
-  check('the day columns carry targets', attrs.some((a) => a.includes('path=sections:routine.days')))
-  check('the slot times carry targets', attrs.some((a) => a.includes('slots:slot-2.time')))
+  // `days[]` and `rows[]` live on the referenced `classRoutine` document, so their
+  // targets point at that document rather than at the page.
+  check(
+    'the day columns carry targets',
+    attrs.some((a) => a.includes(`id=${FIRST_ROUTINE_ID};type=classRoutine;path=days:`)),
+  )
+  check(
+    'the slot times carry targets',
+    attrs.some((a) => a.includes('path=rows:period-2.time')),
+  )
   check('the print button label carries a target', attrs.some((a) => a.includes('printButtonLabel')))
   check('the CTA button targets its own field', attrs.some((a) => a.includes('primaryButton')))
   check(

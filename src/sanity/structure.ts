@@ -8,6 +8,7 @@ const SINGLETONS = {
   classRoutinePage: 'Class routine page',
   contactPage: 'Contact page',
   branchPage: 'Branch page',
+  complaintPage: 'Complaint Box page',
   siteSettings: 'Site settings',
   navigation: 'Navigation',
 } as const
@@ -38,6 +39,7 @@ export const structure: StructureResolver = (S) =>
       singletonItem(S, 'classRoutinePage'),
       singletonItem(S, 'contactPage'),
       singletonItem(S, 'branchPage'),
+      singletonItem(S, 'complaintPage'),
       S.divider(),
 
       S.documentTypeListItem('newsPost').title('News & events'),

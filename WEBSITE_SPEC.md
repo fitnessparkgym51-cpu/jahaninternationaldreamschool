@@ -1,11 +1,13 @@
 # WEBSITE_SPEC.md
 
 The page inventory, the editorial model behind each page, and the change-impact
-map. Read alongside `AGENTS.md` (the contract) and `SANITY_ARCHITECTURE.md`
-(how the CMS is wired).
+map. Read alongside `AGENTS.md` (the contract), `SANITY_ARCHITECTURE.md`
+(how the CMS is wired) and `SEO_CHECKLIST.md` (search engines).
 
 Routes come from the **`navigation` document in Sanity**, not from this file. This
-file documents them; the CMS controls them.
+file documents them; the CMS controls them. The technical route inventory that the
+sitemap, the canonicals and `scripts/verify-seo.mjs` share is
+**`src/lib/routes.ts`**.
 
 ---
 
@@ -18,26 +20,39 @@ cross-checked against the `JIDS/` reference pages.
 |---|---|---|---|
 | `/` | `home.html` | Home | **Built** — reference implementation |
 | `/about-us` | `aboutus.html` | Principal's message, teaching team, guiding philosophy | **Built** |
-| `/academics` | `classesoffered.html` | Classes offered, curriculum highlights | Not built |
-| `/academics/class-routine` | `classroutine.html` | Weekly timetable per class | Not built |
-| `/admissions` | `admission.html` | How to apply, referral offer, FAQ | Not built |
-| `/news` | *no reference page* | News & events listing | Not built — **no reference exists** |
-| `/contact` | `contactus.html` | Contact cards, office hours, enquiry form | Not built |
-| `/complaint-box` | `complaintbox.html` | Anonymous complaint form + tracking ID | Not built |
-| `/why-choose-us` | `whychooseus.html` | Alumni destinations, supporting pillars | Not built |
-| `/privacy` | *no reference page* | Privacy policy (linked from the footer) | Not built — **no reference exists** |
+| `/academics` | `classesoffered.html` | Classes offered, curriculum highlights | **Built** |
+| `/academics/class-routine` | `classroutine.html` | Weekly timetable per class | **Built** |
+| `/admissions` | `admission.html` | How to apply, referral offer, FAQ | **Built** |
+| `/contact` | `contactus.html` | Contact cards, office hours, enquiry form | **Built** |
+| `/complaint-box` | `complaintbox.html` | Anonymous complaint form + tracking ID | **Built** — `noindex` |
+| `/branch` | *no reference page* | Landing-page reference copy for a madrasa | **Built, wrong content** — see below |
+| 404 | — | Missing pages | **Built** — `src/app/not-found.tsx` |
+| `/robots.txt`, `/sitemap.xml` | — | Crawl control | **Built** — `SEO_CHECKLIST.md` |
+| `/why-choose-us` | `whychooseus.html` | Alumni destinations, supporting pillars | Not built — **no reference-derived design agreed** |
 | `/safety-first` | `safetyfirst.html` | Six layers of safety, pickup protocol | Not built — **orphaned: no nav link** |
+| `/privacy`, `/terms` | *no reference page* | Legal pages (were linked from the footer) | Not built — **links removed 2026-09-27** |
 
-### Three gaps that need a human decision
+### Gaps that need a human decision
 
-1. **`/news`** is in the navigation but there is no `news.html` reference. The
-   Home page's news section is the only design precedent. Do not invent a listing
-   design without asking.
-2. **`/privacy`** is in the footer quick links with no reference and no content.
-   Legal copy must be supplied by the school.
+1. **`/branch` is another institution's content.** The page renders an Islamic
+   madrasa ("Welcome to Al Noor Madrasa"), not J.I.D.S. It is linked from the main
+   navigation and, as instructed, left indexable with a title that describes what
+   the page actually says and `seo.appendSiteName` switched off so the two
+   organisations are not conflated. Either replace the copy with real branch
+   content or unpublish the route. `SEO_CHECKLIST.md` §11.
+2. **`/why-choose-us`** has a full reference page. The footer's "Alumni & Students"
+   link and the Home page's "View All Student Success Stories" button both pointed
+   at it and both 404'd; they have been removed rather than repointed. Build the
+   page, then restore the links in the Studio.
 3. **`/safety-first`** has a full reference page but nothing links to it. Either
    add a nav item in Sanity or leave it unbuilt — but do not quietly drop a page
    the school wrote.
+4. **`/privacy` and `/terms`** are legal pages the footer linked to. The links were
+   removed on 2026-09-27 because a 404 on every page is worse than no link. Legal
+   copy must be supplied by the school; restore the links when it exists.
+5. **`/news`** was in an earlier navigation and was replaced by the Branch page
+   (commit `d3dc5eb`). The `newsPost` documents remain as home-page cards. There is
+   no article route, so there is no `Article` structured data.
 
 ### Shared in-page anchors already referenced by Sanity
 
@@ -171,39 +186,48 @@ covers the case where every teacher is later hidden.
 ### SEO
 
 Title and description authored on the `aboutPage` document, falling back to
-`siteSettings.seo`. The reference `<title>` is
-`About Us - Jahan International Dream School (J.I.D.S.)`; a shorter variant is
-seeded to stay under the 60-character guideline.
+`siteSettings.seo`, then composed by `src/lib/metadata.ts` — the school name is
+appended only when the editor's title does not already contain it. The reference
+`<title>` is `About Us - Jahan International Dream School (J.I.D.S.)`; the served
+title is `About Us & Our Teachers | Jahan International Dream School`, 58
+characters, measured and asserted by `scripts/verify-seo.mjs`.
 
 ---
 
 ## 6. Remaining pages — notes for whoever builds them
 
-Not yet designed in detail. What the audit established:
+Notes kept from the original audit. `/academics`, `/academics/class-routine`,
+`/admissions`, `/contact` and `/complaint-box` have since been built on exactly
+this model; read them for the pattern rather than for guidance.
 
 - **`/academics`** — class table (Play Group → Class 10) with an age/subject
   grid (`#curriculum-table`), six curriculum-highlight cards, enrol CTA
-  (`#enrol`). Cards map to a `featureCard`-style grid.
+  (`#enrol`). Cards map to a `featureCard`-style grid. → **Built.**
 - **`/academics/class-routine`** — interactive per-class timetable with tabs
   (`#routineTabs`), a print button (`#routinePrint`) and a "Good To Know" block.
   The interactive part is **code**; the timetable rows are **CMS**. A timetable
   is a strong candidate for a reusable `classRoutine` document with a
-  `day[]` → `periods[]` shape.
+  `day[]` → `periods[]` shape. → **Built** as a `classRoutine` document.
 - **`/admissions`** — five-step "How To Apply" process, curriculum infographic,
   referral offer, and an FAQ accordion (`#faqAccordion`). Accordion *behaviour*
-  is code; questions/answers are CMS.
+  is code; questions/answers are CMS. → **Built.**
 - **`/contact`** — six contact cards (address, phone, WhatsApp, email, office
   hours), a news strip, and an enquiry form (`#contact-form`: parent name,
   WhatsApp number, child age, class/grade, message, consent checkbox). Card
   content comes from `siteSettings.contact`; the form UI is code, its labels and
-  success copy are CMS.
+  success copy are CMS. → **Built**, but the cards are currently seeded inline on
+  the page document rather than read from `siteSettings.contact`; the two must be
+  kept identical (`SEO_CHECKLIST.md` §10).
 - **`/complaint-box`** — anonymity promise cards, a complaint form (topic, class,
   details) that returns a **tracking ID** the user can copy, a 4-step "How It
-  Works", and a "would rather talk to someone" block. Needs a form action or
-  route handler; the tracking-ID copy must be CMS-controlled.
+  Works", and a "would rather talk to someone" block. → **Built** as a
+  `complaintPage` singleton + the `ComplaintBox` form. The heading and intro are
+  CMS-controlled; the strings inside the form are still hardcoded in
+  `src/components/complaint/ComplaintBox.tsx`, which is a known CMS-safety gap
+  (`SEO_CHECKLIST.md` §17).
 - **`/why-choose-us`** — curriculum and classroom features, safety feature,
   alumni destinations (reuses `studentSpotlight` references), supporting
-  pillars, admissions banner (`#admissions`).
+  pillars, admissions banner (`#admissions`). → **Not built.**
 
 Two pages have forms. Per `AGENTS.md` Part 18: layout and behaviour in code,
 labels/placeholders/success messages in Sanity, **no secrets in Sanity**.

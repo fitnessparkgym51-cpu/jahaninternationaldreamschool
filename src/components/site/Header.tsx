@@ -77,7 +77,6 @@ export function Header({documentId, siteSettingsId, header, brand, topBar}: Head
               {brand?.logo ? (
                 <SanityImage
                   image={brand.logo}
-                  sourceWidth={96}
                   sizes="48px"
                   className="object-contain"
                   editAttribute={brandField('logo')}
@@ -97,7 +96,7 @@ export function Header({documentId, siteSettingsId, header, brand, topBar}: Head
                     <span data-sanity={brandField('acronym')}>{brand.acronym}</span>
                   ) : null}
                   {brand?.acronym && brand?.establishedLabel ? (
-                    <span className="text-gray-300">•</span>
+                    <span className="text-gray-300">â€¢</span>
                   ) : null}
                   {brand?.establishedLabel ? (
                     <span
@@ -169,7 +168,7 @@ export function Header({documentId, siteSettingsId, header, brand, topBar}: Head
             onClick={() => setMenuOpen(false)}
             className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border-none bg-jids-green/10 text-sm text-jids-green transition-colors hover:bg-jids-green/20"
           >
-            ✕
+            âœ•
           </button>
         </div>
 
@@ -185,7 +184,7 @@ export function Header({documentId, siteSettingsId, header, brand, topBar}: Head
                 }`}
               >
                 <span>{item.label}</span>
-                <span aria-hidden="true">›</span>
+                <span aria-hidden="true">â€º</span>
               </SmartLink>
               {item.children?.length ? (
                 <div className="mb-1 ml-3 flex flex-col border-l border-[#eef2ea] pl-3">

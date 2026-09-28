@@ -18,7 +18,7 @@ type PersonCardProps = {
  * than the page field that holds the reference. The `data-sanity` attributes are
  * therefore built against `person.id`, not the page id.
  *
- * A person with no photograph renders the reference's dashed placeholder tile —
+ * A person with no photograph renders the reference's dashed placeholder tile â€”
  * a single-person icon, an editable "coming soon" label, and an optional corner
  * badge. That is how the twelve unfilled teacher cards in the reference are
  * reproduced without inventing photographs or hiding the gap from editors.
@@ -41,7 +41,6 @@ export function PersonCard({person, delay = 0}: PersonCardProps) {
         {person.photo ? (
           <SanityImage
             image={person.photo}
-            sourceWidth={640}
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover"
             editAttribute={personField('photo')}

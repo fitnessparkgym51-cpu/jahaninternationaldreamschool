@@ -37,7 +37,7 @@ export function StudentSpotlightSection({section, editField}: StudentSpotlightSe
         <div className="mb-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {students.map((student, index) => {
             // The card renders a referenced document, so its own fields belong to
-            // that document — clicking the card must open the Student spotlight,
+            // that document â€” clicking the card must open the Student spotlight,
             // not the Home page section that lists it.
             const studentField = (...rest: PathStep[]) =>
               editAttribute({id: student.id, type: 'studentSpotlight', path: rest})
@@ -55,7 +55,6 @@ export function StudentSpotlightSection({section, editField}: StudentSpotlightSe
                 >
                   <SanityImage
                     image={student.photo}
-                    sourceWidth={192}
                     sizes="96px"
                     className="rounded-full object-cover"
                     editAttribute={studentField('photo')}

@@ -36,6 +36,7 @@ const seoProjection = /* groq */ `{
   metaDescription,
   "shareImage": shareImage${imageWithAltProjection},
   canonicalUrl,
+  appendSiteName,
   noIndex
 }`
 
@@ -66,6 +67,12 @@ export const siteSettingsQuery = defineQuery(`*[_type == "siteSettings"][0]{
     mobileHref,
     emailLabel,
     emailHref
+  },
+  postalAddress{
+    streetAddress,
+    addressLocality,
+    addressRegion,
+    addressCountry
   },
   socialLinks[]{ _key, icon, label, url },
   footer{
@@ -206,13 +213,31 @@ export const defaultSeoQuery = defineQuery(`*[_type == "siteSettings"][0]{seo${s
  * `$type` is the page's document type (`homePage`, `aboutPage`, …) so every page
  * shares one query rather than each declaring a near-identical copy.
  *
+ * `brandName` comes back with it because the title composer needs the school's
+ * own name to brand a title that does not already carry it.
+ *
  * Fetched with stega disabled — invisible characters inside `<title>` or
  * `<meta content>` look fine in a browser but corrupt search engine results and
  * social scrapes.
  */
 export const pageSeoQuery = defineQuery(`{
   "page": *[_type == $type][0]{seo${seoProjection}},
-  "site": *[_type == "siteSettings"][0]{seo${seoProjection}}
+  "site": *[_type == "siteSettings"][0]{seo${seoProjection}},
+  "brandName": *[_type == "siteSettings"][0].brand.name
+}`)
+
+/**
+ * Published pages for the XML sitemap.
+ *
+ * Read through the plain client rather than `sanityFetch`, on purpose: this must
+ * never return draft content, even when the request happens to carry a Draft
+ * Mode cookie. `_updatedAt` is the real last-edit time, so `lastModified` in the
+ * sitemap is never invented.
+ */
+export const sitemapQuery = defineQuery(`*[_type in $types && !(_id in path("drafts.**"))]{
+  _type,
+  _updatedAt,
+  "noIndex": seo.noIndex
 }`)
 
 /**
@@ -535,6 +560,18 @@ export const branchPageQuery = defineQuery(`{
     programs{ enabled, eyebrow, heading, items[]{ _key, icon, title, text } },
     teachers{ enabled, eyebrow, heading,
       items[]{ _key, name, role, "photo": photo${imageWithAltProjection} } }
+  }
+}`)
+
+/** Everything the Complaint Box page needs in one round trip. */
+export const complaintPageQuery = defineQuery(`{
+  "siteSettings": ${siteSettingsQuery},
+  "navigation": ${navigationQuery},
+  "complaint": *[_type == "complaintPage"][0]{
+    "id": _id,
+    internalTitle,
+    heading,
+    intro
   }
 }`)
 

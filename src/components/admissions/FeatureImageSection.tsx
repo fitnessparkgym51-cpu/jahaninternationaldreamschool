@@ -18,7 +18,7 @@ type FeatureImageSectionProps = {
 }
 
 /**
- * One large CMS image in a framed panel — the admission brochure here, a
+ * One large CMS image in a framed panel â€” the admission brochure here, a
  * prospectus or floor plan elsewhere.
  *
  * The `anchorId` is what lets the hero's "Download Admission Form" button jump
@@ -51,7 +51,6 @@ export function FeatureImageSection({section, editField}: FeatureImageSectionPro
             <div className="relative aspect-[4/3] w-full">
               <SanityImage
                 image={section.image}
-                sourceWidth={1400}
                 sizes="(min-width: 1024px) 42rem, 100vw"
                 className="object-contain"
                 editAttribute={editField('image')}

@@ -36,7 +36,6 @@ export function Footer({documentId, footer, brand}: FooterProps) {
               {brand?.logo ? (
                 <SanityImage
                   image={brand.logo}
-                  sourceWidth={96}
                   sizes="48px"
                   className="object-contain"
                   editAttribute={brandField('logo')}
@@ -51,7 +50,7 @@ export function Footer({documentId, footer, brand}: FooterProps) {
                 {brand?.name}
               </div>
               <div className="text-xs font-medium text-yellow-300">
-                {[brand?.acronym, brand?.establishedLabel].filter(Boolean).join(' • ')}
+                {[brand?.acronym, brand?.establishedLabel].filter(Boolean).join(' â€¢ ')}
               </div>
             </div>
           </div>
@@ -153,7 +152,6 @@ export function Footer({documentId, footer, brand}: FooterProps) {
                   {footer.socialCard.image ? (
                     <SanityImage
                       image={footer.socialCard.image}
-                      sourceWidth={176}
                       sizes="44px"
                       className="object-contain"
                       editAttribute={field('socialCard', 'image')}

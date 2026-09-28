@@ -1,11 +1,12 @@
+import {PageJsonLd} from '@/components/seo/JsonLd'
 import type {Metadata} from 'next'
 
 import {AcademicsSections} from '@/components/academics/AcademicsSections'
 import {FloatingContact} from '@/components/site/FloatingContact'
 import {Footer} from '@/components/site/Footer'
 import {Header} from '@/components/site/Header'
-import {buildMetadata} from '@/lib/metadata'
-import {getAcademicsPageData, getAcademicsPageSeo} from '@/sanity/lib/fetch'
+import {buildPageMetadata} from '@/lib/metadata'
+import {getAcademicsPageData} from '@/sanity/lib/fetch'
 
 /**
  * The Academics page (`/academics`) — classes offered and curriculum highlights.
@@ -19,15 +20,8 @@ import {getAcademicsPageData, getAcademicsPageSeo} from '@/sanity/lib/fetch'
  */
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const {page, site} = await getAcademicsPageSeo()
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '')
-
-  return buildMetadata({
-    pageSeo: page,
-    siteSeo: site,
-    url: siteUrl ? `${siteUrl}/academics` : undefined,
-  })
+export function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({type: 'academicsPage', pathname: '/academics'})
 }
 
 export default async function AcademicsPage() {
@@ -40,6 +34,8 @@ export default async function AcademicsPage() {
 
   return (
     <>
+      <PageJsonLd type="academicsPage" pathname="/academics" />
+
       <Header
         documentId={navigationId}
         siteSettingsId={settingsId}

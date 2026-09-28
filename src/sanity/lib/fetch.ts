@@ -11,12 +11,14 @@ import type {
   SiteSettings,
 } from '../types/home'
 import type {ContactPageData} from '../types/contact'
+import type {ComplaintPageData} from '../types/complaint'
 
 import {
   aboutPageQuery,
   academicsPageQuery,
   admissionsPageQuery,
   classRoutinePageQuery,
+  complaintPageQuery,
   contactPageQuery,
   homePageQuery,
   navigationQuery,
@@ -64,24 +66,12 @@ export const getHomePageData = cache(async (): Promise<HomePageData> => {
  */
 export const getPageSeo = cache(async (type: string): Promise<PageSeo> => {
   const {data} = await sanityFetch({query: pageSeoQuery, params: {type}, stega: false})
-  return {page: data?.page?.seo ?? null, site: data?.site?.seo ?? null}
+  return {
+    page: data?.page?.seo ?? null,
+    site: data?.site?.seo ?? null,
+    brandName: data?.brandName ?? null,
+  }
 })
-
-export const getHomePageSeo = cache(async (): Promise<PageSeo> => getPageSeo('homePage'))
-
-export const getAboutPageSeo = cache(async (): Promise<PageSeo> => getPageSeo('aboutPage'))
-
-export const getAdmissionsPageSeo = cache(async (): Promise<PageSeo> =>
-  getPageSeo('admissionsPage'),
-)
-
-export const getAcademicsPageSeo = cache(async (): Promise<PageSeo> =>
-  getPageSeo('academicsPage'),
-)
-
-export const getClassRoutinePageSeo = cache(async (): Promise<PageSeo> =>
-  getPageSeo('classRoutinePage'),
-)
 
 /**
  * The whole About page in one round trip: site chrome, navigation and content.
@@ -115,6 +105,12 @@ export const getAcademicsPageData = cache(async (): Promise<AcademicsPageData> =
  * The whole Class routine page in one round trip. Same stega reasoning as the
  * other page fetches.
  */
+export const getClassRoutinePageData = cache(async (): Promise<ClassRoutinePageData> => {
+  const {data} = await sanityFetch({query: classRoutinePageQuery})
+  return data as ClassRoutinePageData
+})
+
+/** SEO for the Contact page. Sibling of `getContactPageData` below. */
 export const getContactPageSeo = cache(async (): Promise<PageSeo> => getPageSeo('contactPage'))
 
 /** The whole Contact page in one round trip. Types live in `types/contact.ts`. */
@@ -123,9 +119,10 @@ export const getContactPageData = cache(async (): Promise<ContactPageData> => {
   return data as unknown as ContactPageData
 })
 
-export const getClassRoutinePageData =cache(async (): Promise<ClassRoutinePageData> => {
-  const {data} = await sanityFetch({query: classRoutinePageQuery})
-  return data as ClassRoutinePageData
+/** The whole Complaint Box page in one round trip. */
+export const getComplaintPageData = cache(async (): Promise<ComplaintPageData> => {
+  const {data} = await sanityFetch({query: complaintPageQuery})
+  return data as ComplaintPageData
 })
 
 

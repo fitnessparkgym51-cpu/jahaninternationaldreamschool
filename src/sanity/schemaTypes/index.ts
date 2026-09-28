@@ -9,6 +9,7 @@ import {admissionsPageType} from './documents/admissionsPage'
 import {homePageType, newsPostType, siteSettingsType, studentSpotlightType} from './documents'
 import {personType} from './documents/person'
 import {complaintType} from './documents/complaint'
+import {complaintPageType} from './documents/complaintPage'
 import {branchPageType} from './documents/branchPage'
 import {contactPageType, contactSubmissionType} from './documents/contactPage'
 import {
@@ -58,6 +59,7 @@ import {
   floatingContactType,
   footerType,
   mapCardType,
+  postalAddressType,
   socialLinkType,
   socialPreviewCardType,
 } from './objects/site'
@@ -79,6 +81,7 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     sectionHeaderType,
     brandType,
     contactBlockType,
+    postalAddressType,
     contactListItemType,
     socialLinkType,
     socialPreviewCardType,
@@ -145,6 +148,7 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     complaintType,
     contactPageType,
     branchPageType,
+    complaintPageType,
     contactSubmissionType,
   ],
 }

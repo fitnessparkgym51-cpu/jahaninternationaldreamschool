@@ -1,11 +1,12 @@
+import {PageJsonLd} from '@/components/seo/JsonLd'
 import type {Metadata} from 'next'
 
 import {AdmissionsSections} from '@/components/admissions/AdmissionsSections'
 import {FloatingContact} from '@/components/site/FloatingContact'
 import {Footer} from '@/components/site/Footer'
 import {Header} from '@/components/site/Header'
-import {buildMetadata} from '@/lib/metadata'
-import {getAdmissionsPageData, getAdmissionsPageSeo} from '@/sanity/lib/fetch'
+import {buildPageMetadata} from '@/lib/metadata'
+import {getAdmissionsPageData} from '@/sanity/lib/fetch'
 
 /**
  * The Admissions page (`/admissions`).
@@ -20,15 +21,8 @@ import {getAdmissionsPageData, getAdmissionsPageSeo} from '@/sanity/lib/fetch'
  */
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const {page, site} = await getAdmissionsPageSeo()
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '')
-
-  return buildMetadata({
-    pageSeo: page,
-    siteSeo: site,
-    url: siteUrl ? `${siteUrl}/admissions` : undefined,
-  })
+export function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({type: 'admissionsPage', pathname: '/admissions'})
 }
 
 export default async function AdmissionsPage() {
@@ -41,6 +35,8 @@ export default async function AdmissionsPage() {
 
   return (
     <>
+      <PageJsonLd type="admissionsPage" pathname="/admissions" />
+
       <Header
         documentId={navigationId}
         siteSettingsId={settingsId}

@@ -29,6 +29,17 @@ export type ContactSubmission = {
   submittedAt?: string;
 };
 
+export type ComplaintPage = {
+  _id: string;
+  _type: "complaintPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  internalTitle?: string;
+  heading?: string;
+  intro?: string;
+};
+
 export type BranchPage = {
   _id: string;
   _type: "branchPage";
@@ -170,6 +181,7 @@ export type Seo = {
   metaDescription?: string;
   shareImage?: ImageWithAlt;
   canonicalUrl?: string;
+  appendSiteName?: boolean;
   noIndex?: boolean;
 };
 
@@ -485,6 +497,7 @@ export type SiteSettings = {
   internalTitle?: string;
   brand?: Brand;
   contact?: ContactBlock;
+  postalAddress?: PostalAddress;
   socialLinks?: Array<
     {
       _key: string;
@@ -529,6 +542,14 @@ export type Footer = {
       _key: string;
     } & Link
   >;
+};
+
+export type PostalAddress = {
+  _type: "postalAddress";
+  streetAddress?: string;
+  addressLocality?: string;
+  addressRegion?: string;
+  addressCountry?: string;
 };
 
 export type ContactBlock = {
@@ -1477,6 +1498,7 @@ export type Geopoint = {
 
 export type AllSanitySchemaTypes =
   | ContactSubmission
+  | ComplaintPage
   | BranchPage
   | Seo
   | SanityImageAssetReference
@@ -1495,6 +1517,7 @@ export type AllSanitySchemaTypes =
   | SiteSettings
   | FloatingContact
   | Footer
+  | PostalAddress
   | ContactBlock
   | Brand
   | ClassLevelReference
@@ -1558,7 +1581,7 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/lib/queries.ts
 // Variable: siteSettingsQuery
-// Query: *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}}
+// Query: *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  postalAddress{    streetAddress,    addressLocality,    addressRegion,    addressCountry  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}}
 export type SiteSettingsQueryResult = {
   id: string;
   brand: {
@@ -1580,6 +1603,12 @@ export type SiteSettingsQueryResult = {
     mobileHref: string | null;
     emailLabel: string | null;
     emailHref: string | null;
+  } | null;
+  postalAddress: {
+    streetAddress: string | null;
+    addressLocality: string | null;
+    addressRegion: string | null;
+    addressCountry: string | null;
   } | null;
   socialLinks: Array<{
     _key: string;
@@ -1727,6 +1756,7 @@ export type SiteSettingsQueryResult = {
       alt: string | null;
     } | null;
     canonicalUrl: string | null;
+    appendSiteName: boolean | null;
     noIndex: boolean | null;
   } | null;
 } | null;
@@ -1894,7 +1924,7 @@ export type NavigationQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: defaultSeoQuery
-// Query: *[_type == "siteSettings"][0]{seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}}
+// Query: *[_type == "siteSettings"][0]{seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}}
 export type DefaultSeoQueryResult = {
   seo: {
     metaTitle: string | null;
@@ -1906,13 +1936,14 @@ export type DefaultSeoQueryResult = {
       alt: string | null;
     } | null;
     canonicalUrl: string | null;
+    appendSiteName: boolean | null;
     noIndex: boolean | null;
   } | null;
 } | null;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: pageSeoQuery
-// Query: {  "page": *[_type == $type][0]{seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}},  "site": *[_type == "siteSettings"][0]{seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}}}
+// Query: {  "page": *[_type == $type][0]{seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}},  "site": *[_type == "siteSettings"][0]{seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}},  "brandName": *[_type == "siteSettings"][0].brand.name}
 export type PageSeoQueryResult = {
   page:
     | {
@@ -1929,6 +1960,7 @@ export type PageSeoQueryResult = {
             alt: string | null;
           } | null;
           canonicalUrl: string | null;
+          appendSiteName: boolean | null;
           noIndex: boolean | null;
         } | null;
       }
@@ -1944,14 +1976,117 @@ export type PageSeoQueryResult = {
         alt: string | null;
       } | null;
       canonicalUrl: string | null;
+      appendSiteName: boolean | null;
       noIndex: boolean | null;
     } | null;
   } | null;
+  brandName: string | null;
 };
 
 // Source: src/sanity/lib/queries.ts
+// Variable: sitemapQuery
+// Query: *[_type in $types && !(_id in path("drafts.**"))]{  _type,  _updatedAt,  "noIndex": seo.noIndex}
+export type SitemapQueryResult = Array<
+  | {
+      _type: "aboutPage";
+      _updatedAt: string;
+      noIndex: boolean | null;
+    }
+  | {
+      _type: "academicsPage";
+      _updatedAt: string;
+      noIndex: boolean | null;
+    }
+  | {
+      _type: "admissionsPage";
+      _updatedAt: string;
+      noIndex: boolean | null;
+    }
+  | {
+      _type: "branchPage";
+      _updatedAt: string;
+      noIndex: boolean | null;
+    }
+  | {
+      _type: "classLevel";
+      _updatedAt: string;
+      noIndex: null;
+    }
+  | {
+      _type: "classRoutine";
+      _updatedAt: string;
+      noIndex: null;
+    }
+  | {
+      _type: "classRoutinePage";
+      _updatedAt: string;
+      noIndex: boolean | null;
+    }
+  | {
+      _type: "complaint";
+      _updatedAt: string;
+      noIndex: null;
+    }
+  | {
+      _type: "complaintPage";
+      _updatedAt: string;
+      noIndex: null;
+    }
+  | {
+      _type: "contactPage";
+      _updatedAt: string;
+      noIndex: boolean | null;
+    }
+  | {
+      _type: "contactSubmission";
+      _updatedAt: string;
+      noIndex: null;
+    }
+  | {
+      _type: "homePage";
+      _updatedAt: string;
+      noIndex: boolean | null;
+    }
+  | {
+      _type: "navigation";
+      _updatedAt: string;
+      noIndex: null;
+    }
+  | {
+      _type: "newsPost";
+      _updatedAt: string;
+      noIndex: null;
+    }
+  | {
+      _type: "person";
+      _updatedAt: string;
+      noIndex: null;
+    }
+  | {
+      _type: "sanity.fileAsset";
+      _updatedAt: string;
+      noIndex: null;
+    }
+  | {
+      _type: "sanity.imageAsset";
+      _updatedAt: string;
+      noIndex: null;
+    }
+  | {
+      _type: "siteSettings";
+      _updatedAt: string;
+      noIndex: boolean | null;
+    }
+  | {
+      _type: "studentSpotlight";
+      _updatedAt: string;
+      noIndex: null;
+    }
+>;
+
+// Source: src/sanity/lib/queries.ts
 // Variable: homePageQuery
-// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "home": *[_type == "homePage"][0]{    "id": _id,    internalTitle,    sections[]{  _key,  _type,  enabled,  // heroSection  eyebrow,  heading,  description,  highlightBadge,  autoplaySeconds,  primaryButton{  _key,  label,  url,  newTab,  variant},  secondaryButton{  _key,  label,  url,  newTab,  variant},  "slides": slides[isVisible != false]{  _key,  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  isVisible},  // statsBarSection  items[]{  _key,  value,  label,  isSmaller},  // featuresSection  header{ heading, subheading },  cards[isVisible != false]{  _key,  icon,  "iconImage": iconImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  badge,  useAmberIcon,  title,  description,  isVisible},  // aboutStorySection  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  body,  // link / badge fields shared by several sections  "link": link{  _key,  label,  url,  newTab},  metaText,  badge,  anchorId,  // studentSpotlightSection  "students": students[]->{  "id": _id,  name,  classLabel,  "photo": photo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  cohortLabel,  schoolName,  note,  isVisible},  // newsSection  "posts": posts[]->{  "id": _id,  title,  category,  excerpt,  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  link{  _key,  label,  url,  newTab},  isVisible},  // reviewBarSection  brandLabel,  score,  summary,  stars,  "cta": cta{  _key,  label,  url,  newTab,  variant}},    seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}  }}
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  postalAddress{    streetAddress,    addressLocality,    addressRegion,    addressCountry  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "home": *[_type == "homePage"][0]{    "id": _id,    internalTitle,    sections[]{  _key,  _type,  enabled,  // heroSection  eyebrow,  heading,  description,  highlightBadge,  autoplaySeconds,  primaryButton{  _key,  label,  url,  newTab,  variant},  secondaryButton{  _key,  label,  url,  newTab,  variant},  "slides": slides[isVisible != false]{  _key,  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  isVisible},  // statsBarSection  items[]{  _key,  value,  label,  isSmaller},  // featuresSection  header{ heading, subheading },  cards[isVisible != false]{  _key,  icon,  "iconImage": iconImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  badge,  useAmberIcon,  title,  description,  isVisible},  // aboutStorySection  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  body,  // link / badge fields shared by several sections  "link": link{  _key,  label,  url,  newTab},  metaText,  badge,  anchorId,  // studentSpotlightSection  "students": students[]->{  "id": _id,  name,  classLabel,  "photo": photo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  cohortLabel,  schoolName,  note,  isVisible},  // newsSection  "posts": posts[]->{  "id": _id,  title,  category,  excerpt,  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  link{  _key,  label,  url,  newTab},  isVisible},  // reviewBarSection  brandLabel,  score,  summary,  stars,  "cta": cta{  _key,  label,  url,  newTab,  variant}},    seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}  }}
 export type HomePageQueryResult = {
   siteSettings: {
     id: string;
@@ -1974,6 +2109,12 @@ export type HomePageQueryResult = {
       mobileHref: string | null;
       emailLabel: string | null;
       emailHref: string | null;
+    } | null;
+    postalAddress: {
+      streetAddress: string | null;
+      addressLocality: string | null;
+      addressRegion: string | null;
+      addressCountry: string | null;
     } | null;
     socialLinks: Array<{
       _key: string;
@@ -2121,6 +2262,7 @@ export type HomePageQueryResult = {
         alt: string | null;
       } | null;
       canonicalUrl: string | null;
+      appendSiteName: boolean | null;
       noIndex: boolean | null;
     } | null;
   } | null;
@@ -2719,6 +2861,7 @@ export type HomePageQueryResult = {
         alt: string | null;
       } | null;
       canonicalUrl: string | null;
+      appendSiteName: boolean | null;
       noIndex: boolean | null;
     } | null;
   } | null;
@@ -2726,7 +2869,7 @@ export type HomePageQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: aboutPageQuery
-// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "about": *[_type == "aboutPage"][0]{    "id": _id,    internalTitle,    sections[]{  _key,  _type,  enabled,  // pageHeroSection  heading,  subheading,  appearance,  eyebrowIcon,  eyebrow,  crumbs[]{  _key,  label,  url},  buttons[]{  _key,  label,  url,  newTab,  variant},  // principalSection  header{ heading, subheading },  "principal": principal->{  "id": _id,  name,  designation,  role,  badge,  photoPlaceholderLabel,  "photo": photo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  shortBio,  message,  quote,  quoteAttribution,  isVisible},  // peopleGridSection  anchorId,  "people": people[]->{  "id": _id,  name,  designation,  role,  badge,  photoPlaceholderLabel,  "photo": photo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  shortBio,  message,  quote,  quoteAttribution,  isVisible},  emptyStateText,  // pillarsSection  pillars[]{ _key, icon, tone, title, description },  // pageCtaSection  badge,  "cta": cta{  _key,  label,  url,  newTab,  variant},  primaryButton{  _key,  label,  url,  newTab,  variant},  secondaryButton{  _key,  label,  url,  newTab,  variant}},    seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}  }}
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  postalAddress{    streetAddress,    addressLocality,    addressRegion,    addressCountry  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "about": *[_type == "aboutPage"][0]{    "id": _id,    internalTitle,    sections[]{  _key,  _type,  enabled,  // pageHeroSection  heading,  subheading,  appearance,  eyebrowIcon,  eyebrow,  crumbs[]{  _key,  label,  url},  buttons[]{  _key,  label,  url,  newTab,  variant},  // principalSection  header{ heading, subheading },  "principal": principal->{  "id": _id,  name,  designation,  role,  badge,  photoPlaceholderLabel,  "photo": photo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  shortBio,  message,  quote,  quoteAttribution,  isVisible},  // peopleGridSection  anchorId,  "people": people[]->{  "id": _id,  name,  designation,  role,  badge,  photoPlaceholderLabel,  "photo": photo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  shortBio,  message,  quote,  quoteAttribution,  isVisible},  emptyStateText,  // pillarsSection  pillars[]{ _key, icon, tone, title, description },  // pageCtaSection  badge,  "cta": cta{  _key,  label,  url,  newTab,  variant},  primaryButton{  _key,  label,  url,  newTab,  variant},  secondaryButton{  _key,  label,  url,  newTab,  variant}},    seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}  }}
 export type AboutPageQueryResult = {
   siteSettings: {
     id: string;
@@ -2749,6 +2892,12 @@ export type AboutPageQueryResult = {
       mobileHref: string | null;
       emailLabel: string | null;
       emailHref: string | null;
+    } | null;
+    postalAddress: {
+      streetAddress: string | null;
+      addressLocality: string | null;
+      addressRegion: string | null;
+      addressCountry: string | null;
     } | null;
     socialLinks: Array<{
       _key: string;
@@ -2896,6 +3045,7 @@ export type AboutPageQueryResult = {
         alt: string | null;
       } | null;
       canonicalUrl: string | null;
+      appendSiteName: boolean | null;
       noIndex: boolean | null;
     } | null;
   } | null;
@@ -3370,6 +3520,7 @@ export type AboutPageQueryResult = {
         alt: string | null;
       } | null;
       canonicalUrl: string | null;
+      appendSiteName: boolean | null;
       noIndex: boolean | null;
     } | null;
   } | null;
@@ -3377,7 +3528,7 @@ export type AboutPageQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: admissionsPageQuery
-// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "admissions": *[_type == "admissionsPage"][0]{    "id": _id,    internalTitle,    sections[]{  _key,  _type,  enabled,  // shared across several section types  anchorId,  // pageHeroSection  heading,  subheading,  appearance,  eyebrowIcon,  eyebrow,  crumbs[]{  _key,  label,  url},  buttons[]{  _key,  label,  url,  newTab,  variant},  // processStepsSection  header{ heading, subheading },  steps[]{ _key, title, description, isHighlighted },    // featureImageSection  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  caption,  width,  // calloutSection  tone,  body,  buttonIcon,  // faqSection  items[]{ _key, question, answer, isOpenByDefault },  // pageCtaSection  badge,  "button": button{  _key,  label,  url,  newTab,  variant},  buttons[]{  _key,  label,  url,  newTab,  variant},  primaryButton{  _key,  label,  url,  newTab,  variant},  secondaryButton{  _key,  label,  url,  newTab,  variant}},    seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}  }}
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  postalAddress{    streetAddress,    addressLocality,    addressRegion,    addressCountry  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "admissions": *[_type == "admissionsPage"][0]{    "id": _id,    internalTitle,    sections[]{  _key,  _type,  enabled,  // shared across several section types  anchorId,  // pageHeroSection  heading,  subheading,  appearance,  eyebrowIcon,  eyebrow,  crumbs[]{  _key,  label,  url},  buttons[]{  _key,  label,  url,  newTab,  variant},  // processStepsSection  header{ heading, subheading },  steps[]{ _key, title, description, isHighlighted },    // featureImageSection  "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  caption,  width,  // calloutSection  tone,  body,  buttonIcon,  // faqSection  items[]{ _key, question, answer, isOpenByDefault },  // pageCtaSection  badge,  "button": button{  _key,  label,  url,  newTab,  variant},  buttons[]{  _key,  label,  url,  newTab,  variant},  primaryButton{  _key,  label,  url,  newTab,  variant},  secondaryButton{  _key,  label,  url,  newTab,  variant}},    seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}  }}
 export type AdmissionsPageQueryResult = {
   siteSettings: {
     id: string;
@@ -3400,6 +3551,12 @@ export type AdmissionsPageQueryResult = {
       mobileHref: string | null;
       emailLabel: string | null;
       emailHref: string | null;
+    } | null;
+    postalAddress: {
+      streetAddress: string | null;
+      addressLocality: string | null;
+      addressRegion: string | null;
+      addressCountry: string | null;
     } | null;
     socialLinks: Array<{
       _key: string;
@@ -3547,6 +3704,7 @@ export type AdmissionsPageQueryResult = {
         alt: string | null;
       } | null;
       canonicalUrl: string | null;
+      appendSiteName: boolean | null;
       noIndex: boolean | null;
     } | null;
   } | null;
@@ -4034,6 +4192,7 @@ export type AdmissionsPageQueryResult = {
         alt: string | null;
       } | null;
       canonicalUrl: string | null;
+      appendSiteName: boolean | null;
       noIndex: boolean | null;
     } | null;
   } | null;
@@ -4041,7 +4200,7 @@ export type AdmissionsPageQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: academicsPageQuery
-// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "academics": *[_type == "academicsPage"][0]{    "id": _id,    internalTitle,    sections[]{  _key,  _type,  enabled,  anchorId,  // pageHeroSection  heading,  subheading,  appearance,  showIconWatermark,  eyebrowIcon,  eyebrow,  crumbs[]{  _key,  label,  url},  buttons[]{  _key,  label,  url,  newTab,  variant},  // classTableSection  header{ heading, subheading },  columnLabels{ class, age, medium, focus },  "classes": classes[]->{  "id": _id,  name,  ageRange,  medium,  focus,  sortOrder,  isVisible},  emptyStateText,  // pillarsSection (icon card grid)  pillars[]{ _key, icon, tone, title, description },  // pageCtaSection  badge,  primaryButton{  _key,  label,  url,  newTab,  variant},  secondaryButton{  _key,  label,  url,  newTab,  variant}},    seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}  }}
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  postalAddress{    streetAddress,    addressLocality,    addressRegion,    addressCountry  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "academics": *[_type == "academicsPage"][0]{    "id": _id,    internalTitle,    sections[]{  _key,  _type,  enabled,  anchorId,  // pageHeroSection  heading,  subheading,  appearance,  showIconWatermark,  eyebrowIcon,  eyebrow,  crumbs[]{  _key,  label,  url},  buttons[]{  _key,  label,  url,  newTab,  variant},  // classTableSection  header{ heading, subheading },  columnLabels{ class, age, medium, focus },  "classes": classes[]->{  "id": _id,  name,  ageRange,  medium,  focus,  sortOrder,  isVisible},  emptyStateText,  // pillarsSection (icon card grid)  pillars[]{ _key, icon, tone, title, description },  // pageCtaSection  badge,  primaryButton{  _key,  label,  url,  newTab,  variant},  secondaryButton{  _key,  label,  url,  newTab,  variant}},    seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}  }}
 export type AcademicsPageQueryResult = {
   siteSettings: {
     id: string;
@@ -4064,6 +4223,12 @@ export type AcademicsPageQueryResult = {
       mobileHref: string | null;
       emailLabel: string | null;
       emailHref: string | null;
+    } | null;
+    postalAddress: {
+      streetAddress: string | null;
+      addressLocality: string | null;
+      addressRegion: string | null;
+      addressCountry: string | null;
     } | null;
     socialLinks: Array<{
       _key: string;
@@ -4211,6 +4376,7 @@ export type AcademicsPageQueryResult = {
         alt: string | null;
       } | null;
       canonicalUrl: string | null;
+      appendSiteName: boolean | null;
       noIndex: boolean | null;
     } | null;
   } | null;
@@ -4623,6 +4789,7 @@ export type AcademicsPageQueryResult = {
         alt: string | null;
       } | null;
       canonicalUrl: string | null;
+      appendSiteName: boolean | null;
       noIndex: boolean | null;
     } | null;
   } | null;
@@ -4630,7 +4797,7 @@ export type AcademicsPageQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: classRoutinePageQuery
-// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "routine": *[_type == "classRoutinePage"][0]{    "id": _id,    internalTitle,    sections[]{  _key,  _type,  enabled,  anchorId,  // pageHeroSection  heading,  subheading,  appearance,  showIconWatermark,  eyebrowIcon,  eyebrow,  crumbs[]{  _key,  label,  url},  buttons[]{  _key,  label,  url,  newTab,  variant},  // routineSection  header{ heading, subheading },  "routines": routines[]->{  "id": _id,  "className": classLevel->name,  session,  days,  rows[]{ _key, time, label, kind, cells },  sortOrder,  isVisible},  printButtonLabel,  footnote,  emptyStateText,  // pillarsSection (icon card grid)  pillars[]{ _key, icon, tone, title, description },  // pageCtaSection  badge,  primaryButton{  _key,  label,  url,  newTab,  variant},  secondaryButton{  _key,  label,  url,  newTab,  variant}},    seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}  }}
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  postalAddress{    streetAddress,    addressLocality,    addressRegion,    addressCountry  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "routine": *[_type == "classRoutinePage"][0]{    "id": _id,    internalTitle,    sections[]{  _key,  _type,  enabled,  anchorId,  // pageHeroSection  heading,  subheading,  appearance,  showIconWatermark,  eyebrowIcon,  eyebrow,  crumbs[]{  _key,  label,  url},  buttons[]{  _key,  label,  url,  newTab,  variant},  // routineSection  header{ heading, subheading },  "routines": routines[]->{  "id": _id,  "className": classLevel->name,  session,  days,  rows[]{ _key, time, label, kind, cells },  sortOrder,  isVisible},  printButtonLabel,  footnote,  emptyStateText,  // pillarsSection (icon card grid)  pillars[]{ _key, icon, tone, title, description },  // pageCtaSection  badge,  primaryButton{  _key,  label,  url,  newTab,  variant},  secondaryButton{  _key,  label,  url,  newTab,  variant}},    seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}  }}
 export type ClassRoutinePageQueryResult = {
   siteSettings: {
     id: string;
@@ -4653,6 +4820,12 @@ export type ClassRoutinePageQueryResult = {
       mobileHref: string | null;
       emailLabel: string | null;
       emailHref: string | null;
+    } | null;
+    postalAddress: {
+      streetAddress: string | null;
+      addressLocality: string | null;
+      addressRegion: string | null;
+      addressCountry: string | null;
     } | null;
     socialLinks: Array<{
       _key: string;
@@ -4800,6 +4973,7 @@ export type ClassRoutinePageQueryResult = {
         alt: string | null;
       } | null;
       canonicalUrl: string | null;
+      appendSiteName: boolean | null;
       noIndex: boolean | null;
     } | null;
   } | null;
@@ -5217,6 +5391,7 @@ export type ClassRoutinePageQueryResult = {
         alt: string | null;
       } | null;
       canonicalUrl: string | null;
+      appendSiteName: boolean | null;
       noIndex: boolean | null;
     } | null;
   } | null;
@@ -5224,7 +5399,7 @@ export type ClassRoutinePageQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: branchPageQuery
-// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "branch": *[_type == "branchPage"][0]{    "id": _id,    hero{ eyebrow, heading, text, button{  _key,  label,  url,  newTab,  variant}, "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt} },    features{ enabled, items[]{ _key, icon, title, text } },    about{ enabled, "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt}, eyebrow, heading, paragraphs,      button{  _key,  label,  url,  newTab,  variant} },    programs{ enabled, eyebrow, heading, items[]{ _key, icon, title, text } },    teachers{ enabled, eyebrow, heading,      items[]{ _key, name, role, "photo": photo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt} } }  }}
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  postalAddress{    streetAddress,    addressLocality,    addressRegion,    addressCountry  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "branch": *[_type == "branchPage"][0]{    "id": _id,    hero{ eyebrow, heading, text, button{  _key,  label,  url,  newTab,  variant}, "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt} },    features{ enabled, items[]{ _key, icon, title, text } },    about{ enabled, "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt}, eyebrow, heading, paragraphs,      button{  _key,  label,  url,  newTab,  variant} },    programs{ enabled, eyebrow, heading, items[]{ _key, icon, title, text } },    teachers{ enabled, eyebrow, heading,      items[]{ _key, name, role, "photo": photo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt} } }  }}
 export type BranchPageQueryResult = {
   siteSettings: {
     id: string;
@@ -5247,6 +5422,12 @@ export type BranchPageQueryResult = {
       mobileHref: string | null;
       emailLabel: string | null;
       emailHref: string | null;
+    } | null;
+    postalAddress: {
+      streetAddress: string | null;
+      addressLocality: string | null;
+      addressRegion: string | null;
+      addressCountry: string | null;
     } | null;
     socialLinks: Array<{
       _key: string;
@@ -5394,6 +5575,7 @@ export type BranchPageQueryResult = {
         alt: string | null;
       } | null;
       canonicalUrl: string | null;
+      appendSiteName: boolean | null;
       noIndex: boolean | null;
     } | null;
   } | null;
@@ -5727,9 +5909,9 @@ export type BranchPageQueryResult = {
 };
 
 // Source: src/sanity/lib/queries.ts
-// Variable: contactPageQuery
-// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "contact": *[_type == "contactPage"][0]{    "id": _id,    hero{ enabled, heading, subheading, appearance, showIconWatermark, eyebrow, eyebrowIcon,      crumbs[]{  _key,  label,  url}, buttons[]{  _key,  label,  url,  newTab,  variant} },    infoCard{ heading, items[]{ _key, icon, label, value, note }, button{  _key,  label,  url,  newTab,  variant} },    mapCard{ title, address, rating, reviewCount, pinLabel, landmarks, attribution, mapUrl,      button{  _key,  label,  url,  newTab,  variant} },    form,    review{ enabled, rating, headline, text, button{  _key,  label,  url,  newTab,  variant} }  }}
-export type ContactPageQueryResult = {
+// Variable: complaintPageQuery
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  postalAddress{    streetAddress,    addressLocality,    addressRegion,    addressCountry  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "complaint": *[_type == "complaintPage"][0]{    "id": _id,    internalTitle,    heading,    intro  }}
+export type ComplaintPageQueryResult = {
   siteSettings: {
     id: string;
     brand: {
@@ -5751,6 +5933,12 @@ export type ContactPageQueryResult = {
       mobileHref: string | null;
       emailLabel: string | null;
       emailHref: string | null;
+    } | null;
+    postalAddress: {
+      streetAddress: string | null;
+      addressLocality: string | null;
+      addressRegion: string | null;
+      addressCountry: string | null;
     } | null;
     socialLinks: Array<{
       _key: string;
@@ -5898,6 +6086,354 @@ export type ContactPageQueryResult = {
         alt: string | null;
       } | null;
       canonicalUrl: string | null;
+      appendSiteName: boolean | null;
+      noIndex: boolean | null;
+    } | null;
+  } | null;
+  navigation: {
+    id: string;
+    topBar: {
+      enabled: boolean | null;
+      contactLinks: Array<{
+        _key: string;
+        icon:
+          | "alert-triangle"
+          | "award"
+          | "ball"
+          | "book-open"
+          | "book"
+          | "calendar"
+          | "camera"
+          | "chevron-down"
+          | "chevron-left"
+          | "chevron-right"
+          | "clock"
+          | "external-link"
+          | "facebook"
+          | "file-text"
+          | "globe"
+          | "graduation-cap"
+          | "headset"
+          | "heart"
+          | "lightbulb"
+          | "mail"
+          | "map-pin"
+          | "message-circle"
+          | "mobile"
+          | "monitor-play"
+          | "mosque"
+          | "palette"
+          | "pencil"
+          | "phone"
+          | "pin"
+          | "play"
+          | "shield-check"
+          | "smile"
+          | "sparkle"
+          | "star"
+          | "trophy"
+          | "user"
+          | "users"
+          | "whatsapp"
+          | null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+      }> | null;
+      badge: string | null;
+      notice: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+    } | null;
+    header: {
+      enabled: boolean | null;
+      homeUrl: string | null;
+      brandSubline: string | null;
+      items: Array<{
+        _key: string;
+        label: string | null;
+        url: string | null;
+        isCurrentPage: boolean | null;
+        showChevron: boolean | null;
+        highlight: boolean | null;
+        children: Array<{
+          _key: string;
+          icon:
+            | "alert-triangle"
+            | "award"
+            | "ball"
+            | "book-open"
+            | "book"
+            | "calendar"
+            | "camera"
+            | "chevron-down"
+            | "chevron-left"
+            | "chevron-right"
+            | "clock"
+            | "external-link"
+            | "facebook"
+            | "file-text"
+            | "globe"
+            | "graduation-cap"
+            | "headset"
+            | "heart"
+            | "lightbulb"
+            | "mail"
+            | "map-pin"
+            | "message-circle"
+            | "mobile"
+            | "monitor-play"
+            | "mosque"
+            | "palette"
+            | "pencil"
+            | "phone"
+            | "pin"
+            | "play"
+            | "shield-check"
+            | "smile"
+            | "sparkle"
+            | "star"
+            | "trophy"
+            | "user"
+            | "users"
+            | "whatsapp"
+            | null;
+          label: string | null;
+          url: string | null;
+        }> | null;
+      }> | null;
+      cta: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+      mobileMenuTitle: string | null;
+      mobileMenuCta: {
+        _key: null;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+        variant:
+          | "green"
+          | "invert"
+          | "light"
+          | "link"
+          | "outline"
+          | "primary"
+          | "white"
+          | null;
+      } | null;
+    } | null;
+  } | null;
+  complaint: {
+    id: string;
+    internalTitle: string | null;
+    heading: string | null;
+    intro: string | null;
+  } | null;
+};
+
+// Source: src/sanity/lib/queries.ts
+// Variable: contactPageQuery
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{  "id": _id,  "brand": brand{    "logo": logo{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},    name,    acronym,    establishedLabel  },  contact{    address,    phoneLabel,    phoneHref,    mobileLabel,    mobileHref,    emailLabel,    emailHref  },  postalAddress{    streetAddress,    addressLocality,    addressRegion,    addressCountry  },  socialLinks[]{ _key, icon, label, url },  footer{    enabled,    tagline,    contactItems[]{  _key,  icon,  label,  href},    quickLinksTitle,    quickLinks[]{  _key,  label,  url,  newTab},    socialTitle,    socialCard{      bannerLabel,      "image": image{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},      title,      subtitle,      description,      url    },    mapTitle,    map{ buttonLabel, url, pinLabel, areaLabel },    copyrightText,    legalLinks[]{  _key,  label,  url,  newTab}  },  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },  seo{  metaTitle,  metaDescription,  "shareImage": shareImage{  "asset": image.asset,  "crop": image.crop,  "hotspot": image.hotspot,  alt},  canonicalUrl,  appendSiteName,  noIndex}},  "navigation": *[_type == "navigation"][0]{  "id": _id,  topBar{    enabled,    contactLinks[]{ _key, icon, label, url, newTab },    badge,    notice{  _key,  label,  url,  newTab,  variant}  },  header{    enabled,    homeUrl,    brandSubline,    items[]{      _key,      label,      url,      isCurrentPage,      showChevron,      highlight,      children[]{ _key, icon, label, url }    },    cta{  _key,  label,  url,  newTab,  variant},    mobileMenuTitle,    mobileMenuCta{  _key,  label,  url,  newTab,  variant}  }},  "contact": *[_type == "contactPage"][0]{    "id": _id,    hero{ enabled, heading, subheading, appearance, showIconWatermark, eyebrow, eyebrowIcon,      crumbs[]{  _key,  label,  url}, buttons[]{  _key,  label,  url,  newTab,  variant} },    infoCard{ heading, items[]{ _key, icon, label, value, note }, button{  _key,  label,  url,  newTab,  variant} },    mapCard{ title, address, rating, reviewCount, pinLabel, landmarks, attribution, mapUrl,      button{  _key,  label,  url,  newTab,  variant} },    form,    review{ enabled, rating, headline, text, button{  _key,  label,  url,  newTab,  variant} }  }}
+export type ContactPageQueryResult = {
+  siteSettings: {
+    id: string;
+    brand: {
+      logo: {
+        asset: SanityImageAssetReference | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        alt: string | null;
+      } | null;
+      name: string | null;
+      acronym: string | null;
+      establishedLabel: string | null;
+    } | null;
+    contact: {
+      address: string | null;
+      phoneLabel: string | null;
+      phoneHref: string | null;
+      mobileLabel: string | null;
+      mobileHref: string | null;
+      emailLabel: string | null;
+      emailHref: string | null;
+    } | null;
+    postalAddress: {
+      streetAddress: string | null;
+      addressLocality: string | null;
+      addressRegion: string | null;
+      addressCountry: string | null;
+    } | null;
+    socialLinks: Array<{
+      _key: string;
+      icon:
+        | "alert-triangle"
+        | "award"
+        | "ball"
+        | "book-open"
+        | "book"
+        | "calendar"
+        | "camera"
+        | "chevron-down"
+        | "chevron-left"
+        | "chevron-right"
+        | "clock"
+        | "external-link"
+        | "facebook"
+        | "file-text"
+        | "globe"
+        | "graduation-cap"
+        | "headset"
+        | "heart"
+        | "lightbulb"
+        | "mail"
+        | "map-pin"
+        | "message-circle"
+        | "mobile"
+        | "monitor-play"
+        | "mosque"
+        | "palette"
+        | "pencil"
+        | "phone"
+        | "pin"
+        | "play"
+        | "shield-check"
+        | "smile"
+        | "sparkle"
+        | "star"
+        | "trophy"
+        | "user"
+        | "users"
+        | "whatsapp"
+        | null;
+      label: string | null;
+      url: string | null;
+    }> | null;
+    footer: {
+      enabled: boolean | null;
+      tagline: string | null;
+      contactItems: Array<{
+        _key: string;
+        icon:
+          | "alert-triangle"
+          | "award"
+          | "ball"
+          | "book-open"
+          | "book"
+          | "calendar"
+          | "camera"
+          | "chevron-down"
+          | "chevron-left"
+          | "chevron-right"
+          | "clock"
+          | "external-link"
+          | "facebook"
+          | "file-text"
+          | "globe"
+          | "graduation-cap"
+          | "headset"
+          | "heart"
+          | "lightbulb"
+          | "mail"
+          | "map-pin"
+          | "message-circle"
+          | "mobile"
+          | "monitor-play"
+          | "mosque"
+          | "palette"
+          | "pencil"
+          | "phone"
+          | "pin"
+          | "play"
+          | "shield-check"
+          | "smile"
+          | "sparkle"
+          | "star"
+          | "trophy"
+          | "user"
+          | "users"
+          | "whatsapp"
+          | null;
+        label: string | null;
+        href: string | null;
+      }> | null;
+      quickLinksTitle: string | null;
+      quickLinks: Array<{
+        _key: string;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+      }> | null;
+      socialTitle: string | null;
+      socialCard: {
+        bannerLabel: string | null;
+        image: {
+          asset: SanityImageAssetReference | null;
+          crop: SanityImageCrop | null;
+          hotspot: SanityImageHotspot | null;
+          alt: string | null;
+        } | null;
+        title: string | null;
+        subtitle: string | null;
+        description: string | null;
+        url: string | null;
+      } | null;
+      mapTitle: string | null;
+      map: {
+        buttonLabel: string | null;
+        url: string | null;
+        pinLabel: string | null;
+        areaLabel: string | null;
+      } | null;
+      copyrightText: string | null;
+      legalLinks: Array<{
+        _key: string;
+        label: string | null;
+        url: string | null;
+        newTab: boolean | null;
+      }> | null;
+    } | null;
+    floatingContact: {
+      enabled: boolean | null;
+      bubbleLabel: string | null;
+      icon: "whatsapp" | null;
+      url: string | null;
+      ariaLabel: string | null;
+    } | null;
+    seo: {
+      metaTitle: string | null;
+      metaDescription: string | null;
+      shareImage: {
+        asset: SanityImageAssetReference | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        alt: string | null;
+      } | null;
+      canonicalUrl: string | null;
+      appendSiteName: boolean | null;
       noIndex: boolean | null;
     } | null;
   } | null;
@@ -6265,16 +6801,18 @@ export type ContactPageQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n}': SiteSettingsQueryResult;
+    '*[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  postalAddress{\n    streetAddress,\n    addressLocality,\n    addressRegion,\n    addressCountry\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n}': SiteSettingsQueryResult;
     '*[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n}': NavigationQueryResult;
-    '*[_type == "siteSettings"][0]{seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}}': DefaultSeoQueryResult;
-    '{\n  "page": *[_type == $type][0]{seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}},\n  "site": *[_type == "siteSettings"][0]{seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}}\n}': PageSeoQueryResult;
-    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "home": *[_type == "homePage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n\n  // heroSection\n  eyebrow,\n  heading,\n  description,\n  highlightBadge,\n  autoplaySeconds,\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  "slides": slides[isVisible != false]{\n  _key,\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  isVisible\n},\n\n  // statsBarSection\n  items[]{\n  _key,\n  value,\n  label,\n  isSmaller\n},\n\n  // featuresSection\n  header{ heading, subheading },\n  cards[isVisible != false]{\n  _key,\n  icon,\n  "iconImage": iconImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  badge,\n  useAmberIcon,\n  title,\n  description,\n  isVisible\n},\n\n  // aboutStorySection\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  body,\n\n  // link / badge fields shared by several sections\n  "link": link{\n  _key,\n  label,\n  url,\n  newTab\n},\n  metaText,\n  badge,\n  anchorId,\n\n  // studentSpotlightSection\n  "students": students[]->{\n  "id": _id,\n  name,\n  classLabel,\n  "photo": photo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  cohortLabel,\n  schoolName,\n  note,\n  isVisible\n},\n\n  // newsSection\n  "posts": posts[]->{\n  "id": _id,\n  title,\n  category,\n  excerpt,\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  link{\n  _key,\n  label,\n  url,\n  newTab\n},\n  isVisible\n},\n\n  // reviewBarSection\n  brandLabel,\n  score,\n  summary,\n  stars,\n\n  "cta": cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n}': HomePageQueryResult;
-    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "about": *[_type == "aboutPage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n\n  // pageHeroSection\n  heading,\n  subheading,\n  appearance,\n  eyebrowIcon,\n  eyebrow,\n  crumbs[]{\n  _key,\n  label,\n  url\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n\n  // principalSection\n  header{ heading, subheading },\n  "principal": principal->{\n  "id": _id,\n  name,\n  designation,\n  role,\n  badge,\n  photoPlaceholderLabel,\n  "photo": photo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  shortBio,\n  message,\n  quote,\n  quoteAttribution,\n  isVisible\n},\n\n  // peopleGridSection\n  anchorId,\n  "people": people[]->{\n  "id": _id,\n  name,\n  designation,\n  role,\n  badge,\n  photoPlaceholderLabel,\n  "photo": photo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  shortBio,\n  message,\n  quote,\n  quoteAttribution,\n  isVisible\n},\n  emptyStateText,\n\n  // pillarsSection\n  pillars[]{ _key, icon, tone, title, description },\n\n  // pageCtaSection\n  badge,\n\n  "cta": cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n}': AboutPageQueryResult;
-    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "admissions": *[_type == "admissionsPage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n\n  // shared across several section types\n  anchorId,\n\n  // pageHeroSection\n  heading,\n  subheading,\n  appearance,\n  eyebrowIcon,\n  eyebrow,\n  crumbs[]{\n  _key,\n  label,\n  url\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n\n  // processStepsSection\n  header{ heading, subheading },\n  steps[]{ _key, title, description, isHighlighted },\n  \n  // featureImageSection\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  caption,\n  width,\n\n  // calloutSection\n  tone,\n  body,\n  buttonIcon,\n\n  // faqSection\n  items[]{ _key, question, answer, isOpenByDefault },\n\n  // pageCtaSection\n  badge,\n\n  "button": button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n}': AdmissionsPageQueryResult;
-    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "academics": *[_type == "academicsPage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n  anchorId,\n\n  // pageHeroSection\n  heading,\n  subheading,\n  appearance,\n  showIconWatermark,\n  eyebrowIcon,\n  eyebrow,\n  crumbs[]{\n  _key,\n  label,\n  url\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n\n  // classTableSection\n  header{ heading, subheading },\n  columnLabels{ class, age, medium, focus },\n  "classes": classes[]->{\n  "id": _id,\n  name,\n  ageRange,\n  medium,\n  focus,\n  sortOrder,\n  isVisible\n},\n  emptyStateText,\n\n  // pillarsSection (icon card grid)\n  pillars[]{ _key, icon, tone, title, description },\n\n  // pageCtaSection\n  badge,\n\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n}': AcademicsPageQueryResult;
-    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "routine": *[_type == "classRoutinePage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n  anchorId,\n\n  // pageHeroSection\n  heading,\n  subheading,\n  appearance,\n  showIconWatermark,\n  eyebrowIcon,\n  eyebrow,\n  crumbs[]{\n  _key,\n  label,\n  url\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n\n  // routineSection\n  header{ heading, subheading },\n  "routines": routines[]->{\n  "id": _id,\n  "className": classLevel->name,\n  session,\n  days,\n  rows[]{ _key, time, label, kind, cells },\n  sortOrder,\n  isVisible\n},\n  printButtonLabel,\n  footnote,\n  emptyStateText,\n\n  // pillarsSection (icon card grid)\n  pillars[]{ _key, icon, tone, title, description },\n\n  // pageCtaSection\n  badge,\n\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n}': ClassRoutinePageQueryResult;
-    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "branch": *[_type == "branchPage"][0]{\n    "id": _id,\n    hero{ eyebrow, heading, text, button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}, "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n} },\n    features{ enabled, items[]{ _key, icon, title, text } },\n    about{ enabled, "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n}, eyebrow, heading, paragraphs,\n      button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} },\n    programs{ enabled, eyebrow, heading, items[]{ _key, icon, title, text } },\n    teachers{ enabled, eyebrow, heading,\n      items[]{ _key, name, role, "photo": photo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n} } }\n  }\n}': BranchPageQueryResult;
-    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "contact": *[_type == "contactPage"][0]{\n    "id": _id,\n    hero{ enabled, heading, subheading, appearance, showIconWatermark, eyebrow, eyebrowIcon,\n      crumbs[]{\n  _key,\n  label,\n  url\n}, buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} },\n    infoCard{ heading, items[]{ _key, icon, label, value, note }, button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} },\n    mapCard{ title, address, rating, reviewCount, pinLabel, landmarks, attribution, mapUrl,\n      button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} },\n    form,\n    review{ enabled, rating, headline, text, button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} }\n  }\n}': ContactPageQueryResult;
+    '*[_type == "siteSettings"][0]{seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}}': DefaultSeoQueryResult;
+    '{\n  "page": *[_type == $type][0]{seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}},\n  "site": *[_type == "siteSettings"][0]{seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}},\n  "brandName": *[_type == "siteSettings"][0].brand.name\n}': PageSeoQueryResult;
+    '*[_type in $types && !(_id in path("drafts.**"))]{\n  _type,\n  _updatedAt,\n  "noIndex": seo.noIndex\n}': SitemapQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  postalAddress{\n    streetAddress,\n    addressLocality,\n    addressRegion,\n    addressCountry\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "home": *[_type == "homePage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n\n  // heroSection\n  eyebrow,\n  heading,\n  description,\n  highlightBadge,\n  autoplaySeconds,\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  "slides": slides[isVisible != false]{\n  _key,\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  isVisible\n},\n\n  // statsBarSection\n  items[]{\n  _key,\n  value,\n  label,\n  isSmaller\n},\n\n  // featuresSection\n  header{ heading, subheading },\n  cards[isVisible != false]{\n  _key,\n  icon,\n  "iconImage": iconImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  badge,\n  useAmberIcon,\n  title,\n  description,\n  isVisible\n},\n\n  // aboutStorySection\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  body,\n\n  // link / badge fields shared by several sections\n  "link": link{\n  _key,\n  label,\n  url,\n  newTab\n},\n  metaText,\n  badge,\n  anchorId,\n\n  // studentSpotlightSection\n  "students": students[]->{\n  "id": _id,\n  name,\n  classLabel,\n  "photo": photo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  cohortLabel,\n  schoolName,\n  note,\n  isVisible\n},\n\n  // newsSection\n  "posts": posts[]->{\n  "id": _id,\n  title,\n  category,\n  excerpt,\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  link{\n  _key,\n  label,\n  url,\n  newTab\n},\n  isVisible\n},\n\n  // reviewBarSection\n  brandLabel,\n  score,\n  summary,\n  stars,\n\n  "cta": cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n  }\n}': HomePageQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  postalAddress{\n    streetAddress,\n    addressLocality,\n    addressRegion,\n    addressCountry\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "about": *[_type == "aboutPage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n\n  // pageHeroSection\n  heading,\n  subheading,\n  appearance,\n  eyebrowIcon,\n  eyebrow,\n  crumbs[]{\n  _key,\n  label,\n  url\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n\n  // principalSection\n  header{ heading, subheading },\n  "principal": principal->{\n  "id": _id,\n  name,\n  designation,\n  role,\n  badge,\n  photoPlaceholderLabel,\n  "photo": photo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  shortBio,\n  message,\n  quote,\n  quoteAttribution,\n  isVisible\n},\n\n  // peopleGridSection\n  anchorId,\n  "people": people[]->{\n  "id": _id,\n  name,\n  designation,\n  role,\n  badge,\n  photoPlaceholderLabel,\n  "photo": photo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  shortBio,\n  message,\n  quote,\n  quoteAttribution,\n  isVisible\n},\n  emptyStateText,\n\n  // pillarsSection\n  pillars[]{ _key, icon, tone, title, description },\n\n  // pageCtaSection\n  badge,\n\n  "cta": cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n  }\n}': AboutPageQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  postalAddress{\n    streetAddress,\n    addressLocality,\n    addressRegion,\n    addressCountry\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "admissions": *[_type == "admissionsPage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n\n  // shared across several section types\n  anchorId,\n\n  // pageHeroSection\n  heading,\n  subheading,\n  appearance,\n  eyebrowIcon,\n  eyebrow,\n  crumbs[]{\n  _key,\n  label,\n  url\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n\n  // processStepsSection\n  header{ heading, subheading },\n  steps[]{ _key, title, description, isHighlighted },\n  \n  // featureImageSection\n  "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  caption,\n  width,\n\n  // calloutSection\n  tone,\n  body,\n  buttonIcon,\n\n  // faqSection\n  items[]{ _key, question, answer, isOpenByDefault },\n\n  // pageCtaSection\n  badge,\n\n  "button": button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n  }\n}': AdmissionsPageQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  postalAddress{\n    streetAddress,\n    addressLocality,\n    addressRegion,\n    addressCountry\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "academics": *[_type == "academicsPage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n  anchorId,\n\n  // pageHeroSection\n  heading,\n  subheading,\n  appearance,\n  showIconWatermark,\n  eyebrowIcon,\n  eyebrow,\n  crumbs[]{\n  _key,\n  label,\n  url\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n\n  // classTableSection\n  header{ heading, subheading },\n  columnLabels{ class, age, medium, focus },\n  "classes": classes[]->{\n  "id": _id,\n  name,\n  ageRange,\n  medium,\n  focus,\n  sortOrder,\n  isVisible\n},\n  emptyStateText,\n\n  // pillarsSection (icon card grid)\n  pillars[]{ _key, icon, tone, title, description },\n\n  // pageCtaSection\n  badge,\n\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n  }\n}': AcademicsPageQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  postalAddress{\n    streetAddress,\n    addressLocality,\n    addressRegion,\n    addressCountry\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "routine": *[_type == "classRoutinePage"][0]{\n    "id": _id,\n    internalTitle,\n    sections[]{\n  _key,\n  _type,\n  enabled,\n  anchorId,\n\n  // pageHeroSection\n  heading,\n  subheading,\n  appearance,\n  showIconWatermark,\n  eyebrowIcon,\n  eyebrow,\n  crumbs[]{\n  _key,\n  label,\n  url\n},\n  buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n\n  // routineSection\n  header{ heading, subheading },\n  "routines": routines[]->{\n  "id": _id,\n  "className": classLevel->name,\n  session,\n  days,\n  rows[]{ _key, time, label, kind, cells },\n  sortOrder,\n  isVisible\n},\n  printButtonLabel,\n  footnote,\n  emptyStateText,\n\n  // pillarsSection (icon card grid)\n  pillars[]{ _key, icon, tone, title, description },\n\n  // pageCtaSection\n  badge,\n\n  primaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n  secondaryButton{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n},\n    seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n  }\n}': ClassRoutinePageQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  postalAddress{\n    streetAddress,\n    addressLocality,\n    addressRegion,\n    addressCountry\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "branch": *[_type == "branchPage"][0]{\n    "id": _id,\n    hero{ eyebrow, heading, text, button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}, "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n} },\n    features{ enabled, items[]{ _key, icon, title, text } },\n    about{ enabled, "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n}, eyebrow, heading, paragraphs,\n      button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} },\n    programs{ enabled, eyebrow, heading, items[]{ _key, icon, title, text } },\n    teachers{ enabled, eyebrow, heading,\n      items[]{ _key, name, role, "photo": photo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n} } }\n  }\n}': BranchPageQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  postalAddress{\n    streetAddress,\n    addressLocality,\n    addressRegion,\n    addressCountry\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "complaint": *[_type == "complaintPage"][0]{\n    "id": _id,\n    internalTitle,\n    heading,\n    intro\n  }\n}': ComplaintPageQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{\n  "id": _id,\n  "brand": brand{\n    "logo": logo{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n    name,\n    acronym,\n    establishedLabel\n  },\n  contact{\n    address,\n    phoneLabel,\n    phoneHref,\n    mobileLabel,\n    mobileHref,\n    emailLabel,\n    emailHref\n  },\n  postalAddress{\n    streetAddress,\n    addressLocality,\n    addressRegion,\n    addressCountry\n  },\n  socialLinks[]{ _key, icon, label, url },\n  footer{\n    enabled,\n    tagline,\n    contactItems[]{\n  _key,\n  icon,\n  label,\n  href\n},\n    quickLinksTitle,\n    quickLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n},\n    socialTitle,\n    socialCard{\n      bannerLabel,\n      "image": image{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n      title,\n      subtitle,\n      description,\n      url\n    },\n    mapTitle,\n    map{ buttonLabel, url, pinLabel, areaLabel },\n    copyrightText,\n    legalLinks[]{\n  _key,\n  label,\n  url,\n  newTab\n}\n  },\n  floatingContact{ enabled, bubbleLabel, icon, url, ariaLabel },\n  seo{\n  metaTitle,\n  metaDescription,\n  "shareImage": shareImage{\n  "asset": image.asset,\n  "crop": image.crop,\n  "hotspot": image.hotspot,\n  alt\n},\n  canonicalUrl,\n  appendSiteName,\n  noIndex\n}\n},\n  "navigation": *[_type == "navigation"][0]{\n  "id": _id,\n  topBar{\n    enabled,\n    contactLinks[]{ _key, icon, label, url, newTab },\n    badge,\n    notice{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  },\n  header{\n    enabled,\n    homeUrl,\n    brandSubline,\n    items[]{\n      _key,\n      label,\n      url,\n      isCurrentPage,\n      showChevron,\n      highlight,\n      children[]{ _key, icon, label, url }\n    },\n    cta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n},\n    mobileMenuTitle,\n    mobileMenuCta{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n}\n  }\n},\n  "contact": *[_type == "contactPage"][0]{\n    "id": _id,\n    hero{ enabled, heading, subheading, appearance, showIconWatermark, eyebrow, eyebrowIcon,\n      crumbs[]{\n  _key,\n  label,\n  url\n}, buttons[]{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} },\n    infoCard{ heading, items[]{ _key, icon, label, value, note }, button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} },\n    mapCard{ title, address, rating, reviewCount, pinLabel, landmarks, attribution, mapUrl,\n      button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} },\n    form,\n    review{ enabled, rating, headline, text, button{\n  _key,\n  label,\n  url,\n  newTab,\n  variant\n} }\n  }\n}': ContactPageQueryResult;
   }
 }

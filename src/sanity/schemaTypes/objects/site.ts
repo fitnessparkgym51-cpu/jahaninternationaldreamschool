@@ -86,6 +86,59 @@ export const contactBlockType = defineType({
   ],
 })
 
+/**
+ * The postal address in structured form, for search engines.
+ *
+ * `contactBlock.address` is free text written for humans and shown in the footer.
+ * Search engines need the same place split into its parts, and they must be
+ * machine-readable — a parser cannot reliably tell "TNT, Tongi, Gazipur" into
+ * street, city and region. This block is the only place that split lives, so the
+ * footer text and the structured data are edited side by side in one document.
+ *
+ * Only fill in what the school has confirmed. An empty `streetAddress` is normal
+ * and correct: a wrong street address sends parents to the wrong gate, which is
+ * worse than publishing only the town.
+ */
+export const postalAddressType = defineType({
+  name: 'postalAddress',
+  title: 'Postal address (for search engines)',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'streetAddress',
+      title: 'Street or area',
+      type: 'string',
+      description: 'Optional. Leave empty unless the full street address is confirmed.',
+    }),
+    defineField({
+      name: 'addressLocality',
+      title: 'Town or city',
+      type: 'string',
+      description: 'Example: Tongi',
+    }),
+    defineField({
+      name: 'addressRegion',
+      title: 'District or division',
+      type: 'string',
+      description: 'Example: Gazipur',
+    }),
+    defineField({
+      name: 'addressCountry',
+      title: 'Country',
+      type: 'string',
+      initialValue: 'BD',
+      description: 'Two-letter country code. Bangladesh is BD.',
+    }),
+  ],
+  preview: {
+    select: {title: 'addressLocality', subtitle: 'addressRegion'},
+    prepare: ({title, subtitle}) => ({
+      title: [title, subtitle].filter(Boolean).join(', ') || 'Postal address',
+      subtitle: 'Used in structured data only',
+    }),
+  },
+})
+
 export const socialLinkType = defineType({
   name: 'socialLink',
   title: 'Social link',

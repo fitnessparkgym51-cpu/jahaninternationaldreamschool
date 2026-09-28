@@ -51,7 +51,6 @@ export function NewsSection({section, editField}: NewsSectionProps) {
                 <div className="relative h-56 overflow-hidden" data-sanity={postField('image')}>
                   <SanityImage
                     image={post.image}
-                    sourceWidth={1200}
                     sizes="(min-width: 768px) 33vw, 100vw"
                     className="object-cover transition-transform duration-300 hover:scale-105"
                     editAttribute={postField('image')}

@@ -29,7 +29,6 @@ export function AboutStorySection({section, editField}: AboutStorySectionProps) 
             >
               <SanityImage
                 image={section.image}
-                sourceWidth={1280}
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                 editAttribute={editField('image')}
@@ -72,7 +71,7 @@ export function AboutStorySection({section, editField}: AboutStorySectionProps) 
                 >
                   <span>{section.link.label}</span>
                   <span className="ml-2 transition-transform group-hover:translate-x-1" aria-hidden="true">
-                    →
+                    â†’
                   </span>
                 </SmartLink>
               ) : null}
