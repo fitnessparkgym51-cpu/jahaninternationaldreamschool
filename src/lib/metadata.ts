@@ -114,7 +114,9 @@ export function buildMetadata({
   const editorCanonical = clean(pageSeo?.canonicalUrl) ?? (isHome ? clean(siteSeo?.canonicalUrl) : undefined)
   const canonical = editorCanonical ?? absoluteUrl(pathname)
 
-  const noIndex = forceNoIndex || pageSeo?.noIndex === true || siteSeo?.noIndex === true
+  // TEMPORARY (client preview / testing deploy): keep every page out of the
+  // search index regardless of the CMS switch. Revert by deleting the `true ||`.
+  const noIndex = true || forceNoIndex || pageSeo?.noIndex === true || siteSeo?.noIndex === true
 
   return {
     // `absolute` bypasses the root layout's `title.template`, so the CMS title is
