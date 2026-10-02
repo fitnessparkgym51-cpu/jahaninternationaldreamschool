@@ -31,20 +31,23 @@ export function ReviewBarSection({section, editField}: ReviewBarSectionProps) {
   const stars = Math.max(0, Math.min(5, section.stars ?? 0))
   if (!section.brandLabel && !section.score && !section.primaryButton) return null
 
-  return (
+return (
     <section
-      className="border-y border-gray-200 bg-gray-50/60 px-4 py-6"
+      className="border-y border-gray-200 bg-gray-50/60 px-4 py-7 sm:px-8 sm:py-6"
       {...editTargetAttr}
     >
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-4 text-center sm:gap-8">
-        <div className="flex flex-wrap items-center justify-center gap-2">
+        <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1">
           {section.brandLabel ? (
-            <span className="text-xl tracking-tight" data-sanity={editField('brandLabel')}>
+            <span className="text-lg tracking-tight sm:text-xl" data-sanity={editField('brandLabel')}>
               <ColourWord word={section.brandLabel} />
             </span>
           ) : null}
           {section.score ? (
-            <span className="text-lg font-bold text-gray-900" data-sanity={editField('score')}>
+            <span
+              className="text-base font-bold text-gray-900 sm:text-lg"
+              data-sanity={editField('score')}
+            >
               {section.score}
             </span>
           ) : null}
@@ -72,17 +75,17 @@ export function ReviewBarSection({section, editField}: ReviewBarSectionProps) {
         </div>
 
         {section.primaryButton || section.secondaryButton ? (
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex w-full flex-col items-stretch justify-center gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
             <ButtonLink
               button={section.primaryButton}
               variant="green"
-              className="px-5 py-2 text-sm"
+              className="min-h-11 px-5 py-2.5 text-sm sm:min-h-0 sm:py-2"
               editAttribute={editField('primaryButton')}
             />
             <ButtonLink
               button={section.secondaryButton}
               variant="link"
-              className="text-sm"
+              className="min-h-11 px-2 py-2.5 text-sm sm:min-h-0 sm:py-1"
               editAttribute={editField('secondaryButton')}
             />
           </div>

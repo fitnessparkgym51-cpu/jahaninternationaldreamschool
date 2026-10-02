@@ -83,11 +83,17 @@ export function HeroCarousel({slides, autoplaySeconds}: HeroCarouselProps) {
 
       {total > 1 ? (
         <>
+          {/*
+            On phones the copy fills the width of the hero, so side-mounted arrows
+            would sit on top of the heading and description. Below `sm` they move
+            into the bottom corners, clear of the text; from `sm` up they return to
+            the vertically centred side position. Same buttons, same handlers.
+          */}
           <button
             type="button"
             aria-label="Previous slide"
             onClick={() => goTo(index - 1)}
-            className="absolute left-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white/80 backdrop-blur-md transition hover:bg-black/60 hover:text-white sm:left-8"
+            className="absolute bottom-4 left-3 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-black/45 text-white/85 backdrop-blur-md transition hover:bg-black/70 hover:text-white sm:bottom-1/2 sm:left-6 sm:h-11 sm:w-11 sm:-translate-y-1/2 sm:border-white/20 sm:bg-black/30 sm:text-white/80 sm:hover:bg-black/60"
           >
             <Icon name="chevron-left" size={24} strokeWidth={2.5} />
           </button>
@@ -95,12 +101,19 @@ export function HeroCarousel({slides, autoplaySeconds}: HeroCarouselProps) {
             type="button"
             aria-label="Next slide"
             onClick={() => goTo(index + 1)}
-            className="absolute right-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white/80 backdrop-blur-md transition hover:bg-black/60 hover:text-white sm:right-8"
+            className="absolute bottom-4 right-3 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-black/45 text-white/85 backdrop-blur-md transition hover:bg-black/70 hover:text-white sm:bottom-1/2 sm:right-6 sm:h-11 sm:w-11 sm:-translate-y-1/2 sm:border-white/20 sm:bg-black/30 sm:text-white/80 sm:hover:bg-black/60"
           >
             <Icon name="chevron-right" size={24} strokeWidth={2.5} />
           </button>
 
-          <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2.5">
+          {/*
+            The pills stay 10px tall. Below `sm` the button carries an
+            out-of-flow pseudo-element that widens the tappable area to roughly
+            32x30px (from 10x8px) without changing the pill, its position or the
+            row's spacing; from `sm` up the pseudo-element is removed entirely, so
+            the desktop row is pixel-identical to before.
+          */}
+          <div className="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-5 sm:bottom-6 sm:gap-2.5">
             {slides.map((slide, dotIndex) => (
               <button
                 key={`dot-${slide.key}`}
@@ -108,8 +121,8 @@ export function HeroCarousel({slides, autoplaySeconds}: HeroCarouselProps) {
                 aria-label={`Slide ${dotIndex + 1}`}
                 aria-current={dotIndex === index}
                 onClick={() => goTo(dotIndex)}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  dotIndex === index ? 'w-8 bg-white' : 'w-2.5 bg-white/50 hover:bg-white'
+                className={`relative h-2.5 w-3 rounded-full transition-all duration-300 after:absolute after:-inset-2.5 after:content-[''] sm:h-2 sm:w-2.5 sm:after:hidden ${
+                  dotIndex === index ? 'bg-white sm:w-8' : 'bg-white/55 hover:bg-white'
                 }`}
               />
             ))}

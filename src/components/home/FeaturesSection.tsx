@@ -17,23 +17,23 @@ export function FeaturesSection({section, editField}: FeaturesSectionProps) {
 
   return (
     <section
-      className="bg-white px-4 py-20 sm:px-8"
+      className="bg-white px-4 py-14 sm:px-8 sm:py-16 lg:py-20"
       data-sanity={editField('cards')}
       data-sanity-edit-target=""
     >
       <div className="mx-auto max-w-7xl">
         <SectionTitle header={section.header} editField={editField} />
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
           {cards.map((card, index) => (
             <Reveal
               key={card._key}
               delay={(index % 3) * 120}
-              className="card-soft-hover relative flex flex-col justify-start rounded-2xl border border-jids-card-line bg-[#fcfdfc] p-8"
+              className="card-soft-hover relative flex flex-col justify-start rounded-2xl border border-jids-card-line bg-[#fcfdfc] p-6 sm:p-7 lg:p-8"
               data-sanity={editField('cards', {_key: card._key})}
             >
               {card.badge ? (
-                <span className="absolute right-6 top-6 rounded-full bg-jids-orange px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                <span className="absolute right-5 top-5 rounded-full bg-jids-orange px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white sm:right-6 sm:top-6">
                   {card.badge}
                 </span>
               ) : null}
@@ -47,7 +47,7 @@ export function FeaturesSection({section, editField}: FeaturesSectionProps) {
                 />
               ) : (
                 <div
-                  className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-jids-icon-bg"
+                  className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-jids-icon-bg"
                   data-sanity={editField('cards', {_key: card._key}, 'icon')}
                 >
                   <Icon
@@ -58,9 +58,16 @@ export function FeaturesSection({section, editField}: FeaturesSectionProps) {
                 </div>
               )}
 
-              <h3 className="mb-2.5 text-lg font-bold text-gray-900">{card.title}</h3>
+              {/* `pr-*` keeps a long title clear of the absolutely positioned badge. */}
+              <h3
+                className={`mb-2.5 text-lg font-bold text-balance text-gray-900 ${
+                  card.badge ? 'pr-16' : ''
+                }`}
+              >
+                {card.title}
+              </h3>
               {card.description ? (
-                <p className="text-sm leading-relaxed text-gray-600">{card.description}</p>
+                <p className="text-sm leading-relaxed text-pretty text-gray-600">{card.description}</p>
               ) : null}
             </Reveal>
           ))}

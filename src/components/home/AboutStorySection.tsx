@@ -17,10 +17,15 @@ export function AboutStorySection({section, editField}: AboutStorySectionProps) 
 
   return (
     <section
-      className="border-t border-gray-100 bg-gray-50/70 px-4 py-16 sm:px-8 sm:py-20"
+      className="border-t border-gray-100 bg-gray-50/70 px-4 py-14 sm:px-8 sm:py-16 lg:py-20"
       {...editTargetAttr}
     >
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14">
+      {/*
+        `overflow-x-clip` keeps the story column's pre-reveal `translateX(44px)`
+        from widening the page on narrow phones. Only the horizontal axis is
+        clipped, so the vertical reveal and the image are unaffected.
+      */}
+      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 overflow-x-clip sm:gap-12 lg:grid-cols-12 lg:gap-12 xl:gap-14">
         {section.image ? (
           <Reveal direction="left" className="lg:col-span-6">
             <div
@@ -37,15 +42,15 @@ export function AboutStorySection({section, editField}: AboutStorySectionProps) 
           </Reveal>
         ) : null}
 
-        <Reveal direction="right" className="space-y-6 lg:col-span-6">
+        <Reveal direction="right" className="space-y-5 sm:space-y-6 lg:col-span-6">
           {section.eyebrow ? (
-            <div className="inline-flex items-center gap-2 rounded-full bg-jids-green-soft px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-jids-green">
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full bg-jids-green-soft px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-jids-green">
               {section.eyebrow}
             </div>
           ) : null}
 
           {section.heading ? (
-            <h2 className="text-3xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
+            <h2 className="text-3xl font-extrabold leading-tight tracking-tight text-balance text-gray-900 sm:text-4xl lg:text-5xl">
               {section.heading}
             </h2>
           ) : null}
@@ -53,7 +58,7 @@ export function AboutStorySection({section, editField}: AboutStorySectionProps) 
           {paragraphs.map((paragraph, index) => (
             <p
               key={index}
-              className="text-base leading-relaxed text-gray-600 sm:text-lg"
+              className="text-[15px] leading-relaxed text-pretty text-gray-600 sm:text-base lg:text-lg"
               data-sanity={editField('body', index)}
             >
               {paragraph}
@@ -61,22 +66,22 @@ export function AboutStorySection({section, editField}: AboutStorySectionProps) 
           ))}
 
           {section.link || section.metaText ? (
-            <div className="flex items-center gap-6 pt-2">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-1">
               {section.link ? (
                 <SmartLink
                   url={section.link.url}
                   newTab={section.link.newTab}
                   editAttribute={editField('link')}
-                  className="group inline-flex items-center text-base font-bold text-jids-green hover:text-jids-green-deep"
+                  className="group inline-flex items-center py-1.5 text-base font-bold text-jids-green hover:text-jids-green-deep"
                 >
                   <span>{section.link.label}</span>
                   <span className="ml-2 transition-transform group-hover:translate-x-1" aria-hidden="true">
-                    â†’
+                    →
                   </span>
                 </SmartLink>
               ) : null}
               {section.metaText ? (
-                <span className="text-sm font-semibold text-amber-700">{section.metaText}</span>
+                <span className="py-1 text-sm font-semibold text-amber-700">{section.metaText}</span>
               ) : null}
             </div>
           ) : null}

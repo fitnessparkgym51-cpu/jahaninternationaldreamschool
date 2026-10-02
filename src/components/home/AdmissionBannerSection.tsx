@@ -15,10 +15,10 @@ export function AdmissionBannerSection({section, editField}: AdmissionBannerSect
     return null
   }
 
-  return (
+return (
     <section
       id={section.anchorId || undefined}
-      className="bg-jids-green-deep px-4 py-16 text-center text-white sm:px-8"
+      className="bg-jids-green-deep px-4 py-12 text-center text-white sm:px-8 sm:py-16"
       {...editTargetAttr}
     >
       <Reveal className="mx-auto max-w-4xl">
@@ -29,22 +29,22 @@ export function AdmissionBannerSection({section, editField}: AdmissionBannerSect
         ) : null}
 
         {section.heading ? (
-          <h2 className="mb-8 text-2xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
+          <h2 className="mb-6 text-[22px] font-extrabold tracking-tight text-balance sm:mb-8 sm:text-3xl lg:text-5xl">
             {section.heading}
           </h2>
         ) : null}
 
         {section.primaryButton || section.secondaryButton ? (
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
             <ButtonLink
               button={section.primaryButton}
-              className="px-7 py-3"
+              className="w-full px-6 py-3 sm:w-auto sm:px-7"
               editAttribute={editField('primaryButton')}
             />
             <ButtonLink
               button={section.secondaryButton}
               variant="light"
-              className="px-7 py-3"
+              className="w-full px-6 py-3 sm:w-auto sm:px-7"
               editAttribute={editField('secondaryButton')}
             />
           </div>

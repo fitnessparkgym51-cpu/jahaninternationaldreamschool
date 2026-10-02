@@ -50,7 +50,7 @@ export function Footer({documentId, footer, brand}: FooterProps) {
                 {brand?.name}
               </div>
               <div className="text-xs font-medium text-yellow-300">
-                {[brand?.acronym, brand?.establishedLabel].filter(Boolean).join(' â€¢ ')}
+                {[brand?.acronym, brand?.establishedLabel].filter(Boolean).join(' • ')}
               </div>
             </div>
           </div>

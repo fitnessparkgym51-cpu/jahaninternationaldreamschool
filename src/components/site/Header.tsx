@@ -67,7 +67,7 @@ export function Header({documentId, siteSettingsId, header, brand, topBar}: Head
         <div className="mx-auto flex max-w-[88rem] items-center justify-between gap-4 px-4 py-3 sm:px-8">
           <SmartLink
             url={header?.homeUrl || '/'}
-            className="flex items-center gap-3"
+            className="flex min-w-0 items-center gap-2.5 sm:gap-3"
             aria-label={brand?.name ?? 'Home'}
           >
             <div
@@ -83,20 +83,24 @@ export function Header({documentId, siteSettingsId, header, brand, topBar}: Head
                 />
               ) : null}
             </div>
-            <div>
+            {/*
+              `min-w-0` plus a two-line clamp lets the school name shrink with the
+              row instead of pushing the menu button off a 320px screen.
+            */}
+            <div className="min-w-0">
               <div
-                className="text-lg font-extrabold leading-tight tracking-tight text-jids-green sm:text-xl"
+                className="line-clamp-2 break-words text-[15px] font-extrabold leading-tight tracking-tight text-jids-green sm:text-lg xl:text-xl"
                 data-sanity={brandField('name')}
               >
                 {brand?.name}
               </div>
               {brand?.acronym || brand?.establishedLabel || header?.brandSubline ? (
-                <div className="flex items-center gap-1.5 text-[11px] font-semibold tracking-wide text-amber-600 sm:text-xs">
+                <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 text-[11px] font-semibold tracking-wide text-amber-600 sm:text-xs">
                   {brand?.acronym ? (
                     <span data-sanity={brandField('acronym')}>{brand.acronym}</span>
                   ) : null}
                   {brand?.acronym && brand?.establishedLabel ? (
-                    <span className="text-gray-300">â€¢</span>
+                    <span className="text-gray-300">•</span>
                   ) : null}
                   {brand?.establishedLabel ? (
                     <span
@@ -126,12 +130,21 @@ export function Header({documentId, siteSettingsId, header, brand, topBar}: Head
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
-            <ButtonLink
-              button={header?.cta}
-              className="hidden whitespace-nowrap px-6 py-2.5 text-sm sm:inline-block"
-              editAttribute={headerField('cta')}
-            />
+          <div className="flex flex-shrink-0 items-center gap-3">
+            {/*
+              The wrapper owns the responsive display. `ButtonLink`'s shared base
+              classes always include `inline-flex`, which wins over a `hidden` put
+              on the button itself, so the call to action stayed on phones and
+              pushed the row — and the menu button — past the viewport edge. The
+              mobile menu carries the same call to action below `sm`.
+            */}
+            <div className="hidden sm:block">
+              <ButtonLink
+                button={header?.cta}
+                className="whitespace-nowrap px-6 py-2.5 text-sm"
+                editAttribute={headerField('cta')}
+              />
+            </div>
             <button
               type="button"
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -166,9 +179,9 @@ export function Header({documentId, siteSettingsId, header, brand, topBar}: Head
             type="button"
             aria-label="Close menu"
             onClick={() => setMenuOpen(false)}
-            className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border-none bg-jids-green/10 text-sm text-jids-green transition-colors hover:bg-jids-green/20"
+            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-none bg-jids-green/10 text-sm text-jids-green transition-colors hover:bg-jids-green/20"
           >
-            âœ•
+            ✕
           </button>
         </div>
 
@@ -179,12 +192,12 @@ export function Header({documentId, siteSettingsId, header, brand, topBar}: Head
                 url={item.url}
                 onClick={() => setMenuOpen(false)}
                 editAttribute={itemField(item._key)}
-                className={`flex items-center justify-between rounded-xl px-3.5 py-3 text-[0.95rem] font-semibold text-[#243c2a] transition-colors hover:bg-jids-green/10 ${
+                className={`flex items-center justify-between gap-3 rounded-xl px-3.5 py-3.5 text-[0.95rem] font-semibold text-[#243c2a] transition-colors hover:bg-jids-green/10 ${
                   item.highlight ? 'bg-jids-green/10 text-jids-green' : ''
                 }`}
               >
                 <span>{item.label}</span>
-                <span aria-hidden="true">â€º</span>
+                <span aria-hidden="true">›</span>
               </SmartLink>
               {item.children?.length ? (
                 <div className="mb-1 ml-3 flex flex-col border-l border-[#eef2ea] pl-3">
@@ -194,9 +207,9 @@ export function Header({documentId, siteSettingsId, header, brand, topBar}: Head
                       url={child.url}
                       onClick={() => setMenuOpen(false)}
                       editAttribute={itemField(item._key, 'children', {_key: child._key})}
-                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:text-jids-green"
+                      className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:text-jids-green"
                     >
-                      <Icon name={child.icon} size={16} className="text-jids-green" />
+                      <Icon name={child.icon} size={16} className="shrink-0 text-jids-green" />
                       <span>{child.label}</span>
                     </SmartLink>
                   ))}

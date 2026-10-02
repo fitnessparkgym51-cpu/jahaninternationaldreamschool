@@ -18,11 +18,13 @@ export function SectionTitle({
   if (!header?.heading) return null
 
   return (
-    <Reveal className="mx-auto mb-14 max-w-3xl text-center" editAttribute={editField('header')}>
-      <h2 className="mb-3 text-2xl font-extrabold text-[#1a202c] sm:text-4xl">{header.heading}</h2>
+    <Reveal className="mx-auto mb-8 max-w-3xl text-center sm:mb-12" editAttribute={editField('header')}>
+      <h2 className="mb-3 text-[22px] font-extrabold text-balance text-[#1a202c] sm:text-3xl lg:text-4xl">
+        {header.heading}
+      </h2>
       <div className="title-accent-bar" />
       {header.subheading ? (
-        <p className="mt-4 text-sm text-gray-500 sm:text-base">{header.subheading}</p>
+        <p className="mt-4 text-sm text-pretty text-gray-500 sm:text-base">{header.subheading}</p>
       ) : null}
     </Reveal>
   )
@@ -35,7 +37,7 @@ export function StatsBarSection({section, editField}: StatsBarProps) {
 
   return (
     <section
-      className="stat-bar-shadow relative z-20 bg-jids-orange px-4 py-9 text-white sm:px-8"
+      className="stat-bar-shadow relative z-20 bg-jids-orange px-4 py-8 text-white sm:px-8 lg:py-9"
       data-sanity={editField('items')}
       data-sanity-edit-target=""
     >
@@ -43,7 +45,7 @@ export function StatsBarSection({section, editField}: StatsBarProps) {
         {items.map((item) => (
           <div
             key={`${item._key}`}
-            className="flex items-center justify-between gap-4 border-b border-white/15 py-3.5 last:border-b-0 sm:block sm:border-b-0 sm:px-3 sm:py-0 lg:border-l lg:border-white/15 lg:first:border-l-0 xl:px-8"
+            className="flex flex-col items-center gap-1 border-b border-white/15 px-2 py-4 last:border-b-0 sm:block sm:border-b-0 sm:px-3 sm:py-0 lg:border-l lg:border-white/15 lg:first:border-l-0 xl:px-8"
             data-sanity={editField('items', {_key: item._key})}
           >
             <div
@@ -53,7 +55,7 @@ export function StatsBarSection({section, editField}: StatsBarProps) {
             >
               {item.value}
             </div>
-            <div className="text-xs font-medium leading-snug text-white/90 sm:mt-2.5 sm:min-h-[1.5rem] sm:text-center sm:text-sm xl:whitespace-nowrap">
+            <div className="text-[13px] font-medium leading-snug text-white/90 sm:mt-2.5 sm:min-h-[1.5rem] sm:text-center sm:text-sm xl:whitespace-nowrap">
               {item.label}
             </div>
           </div>

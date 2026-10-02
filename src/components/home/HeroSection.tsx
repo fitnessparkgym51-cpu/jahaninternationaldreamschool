@@ -34,10 +34,14 @@ export function HeroSection({section, editField}: HeroSectionProps) {
     // come from the CMS, so a longer edit must grow the hero rather than be
     // clipped by `overflow-hidden`. At the current copy length this renders
     // exactly as before.
-    <section className="relative flex min-h-[600px] items-center justify-center overflow-hidden text-white lg:min-h-[660px]">
+    //
+    // The bottom padding is larger on phones than the top because the carousel's
+    // prev/next controls sit in the bottom corners below `sm`, and the copy must
+    // not run underneath them.
+    <section className="relative flex min-h-[560px] items-center justify-center overflow-hidden text-white sm:min-h-[600px] lg:min-h-[660px]">
       <HeroCarousel slides={slides} autoplaySeconds={section.autoplaySeconds ?? 4.5} />
 
-      <div className="relative z-10 mx-auto max-w-4xl px-4 py-16 text-center">
+      <div className="relative z-10 mx-auto w-full max-w-3xl px-4 pb-24 pt-14 text-center sm:max-w-4xl sm:px-6 sm:pb-16 sm:pt-16">
         {section.eyebrow ? (
           <div
             className="fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-black/40 px-4 py-1.5 text-xs font-semibold text-yellow-300 shadow backdrop-blur-md sm:text-sm"
@@ -54,7 +58,7 @@ export function HeroSection({section, editField}: HeroSectionProps) {
           the Branch page hero.
         */}
         <h1
-          className="fade-up mb-4 whitespace-pre-line text-3xl font-extrabold leading-tight tracking-tight text-white drop-shadow-md sm:text-5xl lg:text-6xl"
+          className="fade-up mb-4 whitespace-pre-line text-3xl font-extrabold leading-tight tracking-tight text-balance text-white drop-shadow-md sm:text-5xl lg:text-6xl"
           style={{'--fade-delay': '120ms'} as CSSProperties}
         >
           {section.heading}
@@ -62,7 +66,7 @@ export function HeroSection({section, editField}: HeroSectionProps) {
 
         {section.description ? (
           <p
-            className="fade-up mx-auto mb-9 max-w-2xl text-base font-medium text-gray-100 drop-shadow sm:text-xl"
+            className="fade-up mx-auto mb-7 max-w-2xl text-base font-medium text-pretty text-gray-100 drop-shadow sm:mb-9 sm:text-xl"
             style={{'--fade-delay': '240ms'} as CSSProperties}
           >
             {section.description}
@@ -71,17 +75,17 @@ export function HeroSection({section, editField}: HeroSectionProps) {
 
         {section.primaryButton || section.secondaryButton ? (
           <div
-            className="fade-up mb-10 flex flex-wrap items-center justify-center gap-4"
+            className="fade-up mb-8 flex flex-col items-stretch justify-center gap-3 sm:mb-10 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4"
             style={{'--fade-delay': '360ms'} as CSSProperties}
           >
             <ButtonLink
               button={section.primaryButton}
-              className="px-7 py-3 text-sm sm:text-base"
+              className="w-full px-6 py-3 text-sm sm:w-auto sm:px-7 sm:text-base"
               editAttribute={editField('primaryButton')}
             />
             <ButtonLink
               button={section.secondaryButton}
-              className="px-6 py-3 text-sm backdrop-blur-sm sm:text-base"
+              className="w-full px-6 py-3 text-sm backdrop-blur-sm sm:w-auto sm:text-base"
               icon={<Icon name="play" size={16} className="text-white" />}
               editAttribute={editField('secondaryButton')}
             />
@@ -90,7 +94,7 @@ export function HeroSection({section, editField}: HeroSectionProps) {
 
         {section.highlightBadge ? (
           <div
-            className="fade-up inline-block rounded-full border border-white/30 bg-white/20 px-6 py-2 text-xs font-medium text-white shadow backdrop-blur-md sm:text-sm"
+            className="fade-up mx-auto inline-block max-w-full rounded-full border border-white/30 bg-white/20 px-4 py-2 text-xs font-medium text-balance text-white shadow backdrop-blur-md sm:px-6 sm:text-sm"
             style={{'--fade-delay': '480ms'} as CSSProperties}
           >
             {section.highlightBadge}

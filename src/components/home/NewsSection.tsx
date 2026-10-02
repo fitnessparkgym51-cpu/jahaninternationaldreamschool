@@ -17,27 +17,34 @@ export function NewsSection({section, editField}: NewsSectionProps) {
 
   return (
     <section
-      className="bg-white px-4 py-20 sm:px-8"
+      className="bg-white px-4 py-14 sm:px-8 sm:py-16 lg:py-20"
       data-sanity={editField('posts')}
       data-sanity-edit-target=""
     >
       <div className="mx-auto max-w-7xl">
         <Reveal
-          className="mx-auto mb-14 max-w-3xl text-center"
+          className="mx-auto mb-8 max-w-3xl text-center sm:mb-12"
           editAttribute={editField('header')}
         >
           {section.header?.heading ? (
-            <h2 className="mb-3 text-2xl font-extrabold text-[#1a202c] sm:text-4xl">
+            <h2 className="mb-3 text-[22px] font-extrabold text-balance text-[#1a202c] sm:text-3xl lg:text-4xl">
               {section.header.heading}
             </h2>
           ) : null}
           <div className="title-accent-bar" />
           {section.header?.subheading ? (
-            <p className="mt-4 text-sm text-gray-500 sm:text-base">{section.header.subheading}</p>
+            <p className="mt-4 text-sm text-pretty text-gray-500 sm:text-base">
+              {section.header.subheading}
+            </p>
           ) : null}
         </Reveal>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {/*
+          Three cards across only from `lg` (1024px). At 768px three columns are
+          ~213px, which clamped every title and excerpt after two or three words,
+          so tablets get two columns and the widest breakpoint gets three.
+        */}
+        <div className="grid grid-cols-1 gap-6 sm:gap-7 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
           {posts.map((post, index) => {
             // Like student cards, the news card belongs to its own document.
             const postField = (...rest: PathStep[]) =>
@@ -48,15 +55,18 @@ export function NewsSection({section, editField}: NewsSectionProps) {
                 className="h-full overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition duration-200 hover:shadow-md"
                 {...editTargetAttr}
               >
-                <div className="relative h-56 overflow-hidden" data-sanity={postField('image')}>
+                <div
+                  className="relative h-48 overflow-hidden sm:h-52 md:h-56"
+                  data-sanity={postField('image')}
+                >
                   <SanityImage
                     image={post.image}
-                    sizes="(min-width: 768px) 33vw, 100vw"
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 46vw, 100vw"
                     className="object-cover transition-transform duration-300 hover:scale-105"
                     editAttribute={postField('image')}
                   />
                 </div>
-                <div className="p-6">
+                <div className="p-5 sm:p-6">
                   {post.category ? (
                     <div
                       className="mb-2 text-xs font-semibold uppercase tracking-wider text-jids-green"
@@ -66,14 +76,14 @@ export function NewsSection({section, editField}: NewsSectionProps) {
                     </div>
                   ) : null}
                   <h3
-                    className="mb-2 line-clamp-2 font-bold text-lg text-gray-900"
+                    className="mb-2 line-clamp-2 text-pretty text-lg font-bold text-gray-900"
                     data-sanity={postField('title')}
                   >
                     {post.title}
                   </h3>
                   {post.excerpt ? (
                     <p
-                      className="line-clamp-3 text-sm leading-relaxed text-gray-500"
+                      className="line-clamp-3 text-sm leading-relaxed text-pretty text-gray-500"
                       data-sanity={postField('excerpt')}
                     >
                       {post.excerpt}
