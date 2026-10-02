@@ -37,11 +37,17 @@ export function PersonCard({person, delay = 0}: PersonCardProps) {
       {...editTargetAttr}
       className="card-soft-hover overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm"
     >
-      <div className="relative aspect-[4/5] w-full overflow-hidden border-b border-dashed border-gray-200 bg-gray-100">
+      {/*
+        A square crop on phones and the reference 4:5 from `sm` up. Full width on
+        a phone, a 4:5 crop is ~450px tall per card, which made twelve cards an
+        enormous scroll of near-identical grey boxes; a square still shows a
+        portrait head-and-shoulders without wasting that much height.
+      */}
+      <div className="relative aspect-square w-full overflow-hidden border-b border-dashed border-gray-200 bg-gray-100 sm:aspect-[4/5]">
         {person.photo ? (
           <SanityImage
             image={person.photo}
-            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+            sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover"
             editAttribute={personField('photo')}
           />
@@ -50,7 +56,7 @@ export function PersonCard({person, delay = 0}: PersonCardProps) {
             className="flex h-full w-full flex-col items-center justify-center px-4 text-center"
             data-sanity={personField('photo')}
           >
-            <span className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 text-gray-400">
+            <span className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-gray-200 text-gray-400 sm:h-16 sm:w-16">
               <Icon name="user" size={32} />
             </span>
             {person.photoPlaceholderLabel ? (
@@ -75,7 +81,10 @@ export function PersonCard({person, delay = 0}: PersonCardProps) {
       </div>
 
       <div className="p-5 text-center">
-        <h3 className="text-base font-bold text-gray-900" data-sanity={personField('name')}>
+        <h3
+          className="text-base font-bold text-balance text-gray-900"
+          data-sanity={personField('name')}
+        >
           {person.name}
         </h3>
 
@@ -90,7 +99,7 @@ export function PersonCard({person, delay = 0}: PersonCardProps) {
 
         {person.shortBio ? (
           <p
-            className="mt-3 text-xs leading-relaxed text-gray-500"
+            className="mt-3 text-[13px] leading-relaxed text-pretty text-gray-500"
             data-sanity={personField('shortBio')}
           >
             {person.shortBio}

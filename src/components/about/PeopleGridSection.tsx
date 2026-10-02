@@ -29,14 +29,20 @@ export function PeopleGridSection({section, editField}: PeopleGridSectionProps) 
   return (
     <section
       id={section.anchorId || undefined}
-      className="scroll-mt-24 px-4 py-16 sm:px-8 sm:py-20"
+      className="scroll-mt-24 px-4 py-14 sm:px-8 sm:py-16 lg:py-20"
       {...editTargetAttr}
     >
       <div className="mx-auto max-w-7xl">
         <SectionHeader header={header} editHeading={editField('header', 'heading')} />
 
         {people.length ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          /*
+            Four across only from `xl` (1280px), where each column is ~286px.
+            Four across at 1024px meant 222px columns that wrapped a name, a
+            designation and the whole bio onto extra lines, so laptops get three
+            across (~304px) and tablets two.
+          */
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
             {people.map((person, index) => (
               <PersonCard key={person.id} person={person} delay={index * 80} />
             ))}
@@ -53,8 +59,12 @@ export function PeopleGridSection({section, editField}: PeopleGridSectionProps) 
         ) : null}
 
         {section.cta ? (
-          <div className="mt-12 flex justify-center">
-            <ButtonLink button={section.cta} editAttribute={editField('cta')} />
+          <div className="mt-9 flex justify-center sm:mt-12">
+            <ButtonLink
+              button={section.cta}
+              className="w-full px-6 py-3 text-sm sm:w-auto sm:px-7 sm:text-base"
+              editAttribute={editField('cta')}
+            />
           </div>
         ) : null}
       </div>
