@@ -101,15 +101,20 @@ export const resolve: PresentationPluginOptions['resolve'] = {
 
     /** A class timetable, shown on the Class routine page. */
     classRoutine: defineLocations({
-      select: {className: 'classLevel.name', session: 'session'},
-      resolve: (doc) => ({
-        locations: [
-          {
-            title: doc?.className ? `${doc.className} routine` : 'Class routine',
-            href: '/academics/class-routine#routine',
-          },
-        ],
-      }),
+      select: {id: '_id', className: 'classLevel.name', session: 'session'},
+      resolve: (doc) => {
+        const id = doc?.id ? doc.id.replace(/^drafts\./, '') : ''
+        return {
+          locations: [
+            {
+              title: doc?.className ? `${doc.className} routine` : 'Class routine',
+              href: id
+                ? `/academics/class-routine?class=${id}#routine`
+                : '/academics/class-routine#routine',
+            },
+          ],
+        }
+      },
     }),
 
     /**

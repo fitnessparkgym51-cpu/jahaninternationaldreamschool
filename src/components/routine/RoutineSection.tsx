@@ -1,3 +1,4 @@
+import {stegaClean} from 'next-sanity'
 import {RoutineTabs, type RoutineView} from '@/components/routine/RoutineTabs'
 import {Reveal} from '@/components/ui/Reveal'
 import {SectionHeader} from '@/components/ui/SectionHeader'
@@ -7,6 +8,7 @@ import type {ClassRoutine, RoutineSection as RoutineSectionData} from '@/sanity/
 type RoutineSectionProps = {
   section: RoutineSectionData
   editField: EditField
+  initialClass?: string
 }
 
 /**
@@ -22,7 +24,7 @@ type RoutineSectionProps = {
  * session is individually click-to-edit, and targets the `classRoutine` document
  * that owns it — where rows and day columns can be added or removed.
  */
-export function RoutineSection({section, editField}: RoutineSectionProps) {
+export function RoutineSection({section, editField, initialClass}: RoutineSectionProps) {
   const header = section.header
   const routines = (section.routines ?? []).filter(
     (routine): routine is ClassRoutine => Boolean(routine?.className),
@@ -36,7 +38,7 @@ export function RoutineSection({section, editField}: RoutineSectionProps) {
 
   const routineViews: RoutineView[] = routines.map((routine) => ({
     id: routine.id,
-    className: routine.className ?? '',
+    className: stegaClean(routine.className ?? ''),
     session: routine.session,
     classNameEditAttribute: routineField(routine.id, 'classLevel'),
     sessionEditAttribute: routineField(routine.id, 'session'),
@@ -66,7 +68,7 @@ export function RoutineSection({section, editField}: RoutineSectionProps) {
   return (
     <section
       id={section.anchorId || undefined}
-      className="scroll-mt-24 bg-white px-4 py-16 sm:px-8 sm:py-20"
+      className="scroll-mt-24 bg-white px-4 py-12 sm:px-8 sm:py-20"
       {...editTargetAttr}
     >
       <div className="mx-auto max-w-7xl">
@@ -75,6 +77,7 @@ export function RoutineSection({section, editField}: RoutineSectionProps) {
         <Reveal>
           <RoutineTabs
             routines={routineViews}
+            initialClass={initialClass}
             printButtonLabel={section.printButtonLabel}
             printButtonEditAttribute={editField('printButtonLabel')}
             footnote={section.footnote}

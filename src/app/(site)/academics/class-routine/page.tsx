@@ -24,7 +24,14 @@ export function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({type: 'classRoutinePage', pathname: '/academics/class-routine'})
 }
 
-export default async function ClassRoutinePage() {
+export default async function ClassRoutinePage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const resolvedParams = searchParams ? await searchParams : undefined
+  const initialClass = typeof resolvedParams?.class === 'string' ? resolvedParams.class : undefined
+
   const {routine, navigation, siteSettings} = await getClassRoutinePageData()
 
   const sections = routine?.sections ?? []
@@ -45,7 +52,7 @@ export default async function ClassRoutinePage() {
       />
 
       <main className="flex-1">
-        <ClassRoutineSections documentId={pageId} sections={sections} />
+        <ClassRoutineSections documentId={pageId} sections={sections} initialClass={initialClass} />
       </main>
 
       <Footer documentId={settingsId} footer={siteSettings?.footer} brand={siteSettings?.brand} />

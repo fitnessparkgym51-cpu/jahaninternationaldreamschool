@@ -15,6 +15,7 @@ type ClassRoutineSectionsProps = {
   /** `_id` of the Class routine page document, for click-to-edit targets. */
   documentId: string
   sections?: ClassRoutineSection[] | null
+  initialClass?: string
 }
 
 /**
@@ -24,7 +25,7 @@ type ClassRoutineSectionsProps = {
  * Only `RoutineSection` is new. The hero, the icon-card grid and the closing band
  * are shared with the pages already built.
  */
-export function ClassRoutineSections({documentId, sections}: ClassRoutineSectionsProps) {
+export function ClassRoutineSections({documentId, sections, initialClass}: ClassRoutineSectionsProps) {
   const visible = (sections ?? []).filter(
     (section): section is ClassRoutineSection => Boolean(section) && section.enabled !== false,
   )
@@ -48,7 +49,14 @@ export function ClassRoutineSections({documentId, sections}: ClassRoutineSection
           case 'pageHeroSection':
             return <PageHeroSection key={sectionKey} section={section} editField={editField} />
           case 'routineSection':
-            return <RoutineSection key={sectionKey} section={section} editField={editField} />
+            return (
+              <RoutineSection
+                key={sectionKey}
+                section={section}
+                editField={editField}
+                initialClass={initialClass}
+              />
+            )
           case 'pillarsSection':
             return <CardGridSection key={sectionKey} section={section} editField={editField} />
           case 'pageCtaSection':

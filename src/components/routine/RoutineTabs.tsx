@@ -1,6 +1,8 @@
 'use client'
 
-import {useId, useState} from 'react'
+import {stegaClean} from 'next-sanity'
+
+import {useEffect, useId, useState} from 'react'
 
 /**
  * One day column's heading, and its width in the printed/tabular layout.
@@ -44,6 +46,7 @@ export type RoutineView = {
 
 type RoutineTabsProps = {
   routines: RoutineView[]
+  initialClass?: string
   printButtonLabel?: string | null
   /** Resolved `data-sanity` for the print button label, so it stays click-to-edit. */
   printButtonEditAttribute?: string
@@ -52,6 +55,18 @@ type RoutineTabsProps = {
   emptyStateText?: string | null
   emptyStateEditAttribute?: string
   sectionId?: string | null
+}
+
+function findMatchingRoutine(routines: RoutineView[], identifier?: string | null): RoutineView | null {
+  if (!identifier) return null
+  const clean = identifier.trim().toLowerCase().replace(/^drafts\./, '')
+  return (
+    routines.find((r) => r.id.toLowerCase() === clean) ||
+    routines.find((r) => r.id.toLowerCase().replace(/^class-routine-/, '') === clean) ||
+    routines.find((r) => r.className.toLowerCase() === clean) ||
+    routines.find((r) => r.className.toLowerCase().replace(/\s+/g, '-') === clean) ||
+    null
+  )
 }
 
 /**
@@ -70,6 +85,7 @@ type RoutineTabsProps = {
  */
 export function RoutineTabs({
   routines,
+  initialClass,
   printButtonLabel,
   printButtonEditAttribute,
   footnote,
@@ -79,16 +95,46 @@ export function RoutineTabs({
   sectionId,
 }: RoutineTabsProps) {
   const baseId = useId()
-  const [activeId, setActiveId] = useState<string | null>(routines[0]?.id ?? null)
+  const initialMatch = findMatchingRoutine(routines, initialClass)
+  const [activeId, setActiveId] = useState<string | null>(initialMatch?.id ?? routines[0]?.id ?? null)
+
+  const handleSelectTab = (routineId: string) => {
+    setActiveId(routineId)
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href)
+      url.searchParams.set('class', routineId)
+      window.history.replaceState(null, '', url.toString())
+    }
+  }
+
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const params = new URLSearchParams(window.location.search)
+      const classParam = params.get('class')
+      const matched = findMatchingRoutine(routines, classParam)
+      if (matched && matched.id !== activeId) {
+        setActiveId(matched.id)
+      }
+    }
+
+    handleUrlChange()
+
+    window.addEventListener('popstate', handleUrlChange)
+    window.addEventListener('hashchange', handleUrlChange)
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange)
+      window.removeEventListener('hashchange', handleUrlChange)
+    }
+  }, [routines, activeId])
 
   if (!routines.length) {
     return emptyStateText ? (
       <div
-        className="rounded-2xl border border-dashed border-gray-200 bg-white px-6 py-12 text-center"
+        className="rounded-2xl border border-dashed border-gray-200 bg-white px-4 py-10 sm:px-6 sm:py-12 text-center"
         data-routine-empty="true"
         data-sanity={emptyStateEditAttribute}
       >
-        <p className="text-sm text-gray-500">{emptyStateText}</p>
+        <p className="text-xs sm:text-sm text-gray-500">{emptyStateText}</p>
       </div>
     ) : null
   }
@@ -101,7 +147,11 @@ export function RoutineTabs({
     <>
       {/* Class selector + print */}
       <div className="jid-routine-controls mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-2" role="tablist" aria-label="Select a class">
+        <div
+          className="flex flex-wrap gap-1.5 sm:gap-2"
+          role="tablist"
+          aria-label="Select a class"
+        >
           {routines.map((routine) => {
             const selected = routine.id === active.id
             return (
@@ -112,10 +162,14 @@ export function RoutineTabs({
                 id={`${baseId}-tab-${routine.id}`}
                 aria-selected={selected}
                 aria-controls={`${sectionId ?? 'routine'}-panel`}
-                onClick={() => setActiveId(routine.id)}
-                className={`rounded-md px-4 py-2 text-xs font-bold shadow-sm transition ${
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleSelectTab(routine.id)
+                }}
+                className={`rounded-lg sm:rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs font-bold shadow-sm transition active:scale-95 touch-manipulation focus-visible:ring-2 focus-visible:ring-jids-green ${
                   selected
-                    ? 'bg-jids-green text-white'
+                    ? 'bg-jids-green text-white shadow'
                     : 'border border-gray-200 bg-white text-gray-600 hover:border-jids-green hover:text-jids-green'
                 }`}
                 /*
@@ -127,12 +181,11 @@ export function RoutineTabs({
                  * overlay opens the Studio and the tab never changes. The way into
                  * a class's routine is its name in the timetable header below,
                  * which is a label, not a control, so it can safely be an edit
-                 * target. `onMouseDown` is not used as a workaround either — it
-                 * would make every one of the thirteen tabs a hot spot that opens a
-                 * panel whether or not the editor meant to switch class.
+                 * target. `onPointerDown` and `onClick` call `stopPropagation` to
+                 * prevent parent `data-sanity-edit-target` from swallowing the click.
                  */
               >
-                {routine.className}
+                {stegaClean(routine.className)}
               </button>
             )
           })}
@@ -142,7 +195,7 @@ export function RoutineTabs({
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded border-2 border-jids-green px-5 py-2.5 text-xs font-bold text-jids-green transition duration-200 hover:bg-jids-green hover:text-white"
+            className="inline-flex w-full sm:w-auto shrink-0 items-center justify-center gap-2 rounded-lg sm:rounded border-2 border-jids-green px-4 py-2 sm:px-5 sm:py-2.5 text-xs font-bold text-jids-green transition duration-200 hover:bg-jids-green hover:text-white active:bg-jids-green active:text-white touch-manipulation focus-visible:ring-2 focus-visible:ring-jids-green"
             data-sanity={printButtonEditAttribute}
           >
             <svg
@@ -164,17 +217,30 @@ export function RoutineTabs({
       </div>
 
       {/* Timetable card */}
-      <div className="jid-routine-card overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-2 bg-jids-green px-6 py-4 text-white">
-          <h3
-            className="text-lg font-extrabold"
-            data-sanity={active.classNameEditAttribute}
-          >
-            {active.className}
-          </h3>
+      <div
+        id={`${sectionId ?? 'routine'}-panel`}
+        role="tabpanel"
+        aria-labelledby={`${baseId}-tab-${active.id}`}
+        className="jid-routine-card relative overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-2.5 bg-jids-green px-4 py-3 sm:px-6 sm:py-4 text-white">
+          <div className="flex items-center gap-2">
+            <h3
+              className="text-base sm:text-lg font-extrabold"
+              data-sanity={active.classNameEditAttribute}
+            >
+              {active.className}
+            </h3>
+            <span className="hidden text-xs text-white/70 sm:inline" aria-hidden="true">
+              •
+            </span>
+            <span className="hidden text-xs font-medium text-white/80 sm:inline">
+              Class Timetable
+            </span>
+          </div>
           {active.session ? (
             <span
-              className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold"
+              className="rounded-full bg-white/15 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[11px] sm:text-xs font-semibold"
               data-sanity={active.sessionEditAttribute}
             >
               {active.session}
@@ -182,102 +248,142 @@ export function RoutineTabs({
           ) : null}
         </div>
 
-        <div className="jid-routine-scroll overflow-x-auto">
-          <table
-            className="jid-routine-table w-full min-w-[720px] border-collapse text-left"
-            id={sectionId ? `${sectionId}-table` : undefined}
-          >
-            <thead>
-              <tr className="bg-gray-50 text-xs uppercase tracking-wider text-gray-600">
-                <th scope="col" className="w-40 border-b border-gray-200 px-4 py-3 font-bold">
-                  Time
-                </th>
-                <th scope="col" className="w-28 border-b border-gray-200 px-4 py-3 font-bold">
-                  Slot
-                </th>
-                {days.map((day, i) => (
+        {/* Mobile scroll hint */}
+        <div className="flex items-center justify-between gap-2 border-b border-gray-100 bg-gray-50/90 px-4 py-2 text-[11px] font-medium text-gray-500 sm:hidden">
+          <span className="flex items-center gap-1.5">
+            <svg
+              className="h-3.5 w-3.5 shrink-0 text-jids-green"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden="true"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+            Scroll horizontally to view all days
+          </span>
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+            Sun – Thu
+          </span>
+        </div>
+
+        <div className="relative">
+          <div className="jid-routine-scroll overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
+            <table
+              className="jid-routine-table w-full min-w-[720px] border-collapse text-left"
+              id={sectionId ? `${sectionId}-table` : undefined}
+            >
+              <thead>
+                <tr className="bg-gray-50 text-[11px] sm:text-xs uppercase tracking-wider text-gray-600">
                   <th
-                    key={`${day.name}-${i}`}
                     scope="col"
-                    className="border-b border-gray-200 px-4 py-3 font-bold"
-                    data-sanity={day.editAttribute}
+                    className="sticky left-0 z-20 w-32 sm:w-40 border-b border-gray-200 bg-gray-50 px-3 py-2.5 sm:px-4 sm:py-3 font-bold text-gray-700 shadow-[1px_0_0_0_#e5e7eb]"
                   >
-                    {day.name}
+                    Time
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="text-sm">
-              {rows.map((row) => {
-                const isWholeRow = row.kind === 'all' || row.kind === 'break'
-
-                return (
-                  <tr key={row.key}>
+                  <th
+                    scope="col"
+                    className="w-24 sm:w-28 border-b border-gray-200 bg-gray-50 px-3 py-2.5 sm:px-4 sm:py-3 font-bold"
+                  >
+                    Slot
+                  </th>
+                  {days.map((day, i) => (
                     <th
-                      scope="row"
-                      className="whitespace-nowrap border-b border-gray-100 bg-gray-50/60 px-4 py-3 text-left font-semibold text-gray-700"
-                      data-sanity={row.timeEditAttribute}
+                      key={`${day.name}-${i}`}
+                      scope="col"
+                      className="min-w-[100px] sm:min-w-0 border-b border-gray-200 px-3 py-2.5 sm:px-4 sm:py-3 font-bold"
+                      data-sanity={day.editAttribute}
                     >
-                      {row.time}
+                      {day.name}
                     </th>
-                    <td
-                      className="whitespace-nowrap border-b border-gray-100 bg-gray-50/60 px-4 py-3 text-xs uppercase tracking-wider text-gray-500"
-                      data-sanity={row.labelEditAttribute}
-                    >
-                      {row.label}
-                    </td>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="text-xs sm:text-sm">
+                {rows.map((row) => {
+                  const isWholeRow = row.kind === 'all' || row.kind === 'break'
 
-                    {days.map((day, dayIndex) => {
-                      if (isWholeRow) {
+                  return (
+                    <tr key={row.key} className="transition-colors hover:bg-gray-50/50">
+                      <th
+                        scope="row"
+                        className="sticky left-0 z-10 whitespace-nowrap border-b border-gray-100 bg-gray-50 px-3 py-2.5 sm:px-4 sm:py-3 text-left font-semibold text-gray-700 shadow-[1px_0_0_0_#e5e7eb]"
+                        data-sanity={row.timeEditAttribute}
+                      >
+                        {row.time}
+                      </th>
+                      <td
+                        className="whitespace-nowrap border-b border-gray-100 bg-gray-50/60 px-3 py-2.5 sm:px-4 sm:py-3 text-[11px] sm:text-xs uppercase tracking-wider text-gray-500"
+                        data-sanity={row.labelEditAttribute}
+                      >
+                        {row.label}
+                      </td>
+
+                      {days.map((day, dayIndex) => {
+                        if (isWholeRow) {
+                          return (
+                            <td
+                              key={`${day.name}-${dayIndex}`}
+                              className="border-b border-gray-100 bg-gray-100 px-3 py-2.5 sm:px-4 sm:py-3 text-center text-xs font-semibold text-gray-600"
+                              data-sanity={row.labelEditAttribute}
+                            >
+                              {row.label}
+                            </td>
+                          )
+                        }
+
+                        const value = row.cells[dayIndex]?.trim() ?? ''
+                        // Empty cells stay click-to-edit: an existing entry opens itself,
+                        // a missing one opens the row's subject list to add it.
+                        const editAttribute =
+                          row.cellEditAttributes[dayIndex] ?? row.cellsEditAttribute
+
                         return (
                           <td
                             key={`${day.name}-${dayIndex}`}
-                            className="border-b border-gray-100 bg-gray-100 px-4 py-3 text-center text-xs font-semibold text-gray-600"
-                            data-sanity={row.labelEditAttribute}
+                            className={`border-b border-gray-100 px-3 py-2.5 sm:px-4 sm:py-3 text-center transition-colors ${
+                              value
+                                ? 'text-xs sm:text-sm font-semibold text-jids-green'
+                                : 'text-gray-300'
+                            }`}
+                            data-sanity={editAttribute}
                           >
-                            {row.label}
+                            {value || '—'}
                           </td>
                         )
-                      }
-
-                      const value = row.cells[dayIndex]?.trim() ?? ''
-                      // Empty cells stay click-to-edit: an existing entry opens itself,
-                      // a missing one opens the row's subject list to add it.
-                      const editAttribute = row.cellEditAttributes[dayIndex] ?? row.cellsEditAttribute
-
-                      return (
-                        <td
-                          key={`${day.name}-${dayIndex}`}
-                          className={`border-b border-gray-100 px-4 py-3 text-center ${
-                            value ? 'text-xs font-semibold text-jids-green' : 'text-gray-300'
-                          }`}
-                          data-sanity={editAttribute}
-                        >
-                          {value || '—'}
-                        </td>
-                      )
-                    })}
+                      })}
+                    </tr>
+                  )
+                })}
+                {!rows.length ? (
+                  <tr>
+                    <td
+                      colSpan={days.length + 2}
+                      className="px-4 py-8 sm:py-10 text-center text-sm text-gray-400"
+                      data-sanity={active.rowsEditAttribute}
+                    >
+                      —
+                    </td>
                   </tr>
-                )
-              })}
-              {!rows.length ? (
-                <tr>
-                  <td
-                    colSpan={days.length + 2}
-                    className="px-4 py-10 text-center text-sm text-gray-400"
-                    data-sanity={active.rowsEditAttribute}
-                  >
-                    —
-                  </td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
+                ) : null}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Decorative scroll fade on small screens, matching the Academics table pattern */}
+          <div
+            className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-white to-transparent sm:w-12 lg:hidden"
+            aria-hidden="true"
+          />
         </div>
 
         {footnote ? (
-          <div className="border-t border-gray-100 bg-gray-50 px-6 py-4">
-            <p className="text-xs text-gray-500" data-sanity={footnoteEditAttribute}>
+          <div className="border-t border-gray-100 bg-gray-50 px-4 py-3 sm:px-6 sm:py-4">
+            <p
+              className="text-[11px] sm:text-xs leading-relaxed text-gray-500"
+              data-sanity={footnoteEditAttribute}
+            >
               {footnote}
             </p>
           </div>
