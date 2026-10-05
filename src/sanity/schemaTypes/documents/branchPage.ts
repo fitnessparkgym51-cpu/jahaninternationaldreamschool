@@ -102,11 +102,34 @@ export const branchPageType = defineType({
               name: 'branchTeacher',
               title: 'Teacher',
               fields: [
-                defineField({name: 'name', title: 'Name', type: 'string', validation: (r) => r.required()}),
-                defineField({name: 'role', title: 'Subject / role', type: 'string'}),
-                defineField({name: 'photo', title: 'Photo (optional)', type: 'imageWithAlt'}),
+                defineField({
+                  name: 'name',
+                  title: 'Name',
+                  type: 'string',
+                  description: 'Full name of the teacher.',
+                  validation: (r) => r.required(),
+                }),
+                defineField({
+                  name: 'role',
+                  title: 'Subject / role',
+                  type: 'string',
+                  description: 'e.g. Quran & Tajweed, Arabic Language, etc.',
+                }),
+                defineField({
+                  name: 'photo',
+                  title: 'Photo (optional)',
+                  type: 'imageWithAlt',
+                  description: 'Upload teacher photo. Shows a default avatar icon if not provided.',
+                }),
               ],
-              preview: {select: {title: 'name', subtitle: 'role'}},
+              preview: {
+                select: {title: 'name', subtitle: 'role', media: 'photo.image'},
+                prepare: ({title, subtitle, media}) => ({
+                  title: title || 'Teacher',
+                  subtitle: subtitle || 'Instructor',
+                  media,
+                }),
+              },
             }),
           ],
         }),
