@@ -8,6 +8,7 @@ import {ButtonLink, SmartLink} from '@/components/ui/SmartLink'
 import {editAttribute, editTargetAttr, type PathStep} from '@/lib/editing'
 import type {Brand, HeaderNav, NavItem} from '@/sanity/types/home'
 
+import {LanguageToggle} from './LanguageToggle'
 import {TopBar} from './TopBar'
 import type {TopBar as TopBarType} from '@/sanity/types/home'
 
@@ -130,14 +131,12 @@ export function Header({documentId, siteSettingsId, header, brand, topBar}: Head
             ))}
           </nav>
 
-          <div className="flex flex-shrink-0 items-center gap-3">
-            {/*
-              The wrapper owns the responsive display. `ButtonLink`'s shared base
-              classes always include `inline-flex`, which wins over a `hidden` put
-              on the button itself, so the call to action stayed on phones and
-              pushed the row — and the menu button — past the viewport edge. The
-              mobile menu carries the same call to action below `sm`.
-            */}
+          <div className="flex flex-shrink-0 items-center gap-2 sm:gap-3">
+            {/* Phone UI: English <-> বাংলা converting button */}
+            <div className="xl:hidden">
+              <LanguageToggle variant="phone" />
+            </div>
+
             <div className="hidden sm:block">
               <ButtonLink
                 button={header?.cta}
@@ -175,14 +174,17 @@ export function Header({documentId, siteSettingsId, header, brand, topBar}: Head
           <span className="font-extrabold text-jids-green">
             {header?.mobileMenuTitle || brand?.acronym || 'Menu'}
           </span>
-          <button
-            type="button"
-            aria-label="Close menu"
-            onClick={() => setMenuOpen(false)}
-            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-none bg-jids-green/10 text-sm text-jids-green transition-colors hover:bg-jids-green/20"
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-2.5">
+            <LanguageToggle variant="drawer" />
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setMenuOpen(false)}
+              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-none bg-jids-green/10 text-sm text-jids-green transition-colors hover:bg-jids-green/20"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         <nav className="flex flex-col gap-1 px-5 py-3">
