@@ -36,9 +36,11 @@ It has two parts:
 | Build | `npm run build` |
 | Regenerate Sanity types | `npx sanity schema extract --path schema.json` then `npx sanity typegen generate` |
 | Verify visual editing | `node scripts/verify-visual-editing.mjs` (dev server must be running) |
-| Verify sections | `node scripts/verify-sections.mjs` (dev server must be running) |
+| Verify sections | `node scripts/verify-sections.mjs` (dev server must be running; **mutates the Home document while testing**) |
 | Verify About Us | `node scripts/verify-about-us.mjs` (dev server must be running) |
 | **Verify SEO** | **`node scripts/verify-seo.mjs` (dev server must be running)** — 218 checks |
+| **Verify CMS structure** | **`node --env-file=.env.local scripts/verify-cms.mjs`** — 16 checks, no dev server, read-only. **Run this first whenever a page renders wrong or is missing a section.** |
+| Recover a deleted Home hero | `node --env-file=.env.local scripts/restore-home-hero.mjs` (dry run) / `--apply` — additive, never touches other documents |
 | Re-seed reference content | `node scripts/seed.mjs` (destructive; `--clean` wipes the dataset first) |
 | Re-seed About Us only | `node scripts/seed-about-us.mjs` (additive; never touches Home) |
 | Re-apply the SEO corrections | `node --env-file=.env.local scripts/seed-seo.mjs` (dry run) / `--apply` |
@@ -133,6 +135,15 @@ Required by Part 20. These are hard rules, not guidance.
 2. **Never remove or rename a Sanity field without checking existing data.**
    A removed field orphans content silently — no error, just `undefined`. Query
    the affected documents first and migrate or report it.
+2a. **Never leave a page's hero section deleted.** On 2026-10-08 an editor
+   deleted the Home hero from the `sections` array and the page simply began
+   with the stats bar — no error, no failed build, `verify-seo.mjs` still
+   green. To *hide* a section, switch off "Show this section on the website";
+   that sets `enabled: false` and keeps the content. Deleting the array item
+   destroys the copy with no undo. If a hero has gone, run
+   `node --env-file=.env.local scripts/verify-cms.mjs` first, then restore the
+   section — and use the Studio's document history, never `scripts/seed.mjs`,
+   which would revert every other edit made since it first ran.
 3. **Never change a schema without checking every dependent query, type and
    component.** The chain is schema → data → GROQ → generated types → component
    → Visual Editing. Skipping a link breaks click-to-edit without breaking the
